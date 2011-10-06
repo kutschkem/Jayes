@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>org.eclipse.recommenders</groupId>
+		<artifactId>org.eclipse.recommenders.jayes-test-parent</artifactId>
+		<version>0.2.0-SNAPSHOT</version>
+		<relativePath>../org.eclipse.recommenders.jayes-test-parent</relativePath>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.eclipse.recommenders</groupId>
+	<artifactId>org.eclipse.recommenders.tests.jayes</artifactId>
+	<version>0.2.0-SNAPSHOT</version>
+	<packaging>eclipse-test-plugin</packaging>
+	
+	<properties>
+		<eclemma.instrument.bundles>org.eclipse.recommenders.jayes</eclemma.instrument.bundles>
+	</properties>
+	
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.tycho</groupId>
+						<artifactId>maven-osgi-test-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
