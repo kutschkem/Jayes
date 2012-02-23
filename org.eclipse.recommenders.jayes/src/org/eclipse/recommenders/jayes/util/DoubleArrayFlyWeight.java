@@ -10,16 +10,16 @@
  */
 package org.eclipse.recommenders.jayes.util;
 
-public class FlyWeight {
+public class DoubleArrayFlyWeight {
 
-    private DeepIntArrayHashSet registered = new DeepIntArrayHashSet();
+    private DeepDoubleArrayHashSet registered = new DeepDoubleArrayHashSet();
 
-    public int[] getInstance(int[] intArr) {
-        if (registered.contains(intArr)) {
-            return registered.get(intArr);
+    public double[] getInstance(double[] doubleArr) {
+        if (registered.contains(doubleArr)) {
+            return registered.get(doubleArr);
         }
-        registered.add(intArr);
-        return intArr;
+        registered.add(doubleArr);
+        return doubleArr;
     }
 
     public int size() {

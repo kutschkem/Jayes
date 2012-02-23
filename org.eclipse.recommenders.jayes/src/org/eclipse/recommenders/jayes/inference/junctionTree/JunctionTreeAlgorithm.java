@@ -27,9 +27,10 @@ import org.eclipse.recommenders.jayes.Factor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
-import org.eclipse.recommenders.jayes.util.FlyWeight;
+import org.eclipse.recommenders.jayes.util.DoubleArrayFlyWeight;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
+import org.eclipse.recommenders.jayes.util.IntArrayFlyWeight;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.NumericalInstabilityException;
 import org.eclipse.recommenders.jayes.util.Pair;
@@ -123,25 +124,17 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         distributeEvidence(propagationRoot, skipDistribution(propagationRoot));
     }
 
-    private int findPropagationRoot() {
-        int propagationRoot = 0;
-        for (BayesNode n : evidence.keySet()) {
-            propagationRoot = homeClusters[n.getId()];
+    private void replayFactorInitializations() {
+        for (final Pair<Factor, double[]> init : initializations) {
+            System.arraycopy(init.getSecond(), 0, init.getFirst().getValues(), 0, init.getSecond().length);
+            init.getFirst().resetSelections();
         }
-        return propagationRoot;
     }
 
     private void incorporateAllEvidence() {
         clustersHavingEvidence.clear();
         for (BayesNode n : evidence.keySet()) {
             incorporateEvidence(n);
-        }
-    }
-
-    private void replayFactorInitializations() {
-        for (final Pair<Factor, double[]> init : initializations) {
-            System.arraycopy(init.getSecond(), 0, init.getFirst().getValues(), 0, init.getSecond().length);
-            init.getFirst().resetSelections();
         }
     }
 
@@ -152,6 +145,14 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
             nodePotentials[concernedCluster].select(n, node.getOutcomeIndex(evidence.get(node)));
             clustersHavingEvidence.add(concernedCluster);
         }
+    }
+
+    private int findPropagationRoot() {
+        int propagationRoot = 0;
+        for (BayesNode n : evidence.keySet()) {
+            propagationRoot = homeClusters[n.getId()];
+        }
+        return propagationRoot;
     }
 
     /**
@@ -413,13 +414,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
     private void prepareMultiplications() {
         // compress by combining equal prepared statements, thus saving memory
-        final FlyWeight flyWeight = new FlyWeight();
+        final IntArrayFlyWeight flyWeight = new IntArrayFlyWeight();
         prepareSepsetMultiplications(flyWeight);
         prepareQueries(flyWeight);
 
     }
 
-    private void prepareSepsetMultiplications(final FlyWeight flyWeight) {
+    private void prepareSepsetMultiplications(final IntArrayFlyWeight flyWeight) {
         for (int node = 0; node < nodePotentials.length; node++) {
             for (final Edge e : junctionTree.getIncidentEdges(node)) {
                 final int[] preparedMultiplication = nodePotentials[e.getSecond()]
@@ -429,7 +430,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         }
     }
 
-    private void prepareQueries(final FlyWeight flyWeight) {
+    private void prepareQueries(final IntArrayFlyWeight flyWeight) {
         for (final BayesNode node : net.getNodes()) {
             final Factor beliefFactor = new Factor();
             beliefFactor.setDimensions(new int[] { node.getOutcomeCount() });
@@ -481,12 +482,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     private void storePotentialValues() {
+        DoubleArrayFlyWeight flyweight = new DoubleArrayFlyWeight();
         for (final Factor pot : nodePotentials) {
-            initializations.add(new Pair<Factor, double[]>(pot, pot.getValues().clone()));
+            initializations.add(new Pair<Factor, double[]>(pot, flyweight.getInstance(pot.getValues().clone())));
         }
 
         for (final Factor sep : sepSets.values()) {
-            initializations.add(new Pair<Factor, double[]>(sep, sep.getValues().clone()));
+            initializations.add(new Pair<Factor, double[]>(sep, flyweight.getInstance(sep.getValues().clone())));
         }
     }
 
