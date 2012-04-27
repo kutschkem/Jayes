@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -43,6 +44,56 @@ public class JunctionTreeBuilder {
         buildMoralGraph();
         junctionTree.setClusters(triangulateGraphAndFindCliques());
         junctionTree.setSepSets(computeSepsets());
+        optimizeStructure();
+    }
+
+    private void optimizeStructure() {
+        List<List<Integer>> newClusters = findMultiEdges(2);
+        if (newClusters.size() > 0) {
+            junctionTree.getClusters().addAll(newClusters);
+            junctionTree.setSepSets(computeSepsets());
+        }
+    }
+
+    private List<List<Integer>> findMultiEdges(int i) {
+        List<List<Integer>> findings = new ArrayList<List<Integer>>();
+        List<Pair<Edge, List<Integer>>> seps = junctionTree.getSepSets();
+        Collections.sort(seps, new Comparator<Pair<Edge, List<Integer>>>() {
+
+            @Override
+            public int compare(Pair<Edge, List<Integer>> arg0, Pair<Edge, List<Integer>> arg1) {
+                List<Integer> l1 = arg0.getSecond();
+                List<Integer> l2 = arg1.getSecond();
+
+                return compareLexicographically(l1.iterator(), l2.iterator());
+            }
+
+            private int compareLexicographically(Iterator<Integer> l1, Iterator<Integer> l2) {
+                while (true) {
+                    if (!l1.hasNext())
+                        return 1;
+                    if (!l2.hasNext())
+                        return -1;
+                    Integer i1 = l1.next();
+                    Integer i2 = l2.next();
+                    if (!i1.equals(l2))
+                        return i1.compareTo(i2);
+                }
+            }
+        });
+
+        Iterator<Pair<Edge, List<Integer>>> it = seps.iterator();
+        while (it.hasNext()) {
+            int n = 1;
+            List<Integer> l = it.next().getSecond();
+            while (it.hasNext() && l.equals(it.next())) {
+                n++;
+            }
+            if (n >= i)
+                findings.add(l);
+        }
+
+        return findings;
     }
 
     private Graph buildMoralGraph() {

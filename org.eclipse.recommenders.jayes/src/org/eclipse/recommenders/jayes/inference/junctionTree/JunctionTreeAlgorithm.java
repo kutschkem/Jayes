@@ -51,7 +51,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     protected boolean[] isBeliefValid;
     protected final List<Pair<Factor, double[]>> initializations = new ArrayList<Pair<Factor, double[]>>();
 
-    private final List<int[]> queryFactorReverseMapping = new ArrayList<int[]>();
+    protected final List<int[]> queryFactorReverseMapping = new ArrayList<int[]>();
 
     // used for computing evidence collection skip
     protected final Set<Integer> clustersHavingEvidence = new HashSet<Integer>();
