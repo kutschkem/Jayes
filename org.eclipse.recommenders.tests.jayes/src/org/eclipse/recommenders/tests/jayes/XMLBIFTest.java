@@ -1,3 +1,13 @@
+/**
+ * Copyright (c) 2011 Michael Kutschke.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Michael Kutschke - initial API and implementation.
+ */
 package org.eclipse.recommenders.tests.jayes;
 
 import java.io.File;
@@ -18,7 +28,7 @@ public class XMLBIFTest {
     @Test
     public void test() throws ParserConfigurationException, SAXException, IOException {
         XMLBIFReader rdr = new XMLBIFReader();
-        BayesNet net = rdr.read(new File("test/models/alarm.xml"));
+        BayesNet net = rdr.read(new File("test/models/dog.xml"));
 
         JunctionTreeAlgorithm jta = new JunctionTreeAlgorithm();
         jta.setNetwork(net);
