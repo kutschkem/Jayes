@@ -14,4 +14,4 @@ I would love to know when other people use it and how :-)
 
 # Features:
 - exact inference of marginals in Bayesian Networks
-- support of XMLBIF
+- support of [XMLBIF 0.3](http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/)
