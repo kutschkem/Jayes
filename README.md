@@ -12,6 +12,6 @@ Jayes was first created to serve as a component of the [Code Recommenders Projec
 There it is used to predict method calls invoked by the developer.
 I would love to know when other people use it and how :-) 
 
-Features:
+# Features:
 - exact inference of marginals in Bayesian Networks
 - support of XMLBIF
