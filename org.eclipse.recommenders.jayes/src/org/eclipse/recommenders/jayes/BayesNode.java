@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.recommenders.jayes.util.BidirectionalMap;
 import org.eclipse.recommenders.jayes.util.MathUtils;
@@ -29,6 +28,7 @@ public class BayesNode {
     private final BidirectionalMap<String, Integer> outcomeIndices = new BidirectionalMap<String, Integer>();
     private final Factor factor = new Factor();
     private int id = -1;
+    private final List<String> outcomesList = new ArrayList<String>();
 
     public BayesNode(String name) {
         this.name = name;
@@ -109,6 +109,7 @@ public class BayesNode {
             outcomeIndices.put(name, outcomes);
             outcomes++;
             adjustFactordimensions();
+            outcomesList.add(name);
             return outcomes - 1;
         }
         throw new IllegalArgumentException("Outcome already exists");
@@ -135,8 +136,8 @@ public class BayesNode {
         return factor;
     }
 
-    public Set<String> getOutcomes() {
-        return outcomeIndices.keySet();
+    public List<String> getOutcomes() {
+        return Collections.unmodifiableList(outcomesList);
     }
 
     public String getName() {

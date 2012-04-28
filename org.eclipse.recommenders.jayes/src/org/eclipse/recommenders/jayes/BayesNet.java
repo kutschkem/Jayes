@@ -21,6 +21,8 @@ public class BayesNet {
     private List<BayesNode> nodes = new ArrayList<BayesNode>();
     private BidirectionalMap<String, BayesNode> nodeMap = new BidirectionalMap<String, BayesNode>();
 
+    private String name = "Bayesian Network";
+
     public int addNode(BayesNode node) {
         node.setId(nodes.size());
         nodes.add(node);
@@ -41,6 +43,14 @@ public class BayesNet {
 
     public List<BayesNode> getNodes() {
         return Collections.unmodifiableList(nodes);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

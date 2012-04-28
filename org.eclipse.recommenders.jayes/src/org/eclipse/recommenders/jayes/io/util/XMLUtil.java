@@ -8,15 +8,12 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.tests.jayes;
+package org.eclipse.recommenders.jayes.io.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+public class XMLUtil {
 
-@RunWith(Suite.class)
-@SuiteClasses({ FactorTests.class, RejectionSamplerTests.class, LikelyhoodWeightedSamplingTests.class, LBPTest.class,
-        JunctionTreeTests.class, XMLBIFTest.class })
-public class TestSuite {
+    public static String surround(String content, String surroundingTag) {
+        return String.format("<%1$s>%2$s</%1$s>", surroundingTag, content);
+    }
 
 }
