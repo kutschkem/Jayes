@@ -1,13 +1,3 @@
-/**
- * Copyright (c) 2011 Michael Kutschke.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Michael Kutschke - initial API and implementation.
- */
 package org.eclipse.recommenders.jayes.io;
 
 import java.io.ByteArrayInputStream;
@@ -32,15 +22,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.xml.sax.SAXException;
 
-/**
- * a Reader thats reads the XMLBIF v0.3 format (<a
- * href="http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/"
- * >specification</a>)
- * 
- * @author Michael Kutschke
- * 
- */
-public class XMLBIFReader {
+public class XDSLReader {
 
     public BayesNet read(String filename) throws ParserConfigurationException, SAXException, IOException {
         return read(new File(filename));
@@ -52,23 +34,23 @@ public class XMLBIFReader {
         return readFromDocument(doc);
     }
 
-    private Document obtainDocument(File biffile) throws ParserConfigurationException, SAXException, IOException {
+    private Document obtainDocument(File xdslFile) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setValidating(true);
+        // docBuilderFactory.setValidating(true);
         DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
     
-        Document doc = docBldr.parse(biffile);
+        Document doc = docBldr.parse(xdslFile);
         doc.normalize();
     
         return doc;
     }
 
-    public BayesNet readFromString(String xmlBif) throws ParserConfigurationException, SAXException, IOException {
+    public BayesNet readFromString(String xdslString) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setValidating(true);
         DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
 
-        Document doc = docBldr.parse(new ByteArrayInputStream(xmlBif.getBytes()));
+        Document doc = docBldr.parse(new ByteArrayInputStream(xdslString.getBytes()));
 
         return readFromDocument(doc);
 
@@ -77,16 +59,18 @@ public class XMLBIFReader {
     private BayesNet readFromDocument(Document doc) {
         BayesNet net = new BayesNet();
 
-        net.setName(doc.getElementsByTagName("NAME").item(0).getTextContent());
+        Node smileNode = doc.getElementsByTagName("smile").item(0);
+        String networkName = getId(smileNode);
+        net.setName(networkName);
 
         initializeNodes(doc, net);
 
         XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
 
-        NodeList nodelist = doc.getElementsByTagName("DEFINITION");
+        NodeList nodelist = doc.getElementsByTagName("cpt");
         for (int i = 0; i < nodelist.getLength(); i++) {
             Node node = nodelist.item(i);
-            String name = XPathUtil.evalXPath(xpath, "FOR", node).next().getTextContent();
+            String name = getId(node);
 
             BayesNode bNode = net.getNode(name);
 
@@ -99,18 +83,21 @@ public class XMLBIFReader {
         return net;
     }
 
+    private String getId(Node node) {
+        return node.getAttributes().getNamedItem("id").getTextContent();
+    }
+
     private void initializeNodes(Document doc, BayesNet net) {
         XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
     
-        NodeList nodelist = doc.getElementsByTagName("VARIABLE");
+        NodeList nodelist = doc.getElementsByTagName("cpt");
         for (int i = 0; i < nodelist.getLength(); i++) {
             Node node = nodelist.item(i);
-            Node name = XPathUtil.evalXPath(xpath, "NAME", node).next();
     
-            BayesNode bNode = new BayesNode(name.getTextContent());
+            BayesNode bNode = new BayesNode(getId(node));
     
-            for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "OUTCOME", node); it.hasNext();) {
-                bNode.addOutcome(it.next().getTextContent());
+            for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "state", node); it.hasNext();) {
+                bNode.addOutcome(getId(it.next()));
             }
     
             net.addNode(bNode);
@@ -120,14 +107,24 @@ public class XMLBIFReader {
 
     private void setParents(BayesNode bNode, BayesNet net, Node node, XPathEvaluator xpath) {
         List<BayesNode> parents = new ArrayList<BayesNode>();
-        for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "GIVEN", node); it.hasNext();) {
-            parents.add(net.getNode(it.next().getTextContent()));
+        Iterator<Node> parentNode = XPathUtil.evalXPath(xpath, "parents", node);
+        List<String> parentNames = new ArrayList<String>();
+        if (parentNode.hasNext()) {
+            StringTokenizer tokenizer = new StringTokenizer(parentNode.next().getTextContent());
+            while (tokenizer.hasMoreTokens()) {
+                parentNames.add(tokenizer.nextToken());
+            }
         }
+
+        for (String parentname : parentNames) {
+            parents.add(net.getNode(parentname));
+        }
+
         bNode.setParents(parents);
     }
 
     private void parseProbabilities(XPathEvaluator xpath, Node node, BayesNode bNode) {
-        String table = XPathUtil.evalXPath(xpath, "TABLE", node).next().getTextContent();
+        String table = XPathUtil.evalXPath(xpath, "probabilities", node).next().getTextContent();
 
         List<Double> probabilities = new ArrayList<Double>();
         StringTokenizer tok = new StringTokenizer(table);

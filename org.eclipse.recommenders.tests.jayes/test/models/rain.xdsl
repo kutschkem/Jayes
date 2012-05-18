@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<smile version="1.0" id="Network1" numsamples="1000" discsamples="10000">
+	<nodes>
+		<cpt id="rain">
+			<state id="yes" />
+			<state id="no" />
+			<probabilities>0.2 0.8</probabilities>
+		</cpt>
+		<cpt id="sprinkler_on">
+			<state id="yes" />
+			<state id="no" />
+			<probabilities>0.5 0.5</probabilities>
+		</cpt>
+		<cpt id="grass_wet">
+			<state id="yes" />
+			<state id="no" />
+			<parents>rain sprinkler_on</parents>
+			<probabilities>0.99 0.01 0.9 0.1 0.9 0.1 0.1 0.9</probabilities>
+		</cpt>
+		<cpt id="neighbor_grass_wet">
+			<state id="yes" />
+			<state id="no" />
+			<parents>rain</parents>
+			<probabilities>0.9 0.1 0.5 0.5</probabilities>
+		</cpt>
+	</nodes>
+	<extensions>
+		<genie version="1.0" app="GeNIe 2.0.3887.0" name="Network1" faultnameformat="nodestate">
+			<node id="rain">
+				<name>rain</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>186 95 263 147</position>
+				<barchart active="true" />
+			</node>
+			<node id="grass_wet">
+				<name>grass wet</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>369 263 487 338</position>
+				<barchart active="true" />
+			</node>
+			<node id="sprinkler_on">
+				<name>sprinkler on</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>393 111 462 154</position>
+				<barchart active="true" />
+			</node>
+			<node id="neighbor_grass_wet">
+				<name>neighbor grass wet</name>
+				<interior color="e5f6f7" />
+				<outline color="000080" />
+				<font color="000000" name="Arial" size="8" />
+				<position>178 257 282 322</position>
+				<barchart active="true" />
+			</node>
+		</genie>
+	</extensions>
+</smile>

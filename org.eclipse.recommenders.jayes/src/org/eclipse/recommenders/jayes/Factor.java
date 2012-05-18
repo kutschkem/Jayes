@@ -170,9 +170,9 @@ public class Factor implements Cloneable {
     }
 
     public void sumPrepared(double[] compatibleFactorValues, int[] preparedOperation) {
-        Arrays.fill(compatibleFactorValues, 0);
-
         validateCut();
+
+        Arrays.fill(compatibleFactorValues, 0);
 
         if (!isLogScale)
             sumPrepared(cut, 0, compatibleFactorValues, preparedOperation);
@@ -408,7 +408,7 @@ public class Factor implements Cloneable {
                 subCut = clone();
                 subCut.descendUnselectedDimension();
                 subCut.length = subtreeStepsize;
-                subCut.rootCut(); // no leaf cut, no zero compression
+                subCut.rootCut(); // no leaf cut
                 subCut.createSubcut();
             }
         }

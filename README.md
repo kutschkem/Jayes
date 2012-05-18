@@ -15,6 +15,7 @@ I would love to know when other people use it and how :-)
 # Features:
 - exact inference of marginals in Bayesian Networks
 - support of [XMLBIF 0.3](http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/)
+- partial support of XDSL format used by [GeNIe](http://genie.sis.pitt.edu/)
 
 # License
 
