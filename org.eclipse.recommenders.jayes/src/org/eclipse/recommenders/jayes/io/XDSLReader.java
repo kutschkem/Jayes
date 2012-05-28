@@ -24,35 +24,48 @@ import org.xml.sax.SAXException;
 
 public class XDSLReader {
 
-    public BayesNet read(String filename) throws ParserConfigurationException, SAXException, IOException {
+    public BayesNet read(String filename) throws IOException {
         return read(new File(filename));
     }
 
-    public BayesNet read(File biffile) throws ParserConfigurationException, SAXException, IOException {
+    public BayesNet read(File biffile) throws IOException {
         Document doc = obtainDocument(biffile);
 
         return readFromDocument(doc);
     }
 
-    private Document obtainDocument(File xdslFile) throws ParserConfigurationException, SAXException, IOException {
+    private Document obtainDocument(File xdslFile) throws IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         // docBuilderFactory.setValidating(true);
-        DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
-    
-        Document doc = docBldr.parse(xdslFile);
-        doc.normalize();
-    
-        return doc;
+        DocumentBuilder docBldr;
+        try {
+            docBldr = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBldr.parse(xdslFile);
+
+            doc.normalize();
+            return doc;
+        } catch (ParserConfigurationException e) {
+            throw new IOException("Bad parser configuration, probably missing dependency", e);
+        } catch (SAXException e) {
+            throw new IOException("Parse failed", e);
+        }
+
     }
 
-    public BayesNet readFromString(String xdslString) throws ParserConfigurationException, SAXException, IOException {
+    public BayesNet readFromString(String xdslString) throws IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setValidating(true);
-        DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
+        try {
+            DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
 
-        Document doc = docBldr.parse(new ByteArrayInputStream(xdslString.getBytes()));
+            Document doc = docBldr.parse(new ByteArrayInputStream(xdslString.getBytes()));
 
-        return readFromDocument(doc);
+            return readFromDocument(doc);
+        } catch (ParserConfigurationException e) {
+            throw new IOException("Bad parser configuration, probably missing dependency", e);
+        } catch (SAXException e) {
+            throw new IOException("Parse failed", e);
+        }
 
     }
 
@@ -89,19 +102,19 @@ public class XDSLReader {
 
     private void initializeNodes(Document doc, BayesNet net) {
         XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
-    
+
         NodeList nodelist = doc.getElementsByTagName("cpt");
         for (int i = 0; i < nodelist.getLength(); i++) {
             Node node = nodelist.item(i);
-    
+
             BayesNode bNode = new BayesNode(getId(node));
-    
+
             for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "state", node); it.hasNext();) {
                 bNode.addOutcome(getId(it.next()));
             }
-    
+
             net.addNode(bNode);
-    
+
         }
     }
 
