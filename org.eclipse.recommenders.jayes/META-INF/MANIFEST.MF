@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.eclipse.recommenders.jayes
 Bundle-Name: org.eclipse.recommenders.bayes
-Bundle-Version: 0.2.0.qualifier
+Bundle-Version: 0.2.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Provide-Package: org.eclipse.recommenders.bayes.sat,
- org.eclipse.recommenders.jayes,
+Provide-Package: org.eclipse.recommenders.jayes,
  org.eclipse.recommenders.jayes.inference,
  org.eclipse.recommenders.jayes.inference.junctionTree,
  org.eclipse.recommenders.jayes.io,

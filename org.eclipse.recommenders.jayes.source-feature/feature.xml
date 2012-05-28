@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.recommenders.jayes.source-feature"
       label="BayesNet Feature (Sources)"
-      version="0.2.0.qualifier"
+      version="0.2.0"
       provider-name="Eclipse Code Recommenders">
 
    <description url="http://www.example.com/description">
