@@ -127,4 +127,25 @@ public class JunctionTreeTests {
             assertArrayEquals(inference.getBeliefs(n), compare.getBeliefs(n), 0.01);
     }
 
+    @Test
+    public void testSparseFactors() {
+        BayesNet net = NetExamples.sparseNet();
+
+        BayesNode a = net.getNode("a");
+        BayesNode b = net.getNode("b");
+
+        IBayesInferer inference = new JunctionTreeAlgorithm();
+        inference.addEvidence(a, "false");
+        inference.addEvidence(b, "lu");
+        inference.setNetwork(net);
+
+        IBayesInferer compare = new LoopyBeliefPropagation();
+        compare.setNetwork(net);
+        compare.addEvidence(a, "false");
+        compare.addEvidence(b, "lu");
+
+        for (BayesNode n : net.getNodes())
+            assertArrayEquals(compare.getBeliefs(n), inference.getBeliefs(n), 0.01);
+    }
+
 }

@@ -24,6 +24,7 @@ import java.util.Set;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.Factor;
+import org.eclipse.recommenders.jayes.SparseFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
@@ -115,23 +116,26 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     private void doUpdateBeliefs() {
-        replayFactorInitializations();
 
         incorporateAllEvidence();
         int propagationRoot = findPropagationRoot();
 
+        replayFactorInitializations();
         collectEvidence(propagationRoot, skipCollection(propagationRoot));
         distributeEvidence(propagationRoot, skipDistribution(propagationRoot));
     }
 
     private void replayFactorInitializations() {
         for (final Pair<Factor, double[]> init : initializations) {
-            System.arraycopy(init.getSecond(), 0, init.getFirst().getValues(), 0, init.getSecond().length);
-            init.getFirst().resetSelections();
+            init.getFirst().init(init.getSecond());
         }
     }
 
     private void incorporateAllEvidence() {
+        for (Pair<Factor, double[]> init : initializations) {
+            init.getFirst().resetSelections();
+        }
+
         clustersHavingEvidence.clear();
         for (BayesNode n : evidence.keySet()) {
             incorporateEvidence(n);
@@ -307,10 +311,39 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         final List<List<Integer>> clusters = buildJunctionTree().getClusters();
         setHomeClusters(clusters);
         setQueryFactors();
+        sparsifyPotentials();
+        initializePotentialValues();
+        multiplyCPTsIntoPotentials();
         prepareMultiplications();
         prepareScratch();
         invokeInitialBeliefUpdate();
         storePotentialValues();
+
+        int denseLength = 0;
+        int sparseLength = 0;
+        for (Factor f : nodePotentials) {
+            if (f instanceof SparseFactor) {
+                SparseFactor _f = (SparseFactor) f;
+                if (_f.isSparse()) {
+                    denseLength += _f.computeLength();
+                    sparseLength += _f.getValues().length;
+                }
+            }
+        }
+        sparseLength += denseLength / SparseFactor.SPARSENESS;
+        System.out.println(String.format("dense: %1$d \n sparse: %2$d \n saves: %3$f", denseLength, sparseLength,
+                sparseLength / (double) denseLength));
+
+    }
+
+    private void sparsifyPotentials() {
+        for (final BayesNode node : net.getNodes()) {
+            final Factor nodeHome = nodePotentials[homeClusters[node.getId()]];
+            if (nodeHome instanceof SparseFactor) {
+                ((SparseFactor) nodeHome).sparsify(node.getFactor());
+            }
+        }
+
     }
 
     private void prepareScratch() {
@@ -365,7 +398,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     protected Factor createFactor(final List<Integer> vars) {
-        final Factor f = new Factor();
+        final Factor f = new SparseFactor();
         final List<Integer> dimensions = new ArrayList<Integer>();
         for (final Integer dim : vars) {
             dimensions.add(net.getNode(dim).getOutcomeCount());
@@ -441,8 +474,6 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     private void invokeInitialBeliefUpdate() {
-        initializePotentialValues();
-        multiplyCPTsIntoPotentials();
 
         collectEvidence(0, new HashSet<Integer>());
         distributeEvidence(0, new HashSet<Integer>());
@@ -490,6 +521,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         for (final Factor sep : sepSets.values()) {
             initializations.add(new Pair<Factor, double[]>(sep, flyweight.getInstance(sep.getValues().clone())));
         }
+
     }
 
 }

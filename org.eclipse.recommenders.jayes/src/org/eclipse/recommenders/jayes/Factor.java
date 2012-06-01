@@ -20,10 +20,10 @@ public class Factor implements Cloneable {
 
     protected int[] dimensions = new int[0];
     private int[] dimensionIDs = new int[0];
-    private double[] values = new double[1];
+    protected double[] values = new double[1];
     protected int[] selections = new int[0];
 
-    private Cut cut = new Cut();
+    protected Cut cut = new Cut();
     private boolean isCutValid = false;
 
     private boolean isLogScale = false;
@@ -34,6 +34,10 @@ public class Factor implements Cloneable {
 
     public double[] getValues() {
         return values;
+    }
+
+    public double getValue(int i) {
+        return values[i];
     }
 
     public void fill(double d) {
@@ -248,7 +252,7 @@ public class Factor implements Cloneable {
         }
     }
 
-    private void validateCut() {
+    protected void validateCut() {
         if (!isCutValid) {
             cut.initialize();
             isCutValid = true;
@@ -329,7 +333,12 @@ public class Factor implements Cloneable {
 
     }
 
-    private class Cut implements Cloneable {
+    public void init(double[] other) {
+        validateCut();
+        System.arraycopy(other, cut.index, values, cut.index, cut.length);
+    }
+
+    protected class Cut implements Cloneable {
         private int index;
         private int stepSize;
         private int length;
@@ -347,16 +356,24 @@ public class Factor implements Cloneable {
         }
 
         public void initialize() {
-            length = values.length;
+            length = computeLength();
             index = 0;
             stepSize = 1;
-            subtreeStepsize = values.length / dimensions[0];
+            subtreeStepsize = length / dimensions[0];
             rootDimension = 0;
             leafDimension = dimensions.length - 1;
             subCut = null;
             leafCut();
             rootCut();
             createSubcut();
+        }
+
+        private int computeLength() {
+            int length = 1;
+            for (int i : dimensions) {
+                length *= i;
+            }
+            return length;
         }
 
         @Override
@@ -426,6 +443,26 @@ public class Factor implements Cloneable {
                 if (selections[i] != -1)
                     return true;
             return false;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public int getStepSize() {
+            return stepSize;
+        }
+
+        public int getLength() {
+            return length;
+        }
+
+        public int getSubtreeStepsize() {
+            return subtreeStepsize;
+        }
+
+        public Cut getSubCut() {
+            return subCut;
         }
 
     }

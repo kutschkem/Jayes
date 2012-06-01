@@ -119,8 +119,7 @@ public class BayesNode {
         try {
             return outcomeIndices.get(name);
         } catch (NullPointerException ex) {
-            System.out.println("");
-            throw ex;
+            throw new IllegalArgumentException(name, ex);
         }
     }
 

@@ -78,4 +78,39 @@ public class NetExamples {
         return net;
     }
 
+    public static BayesNet sparseNet() {
+        BayesNet net = new BayesNet();
+
+        BayesNode a = new BayesNode("a");
+        a.addOutcome("true");
+        a.addOutcome("false");
+        a.setProbabilities(new double[] { 0, 1 });
+        net.addNode(a);
+
+        BayesNode b = new BayesNode("b");
+        b.addOutcome("la");
+        b.addOutcome("le");
+        b.addOutcome("lu");
+        net.addNode(b);
+        b.setParents(Arrays.asList(a));
+        b.setProbabilities(ArrayUtils.flatten(new double[][] { { 0.1, 0.4, 0.5 }, { 0.3, 0.4, 0.3 } }));
+
+        BayesNode c = new BayesNode("c");
+        c.addOutcome("true");
+        c.addOutcome("false");
+        net.addNode(c);
+        c.setParents(Arrays.asList(a, b));
+        c.setProbabilities(ArrayUtils.flatten(new double[][][] { { { 0.1, 0.9 }, { 0.0, 1.0 }, { 0.5, 0.5 } },
+                { { 0.2, 0.8 }, { 0.0, 1.0 }, { 0.7, 0.3 } } }));
+
+        BayesNode d = new BayesNode("d");
+        d.addOutcome("true");
+        d.addOutcome("false");
+        net.addNode(d);
+        d.setParents(Arrays.asList(c));
+        d.setProbabilities(ArrayUtils.flatten(new double[][] { { 0.5, 0.5 }, { 0.2, 0.8 } }));
+
+        return net;
+    }
+
 }
