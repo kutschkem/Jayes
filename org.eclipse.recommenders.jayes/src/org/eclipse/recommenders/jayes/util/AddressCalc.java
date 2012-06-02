@@ -10,6 +10,11 @@
  */
 package org.eclipse.recommenders.jayes.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.recommenders.jayes.Factor;
+
 public final class AddressCalc {
 
     private AddressCalc() {
@@ -42,6 +47,14 @@ public final class AddressCalc {
             counter[dim] = 0;
             incrementMultiDimensionalCounter(counter, dimensions, dim - 1);
         }
+    }
+
+    public static Map<Integer, Integer> computeIdToDimensionIndexMap(Factor factor) {
+        Map<Integer, Integer> foreignIds = new HashMap<Integer, Integer>();
+        for (int i = 0; i < factor.getDimensionIDs().length; i++) {
+            foreignIds.put(factor.getDimensionIDs()[i], i);
+        }
+        return foreignIds;
     }
 
 }

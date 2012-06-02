@@ -98,4 +98,12 @@ public class MathUtils {
         return result;
     }
 
+    public static int multiply(int[] intArr) {
+        int r = 1;
+        for (int i : intArr) {
+            r *= i;
+        }
+        return r;
+    }
+
 }

@@ -11,10 +11,10 @@
 package org.eclipse.recommenders.jayes;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
+import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class Factor implements Cloneable {
 
@@ -23,7 +23,7 @@ public class Factor implements Cloneable {
     protected double[] values = new double[1];
     protected int[] selections = new int[0];
 
-    protected Cut cut = new Cut();
+    protected Cut cut = new Cut(this);
     private boolean isCutValid = false;
 
     private boolean isLogScale = false;
@@ -48,9 +48,7 @@ public class Factor implements Cloneable {
         this.dimensions = Arrays.copyOf(dimensions, dimensions.length);
         selections = new int[dimensions.length];
         resetSelections();
-        int length = 1;
-        for (int i : dimensions)
-            length *= i;
+        int length = MathUtils.multiply(dimensions);
         if (length > values.length)
             values = new double[length];
         dimensionIDs = Arrays.copyOf(dimensionIDs, dimensions.length);
@@ -126,15 +124,15 @@ public class Factor implements Cloneable {
     }
 
     private void sumToBucket(Cut cut, int offset, int divisor, double[] result) {
-        if (cut.subCut == null) {
-            int last = cut.index + offset + cut.length;
+        if (cut.getSubCut() == null) {
+            int last = cut.getIndex() + offset + cut.getLength();
             double[] val = values;
-            for (int i = cut.index + offset; i < last; i += cut.stepSize) {
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
                 result[(i / divisor) % result.length] += val[i];
             }
         } else {
-            Cut c = cut.subCut;
-            for (int i = 0; i < cut.length; i += cut.subtreeStepsize) {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 sumToBucket(c, offset + i, divisor, result);
             }
         }
@@ -161,13 +159,13 @@ public class Factor implements Cloneable {
     }
 
     private void multiplyPrepared(Cut cut, int offset, double[] compatibleValues, int[] positions) {
-        if (cut.subCut == null) {
-            int last = Math.min(values.length, cut.length + cut.index + offset);
-            for (int i = cut.index + offset; i < last; i += cut.stepSize)
+        if (cut.getSubCut() == null) {
+            int last = Math.min(values.length, cut.getLength() + cut.getIndex() + offset);
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
                 values[i] *= compatibleValues[positions[i]];
         } else {
-            Cut c = cut.subCut;
-            for (int i = 0; i < cut.length; i += cut.subtreeStepsize) {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 multiplyPrepared(c, offset + i, compatibleValues, positions);
             }
         }
@@ -186,13 +184,13 @@ public class Factor implements Cloneable {
     }
 
     private void sumPrepared(Cut cut, int offset, double[] compatibleValues, int[] positions) {
-        if (cut.subCut == null) {
-            int last = Math.min(values.length, cut.length + cut.index + offset);
-            for (int i = cut.index + offset; i < last; i += cut.stepSize)
+        if (cut.getSubCut() == null) {
+            int last = Math.min(values.length, cut.getLength() + cut.getIndex() + offset);
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
                 compatibleValues[positions[i]] += values[i];
         } else {
-            Cut c = cut.subCut;
-            for (int i = 0; i < cut.length; i += cut.subtreeStepsize) {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 sumPrepared(c, offset + i, compatibleValues, positions);
             }
         }
@@ -207,16 +205,16 @@ public class Factor implements Cloneable {
     }
 
     private double findMax(Cut cut, int offset, double max) {
-        if (cut.subCut == null) {
-            int last = Math.min(values.length, cut.length + cut.index + offset);
-            for (int i = cut.index + offset; i < last; i += cut.stepSize) {
+        if (cut.getSubCut() == null) {
+            int last = Math.min(values.length, cut.getLength() + cut.getIndex() + offset);
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
                 if (values[i] != Double.NEGATIVE_INFINITY && Math.abs(values[i]) > Math.abs(max)) {
                     max = values[i];
                 }
             }
         } else {
-            Cut c = cut.subCut;
-            for (int i = 0; i < cut.length; i += cut.subtreeStepsize) {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 double pot = findMax(c, offset + i, max);
                 if (pot != Double.NEGATIVE_INFINITY && Math.abs(pot) > Math.abs(max)) {
                     max = pot;
@@ -227,26 +225,26 @@ public class Factor implements Cloneable {
     }
 
     private void sumPreparedLog(Cut cut, int offset, double[] compatibleValues, int[] positions, double max) {
-        if (cut.subCut == null) {
-            int last = Math.min(values.length, cut.length + cut.index + offset);
-            for (int i = cut.index + offset; i < last; i += cut.stepSize)
+        if (cut.getSubCut() == null) {
+            int last = Math.min(values.length, cut.getLength() + cut.getIndex() + offset);
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
                 compatibleValues[positions[i]] += Math.exp(values[i] - max);
         } else {
-            Cut c = cut.subCut;
-            for (int i = 0; i < cut.length; i += cut.subtreeStepsize) {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 sumPreparedLog(c, offset + i, compatibleValues, positions, max);
             }
         }
     }
 
     private void multiplyPreparedLog(Cut cut, int offset, double[] compatibleValues, int[] positions) {
-        if (cut.subCut == null) {
-            int last = Math.min(values.length, cut.length + cut.index + offset);
-            for (int i = cut.index + offset; i < last; i += cut.stepSize)
+        if (cut.getSubCut() == null) {
+            int last = Math.min(values.length, cut.getLength() + cut.getIndex() + offset);
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
                 values[i] += compatibleValues[positions[i]];
         } else {
-            Cut c = cut.subCut;
-            for (int i = 0; i < cut.length; i += cut.subtreeStepsize) {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 multiplyPreparedLog(c, offset + i, compatibleValues, positions);
             }
         }
@@ -271,21 +269,13 @@ public class Factor implements Cloneable {
     public int[] prepareMultiplication(Factor compatible) {
         int[] positions = new int[values.length];
         int[] counter = new int[dimensions.length];
-        Map<Integer, Integer> foreignIdToIndex = computeIdToDimensionIndexMap(compatible);
+        Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
         counter[counter.length - 1] = -1;
         for (int i = 0; i < values.length; i++) {
             AddressCalc.incrementMultiDimensionalCounter(counter, dimensions, dimensions.length - 1);
             positions[i] = computeForeignPosition(compatible, counter, foreignIdToIndex);
         }
         return positions;
-    }
-
-    private Map<Integer, Integer> computeIdToDimensionIndexMap(Factor factor) {
-        Map<Integer, Integer> foreignIds = new HashMap<Integer, Integer>();
-        for (int i = 0; i < factor.dimensionIDs.length; i++) {
-            foreignIds.put(factor.dimensionIDs[i], i);
-        }
-        return foreignIds;
     }
 
     private int computeForeignPosition(Factor compatible, int[] counter, Map<Integer, Integer> foreignIdToIndex) {
@@ -301,7 +291,7 @@ public class Factor implements Cloneable {
 
     private int[] transformLocalToForeignPosition(int[] localPosition, Map<Integer, Integer> foreignIdToIndex) {
         int[] foreignPosition = new int[foreignIdToIndex.size()];
-        for (int i = 0; i < dimensions.length; i++) {
+        for (int i = 0; i < localPosition.length; i++) {
             Integer foreignDim = foreignIdToIndex.get(dimensionIDs[i]);
             if (foreignDim != null) // dimension present in the other Factor?
                 foreignPosition[foreignDim] = localPosition[i];
@@ -320,7 +310,7 @@ public class Factor implements Cloneable {
         }
         f.values = values.clone();
         f.selections = selections.clone();
-        f.cut = f.new Cut();
+        f.cut = new Cut(f);
         f.isCutValid = false;
         return f;
     }
@@ -333,138 +323,9 @@ public class Factor implements Cloneable {
 
     }
 
-    public void init(double[] other) {
+    public void copyValues(double[] other) {
         validateCut();
-        System.arraycopy(other, cut.index, values, cut.index, cut.length);
-    }
-
-    protected class Cut implements Cloneable {
-        private int index;
-        private int stepSize;
-        private int length;
-
-        private int subtreeStepsize;
-
-        private int rootDimension;
-        private int leafDimension;
-
-        // the subtree(s); only one because of the inherent regularities of the
-        // decision tree
-        private Cut subCut;
-
-        public Cut() {
-        }
-
-        public void initialize() {
-            length = computeLength();
-            index = 0;
-            stepSize = 1;
-            subtreeStepsize = length / dimensions[0];
-            rootDimension = 0;
-            leafDimension = dimensions.length - 1;
-            subCut = null;
-            leafCut();
-            rootCut();
-            createSubcut();
-        }
-
-        private int computeLength() {
-            int length = 1;
-            for (int i : dimensions) {
-                length *= i;
-            }
-            return length;
-        }
-
-        @Override
-        public Cut clone() {
-            try {
-                return (Cut) super.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        private void rootCut() {
-            while (rootDimension < leafDimension && selections[rootDimension] != -1) {
-                descendSelectedDimension();
-            }
-            while (rootDimension < leafDimension && selections[rootDimension + 1] == -1) {
-                descendUnselectedDimension();
-            }
-        }
-
-        private void descendSelectedDimension() {
-            length /= dimensions[rootDimension];
-            index += subtreeStepsize * selections[rootDimension];
-            descendUnselectedDimension();
-        }
-
-        private void descendUnselectedDimension() {
-            rootDimension++;
-            subtreeStepsize /= dimensions[rootDimension];
-        }
-
-        private void leafCut() {
-            while (leafDimension >= 0 && selections[leafDimension] != -1) {
-                ascendSelectedDimension();
-            }
-        }
-
-        private void ascendSelectedDimension() {
-            index += selections[leafDimension] * stepSize;
-            length -= selections[leafDimension] * stepSize;
-            stepSize *= dimensions[leafDimension];
-            leafDimension--;
-        }
-
-        private void createSubcut() {
-            if (needsSplit()) {
-                subCut = null; // avoid circularity in object graph
-                subCut = clone();
-                subCut.descendUnselectedDimension();
-                subCut.length = subtreeStepsize;
-                subCut.rootCut(); // no leaf cut
-                subCut.createSubcut();
-            }
-        }
-
-        /**
-         * the Cut needs to further split if and only if there is an additional
-         * selection between root and leaf
-         * 
-         * @return
-         */
-        private boolean needsSplit() {
-            if (length < subtreeStepsize)
-                return false;
-            for (int i = rootDimension; i < leafDimension; i++)
-                if (selections[i] != -1)
-                    return true;
-            return false;
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public int getStepSize() {
-            return stepSize;
-        }
-
-        public int getLength() {
-            return length;
-        }
-
-        public int getSubtreeStepsize() {
-            return subtreeStepsize;
-        }
-
-        public Cut getSubCut() {
-            return subCut;
-        }
-
+        System.arraycopy(other, cut.getIndex(), values, cut.getIndex(), cut.getLength());
     }
 
 }

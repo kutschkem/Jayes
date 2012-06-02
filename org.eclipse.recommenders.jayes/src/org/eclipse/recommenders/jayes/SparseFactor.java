@@ -11,10 +11,10 @@
 package org.eclipse.recommenders.jayes;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
+import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class SparseFactor extends Factor {
 
@@ -36,7 +36,7 @@ public class SparseFactor extends Factor {
     }
 
     @Override
-    public void init(double[] other) {
+    public void copyValues(double[] other) {
         System.arraycopy(other, 0, getValues(), 0, other.length);
     }
 
@@ -59,7 +59,7 @@ public class SparseFactor extends Factor {
 
         int[] positions = new int[getValues().length];
         int[] counter = new int[dimensions.length];
-        Map<Integer, Integer> foreignIdToIndex = computeIdToDimensionIndexMap(compatible);
+        Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
         counter[counter.length - 1] = -1;
         for (int i = 0; i < trie.length; i++) {
             for (int j = 0; j < SPARSENESS; j++) {
@@ -100,7 +100,7 @@ public class SparseFactor extends Factor {
      */
     public void sparsify(Factor compatible) {
         int[] counter = new int[dimensions.length];
-        Map<Integer, Integer> foreignIdToIndex = computeIdToDimensionIndexMap(compatible);
+        Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
         counter[counter.length - 1] = -1;
         int triesize = 0;
         for (int i = 0; i < trie.length; i++) {
@@ -110,7 +110,7 @@ public class SparseFactor extends Factor {
                     break;
                 AddressCalc.incrementMultiDimensionalCounter(counter, dimensions, dimensions.length - 1);
                 int pos = computeForeignPosition(compatible, counter, foreignIdToIndex);
-                if (compatible.getValues()[pos] != 0) {
+                if (compatible.getValue(pos) != 0) {
                     isZero = false;
                 }
             }
@@ -125,14 +125,6 @@ public class SparseFactor extends Factor {
 
     private int getSparsePosition(int pos) {
         return trie[pos >> SPARSENESS_EXPONENT] + (pos & (SPARSENESS - 1));
-    }
-
-    private Map<Integer, Integer> computeIdToDimensionIndexMap(Factor factor) {
-        Map<Integer, Integer> foreignIds = new HashMap<Integer, Integer>();
-        for (int i = 0; i < factor.getDimensionIDs().length; i++) {
-            foreignIds.put(factor.getDimensionIDs()[i], i);
-        }
-        return foreignIds;
     }
 
     private int computeForeignPosition(Factor compatible, int[] counter, Map<Integer, Integer> foreignIdToIndex) {
@@ -157,11 +149,7 @@ public class SparseFactor extends Factor {
     }
 
     public int computeLength() {
-        int length = 1;
-        for (int i : dimensions) {
-            length *= i;
-        }
-        return length;
+        return MathUtils.multiply(dimensions);
     }
 
     @Override

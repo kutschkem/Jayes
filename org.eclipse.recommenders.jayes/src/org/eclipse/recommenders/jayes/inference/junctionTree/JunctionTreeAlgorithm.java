@@ -20,6 +20,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
@@ -127,7 +129,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
     private void replayFactorInitializations() {
         for (final Pair<Factor, double[]> init : initializations) {
-            init.getFirst().init(init.getSecond());
+            init.getFirst().copyValues(init.getSecond());
         }
     }
 
@@ -319,21 +321,36 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         invokeInitialBeliefUpdate();
         storePotentialValues();
 
+        logSparsenessInfo();
+
+    }
+
+    private void logSparsenessInfo() {
         int denseLength = 0;
         int sparseLength = 0;
+        int nonSparseFactorLength = 0;
         for (Factor f : nodePotentials) {
             if (f instanceof SparseFactor) {
                 SparseFactor _f = (SparseFactor) f;
                 if (_f.isSparse()) {
                     denseLength += _f.computeLength();
                     sparseLength += _f.getValues().length;
+                } else {
+                    nonSparseFactorLength += _f.getValues().length;
                 }
+            } else {
+                nonSparseFactorLength += f.getValues().length;
             }
         }
         sparseLength += denseLength / SparseFactor.SPARSENESS;
-        System.out.println(String.format("dense: %1$d \n sparse: %2$d \n saves: %3$f", denseLength, sparseLength,
-                sparseLength / (double) denseLength));
+        Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
 
+        sparseLength += nonSparseFactorLength;
+        denseLength += nonSparseFactorLength;
+
+        log.log(Level.INFO, "dense factor size: " + denseLength);
+        log.log(Level.INFO, "sparse factor size: " + sparseLength);
+        log.log(Level.INFO, "ratio: " + (sparseLength / (double) denseLength));
     }
 
     private void sparsifyPotentials() {
@@ -522,6 +539,29 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
             initializations.add(new Pair<Factor, double[]>(sep, flyweight.getInstance(sep.getValues().clone())));
         }
 
+        logMemorySavingsFromFlyweightPattern(flyweight);
+
+    }
+
+    private void logMemorySavingsFromFlyweightPattern(DoubleArrayFlyWeight flyweight) {
+        int factorSizes = 0;
+        for (final Factor pot : nodePotentials) {
+            factorSizes += pot.getValues().length;
+        }
+
+        for (final Factor sep : sepSets.values()) {
+            factorSizes += sep.getValues().length;
+        }
+
+        int flyweightsize = 0;
+        for (double[] d : flyweight) {
+            flyweightsize += d.length;
+        }
+
+        Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
+        log.log(Level.INFO, "initializations, orgininal size: " + factorSizes);
+        log.log(Level.INFO, "initializations, flyweight size: " + flyweightsize);
+        log.log(Level.INFO, "ratio: " + (flyweightsize / (double) factorSizes));
     }
 
 }

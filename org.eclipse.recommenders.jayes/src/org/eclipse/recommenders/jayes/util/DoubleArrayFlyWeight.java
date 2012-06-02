@@ -10,7 +10,9 @@
  */
 package org.eclipse.recommenders.jayes.util;
 
-public class DoubleArrayFlyWeight {
+import java.util.Iterator;
+
+public class DoubleArrayFlyWeight implements Iterable<double[]> {
 
     private DeepDoubleArrayHashSet registered = new DeepDoubleArrayHashSet();
 
@@ -24,6 +26,11 @@ public class DoubleArrayFlyWeight {
 
     public int size() {
         return registered.size();
+    }
+
+    @Override
+    public Iterator<double[]> iterator() {
+        return registered.iterator();
     }
 
 }
