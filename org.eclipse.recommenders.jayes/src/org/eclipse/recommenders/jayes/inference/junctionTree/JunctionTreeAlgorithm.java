@@ -335,6 +335,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
                 if (_f.isSparse()) {
                     denseLength += _f.computeLength();
                     sparseLength += _f.getValues().length;
+                    sparseLength += _f.computeLength() / _f.getSPARSENESS();
                 } else {
                     nonSparseFactorLength += _f.getValues().length;
                 }
@@ -342,7 +343,6 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
                 nonSparseFactorLength += f.getValues().length;
             }
         }
-        sparseLength += denseLength / SparseFactor.SPARSENESS;
         Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
 
         sparseLength += nonSparseFactorLength;
@@ -354,10 +354,20 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     private void sparsifyPotentials() {
+        Map<SparseFactor, List<Factor>> potentialMap = new HashMap<SparseFactor, List<Factor>>();
         for (final BayesNode node : net.getNodes()) {
             final Factor nodeHome = nodePotentials[homeClusters[node.getId()]];
             if (nodeHome instanceof SparseFactor) {
-                ((SparseFactor) nodeHome).sparsify(node.getFactor());
+                SparseFactor f = ((SparseFactor) nodeHome);
+                if (!potentialMap.containsKey(f)) {
+                    potentialMap.put(f, new ArrayList<Factor>());
+                }
+                potentialMap.get(f).add(node.getFactor());
+            }
+        }
+        for (Factor f : nodePotentials) {
+            if (potentialMap.containsKey(f)) {
+                ((SparseFactor) f).sparsify(potentialMap.get(f));
             }
         }
 
@@ -468,6 +478,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         prepareSepsetMultiplications(flyWeight);
         prepareQueries(flyWeight);
 
+        logMemorySavingsFromFlyweightPattern(flyWeight);
     }
 
     private void prepareSepsetMultiplications(final IntArrayFlyWeight flyWeight) {
@@ -561,6 +572,27 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
         log.log(Level.INFO, "initializations, orgininal size: " + factorSizes);
         log.log(Level.INFO, "initializations, flyweight size: " + flyweightsize);
+        log.log(Level.INFO, "ratio: " + (flyweightsize / (double) factorSizes));
+    }
+
+    private void logMemorySavingsFromFlyweightPattern(IntArrayFlyWeight flyweight) {
+        int factorSizes = 0;
+        for (int[] intArr : preparedMultiplications.values()) {
+            factorSizes += intArr.length;
+        }
+
+        for (int[] prep : preparedQueries) {
+            factorSizes += prep.length;
+        }
+
+        int flyweightsize = 0;
+        for (int[] d : flyweight) {
+            flyweightsize += d.length;
+        }
+
+        Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
+        log.log(Level.INFO, "prepared ops, orgininal size: " + factorSizes);
+        log.log(Level.INFO, "prepared ops, flyweight size: " + flyweightsize);
         log.log(Level.INFO, "ratio: " + (flyweightsize / (double) factorSizes));
     }
 

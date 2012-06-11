@@ -11,6 +11,8 @@
 package org.eclipse.recommenders.jayes;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
@@ -18,8 +20,8 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class SparseFactor extends Factor {
 
-    private static final int SPARSENESS_EXPONENT = 5;
-    public static final int SPARSENESS = 1 << SPARSENESS_EXPONENT;
+    private int SPARSENESS_EXPONENT;
+    private int SPARSENESS;
     private boolean isSparse = false;
     private int[] trie;
 
@@ -28,11 +30,8 @@ public class SparseFactor extends Factor {
         this.dimensions = Arrays.copyOf(dimensions, dimensions.length);
         selections = new int[dimensions.length];
         resetSelections();
-        // dont set the value array!
         setDimensionIDs(Arrays.copyOf(getDimensionIDs(), dimensions.length));
-        int length = computeLength();
-        trie = new int[length / SPARSENESS + (length % SPARSENESS == 0 ? 0 : 1)];
-        Arrays.fill(trie, Integer.MIN_VALUE);
+        // dont set the value array!
     }
 
     @Override
@@ -76,6 +75,16 @@ public class SparseFactor extends Factor {
     }
 
     private double[] createSparseValueArray() {
+        // need to treat 0-dimensional factors specially
+        if (dimensions.length == 0) {
+            trie = new int[0];
+            return new double[1];
+        }
+
+        if (trie == null) {
+            trie = new int[0];
+        }
+
         int nonSparse = 0;
         for (int i = 0; i < trie.length; i++) {
             if (trie[i] != 0) {
@@ -98,22 +107,27 @@ public class SparseFactor extends Factor {
      * @param compatible
      *            a Factor with compatible dimensions
      */
-    public void sparsify(Factor compatible) {
+    public void sparsify(List<Factor> compatible) {
+        SPARSENESS_EXPONENT = computeOptimalSparsenessExponent(1, compatible);
+        if (SPARSENESS_EXPONENT != -1) {
+            System.out.println("Sparseness: " + SPARSENESS_EXPONENT);
+        }
+        if (SPARSENESS_EXPONENT == -1) {
+            // HACKHACK cue for createSparseValueArray to make factor nonsparse
+            trie = new int[1];
+            trie[0] = 1;
+            return;
+        }
+        SPARSENESS = 1 << SPARSENESS_EXPONENT;
+        int length = computeLength();
+        trie = new int[length / SPARSENESS + (length % SPARSENESS == 0 ? 0 : 1)];
+        Arrays.fill(trie, Integer.MIN_VALUE);
+        Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
         int[] counter = new int[dimensions.length];
-        Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
         counter[counter.length - 1] = -1;
         int triesize = 0;
         for (int i = 0; i < trie.length; i++) {
-            boolean isZero = true;
-            for (int j = 0; j < SPARSENESS; j++) {
-                if (i * SPARSENESS + j >= computeLength())
-                    break;
-                AddressCalc.incrementMultiDimensionalCounter(counter, dimensions, dimensions.length - 1);
-                int pos = computeForeignPosition(compatible, counter, foreignIdToIndex);
-                if (compatible.getValue(pos) != 0) {
-                    isZero = false;
-                }
-            }
+            boolean isZero = checkIfPartitionIsZero(i, counter, compatible, foreignIdToIndex, SPARSENESS);
             if (isZero || trie[i] == 0) {
                 trie[i] = 0;
             } else {
@@ -121,6 +135,70 @@ public class SparseFactor extends Factor {
                 trie[i] = triesize * SPARSENESS;
             }
         }
+        System.out.println("Sparse entries: " + ((trie.length - triesize) * SPARSENESS));
+    }
+
+    private Map<Factor, Map<Integer, Integer>> computeIDToIndexMaps(List<Factor> compatible) {
+        Map<Factor, Map<Integer, Integer>> foreignIdToIndex = new HashMap<Factor, Map<Integer, Integer>>();
+        for (Factor f : compatible) {
+            foreignIdToIndex.put(f, AddressCalc.computeIdToDimensionIndexMap(f));
+        }
+        return foreignIdToIndex;
+    }
+
+    private boolean checkIfPartitionIsZero(int partition, int[] counter, List<Factor> compatible,
+            Map<Factor, Map<Integer, Integer>> foreignIdToIndex, int sparseness) {
+        boolean isZero = true;
+        for (int j = 0; j < sparseness; j++) {
+            if (partition * sparseness + j >= computeLength())
+                break;
+            AddressCalc.incrementMultiDimensionalCounter(counter, dimensions, dimensions.length - 1);
+            boolean isNotZero = true;
+            for (Factor f : compatible) {
+                int pos = computeForeignPosition(f, counter, foreignIdToIndex.get(f));
+                if (f.getValue(pos) == 0) {
+                    isNotZero = false;
+                }
+            }
+            if (isNotZero) {
+                isZero = false;
+            }
+        }
+        return isZero;
+    }
+
+    private int computeOptimalSparsenessExponent(int start, List<Factor> factor) {
+        int savings;
+        int overhead;
+        int newOverhead;
+        int newSavings;
+        newSavings = computeSavings(start, factor);
+        newOverhead = (computeLength() >> start) + (1 << start);
+        do { // greedy strategy
+            savings = newSavings;
+            overhead = newOverhead;
+            start++;
+            newSavings = computeSavings(start, factor);
+            newOverhead = (computeLength() >> start) + (1 << start);
+        } while (overhead - savings > newOverhead - newSavings);
+        if (overhead - savings >= 0)
+            return -1;
+        return start - 1;
+    }
+
+    private int computeSavings(int exponent, List<Factor> compatible) {
+        Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
+        int[] counter = new int[dimensions.length];
+        counter[counter.length - 1] = -1;
+        int length = computeLength();
+        int saving = 0;
+        for (int i = 0; i < length / (1 << exponent); i++) {
+            boolean isZero = checkIfPartitionIsZero(i, counter, compatible, foreignIdToIndex, 1 << exponent);
+            if (isZero) {
+                saving += 1 << exponent;
+            }
+        }
+        return saving;
     }
 
     private int getSparsePosition(int pos) {
@@ -311,6 +389,10 @@ public class SparseFactor extends Factor {
 
     public boolean isSparse() {
         return isSparse;
+    }
+
+    public int getSPARSENESS() {
+        return SPARSENESS;
     }
 
 }
