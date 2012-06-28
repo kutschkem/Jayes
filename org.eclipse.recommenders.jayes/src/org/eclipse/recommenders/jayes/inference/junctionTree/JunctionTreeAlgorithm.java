@@ -335,7 +335,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
                 if (_f.isSparse()) {
                     denseLength += _f.computeLength();
                     sparseLength += _f.getValues().length;
-                    sparseLength += _f.computeLength() / _f.getSPARSENESS();
+                    sparseLength += _f.computeLength() / _f.getSparseness();
                 } else {
                     nonSparseFactorLength += _f.getValues().length;
                 }

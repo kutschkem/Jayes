@@ -105,4 +105,28 @@ public final class ArrayUtils {
         return l.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), array.length));
     }
 
+    public static Integer[] indexArray(Object array) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException("not an array");
+        }
+        int l = Array.getLength(array);
+        Integer[] indices = new Integer[l];
+        for (int i = 0; i < l; i++) {
+            indices[i] = i;
+        }
+        return indices;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T permute(T array, Integer[] permutation) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException("not an array");
+        }
+        T array2 = (T) Array.newInstance(array.getClass().getComponentType(), Array.getLength(array));
+        for (int i = 0; i < Array.getLength(array); i++) {
+            Array.set(array2, i, Array.get(array, permutation[i]));
+        }
+        return array2;
+    }
+
 }

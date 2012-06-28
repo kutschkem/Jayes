@@ -106,4 +106,12 @@ public class MathUtils {
         return r;
     }
 
+    public static double entropy(int positive, int total) {
+        double p = positive / (double) total;
+        if (p == 0 || p == 1) {
+            return 0;
+        }
+        return -(p * Math.log(p) + (1 - p) * Math.log(1 - p));
+    }
+
 }

@@ -278,7 +278,7 @@ public class Factor implements Cloneable {
         return positions;
     }
 
-    private int computeForeignPosition(Factor compatible, int[] counter, Map<Integer, Integer> foreignIdToIndex) {
+    protected int computeForeignPosition(Factor compatible, int[] counter, Map<Integer, Integer> foreignIdToIndex) {
         // special case: zero-dimensional factor
         if (compatible.dimensions.length == 0) {
             return 0;
