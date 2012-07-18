@@ -88,6 +88,10 @@ public class MathUtils {
         return sum;
     }
 
+    /**
+     * 
+     * @return the value that differs most from zero
+     */
     private static double absMax(double[] vector) {
         double result = 0;
         for (double d : vector) {
