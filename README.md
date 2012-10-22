@@ -4,7 +4,7 @@ Jayes is a Bayesian Network Library for Java. It has initially been created as m
 and it's goal is to provide highly efficient Bayesian Networks algorithms to the open souce community.
 In fact, there are already good Bayesian Networks libraries available, but they are either closed-source,
 GPL-licensed or rather inefficient. For certain projects, these aspects hinder the usage of such libraries.
-This is why Jayes was created.
+This is why Jayes was created. 
 
 # Who uses Jayes?
 
