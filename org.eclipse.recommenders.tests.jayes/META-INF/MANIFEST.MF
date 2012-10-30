@@ -8,5 +8,6 @@ Export-Package:
  org.eclipse.recommenders.tests.jayes.LBP,
  org.eclipse.recommenders.tests.jayes.util
 Require-Bundle: org.junit4;bundle-version="4.8.1",
- org.eclipse.recommenders.jayes;bundle-version="0.3.0"
+ org.eclipse.recommenders.jayes;bundle-version="0.3.0",
+ com.google.gson;bundle-version="1.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
