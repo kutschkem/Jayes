@@ -13,16 +13,27 @@ package org.eclipse.recommenders.tests.jayes;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.CharBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
+import org.eclipse.recommenders.jayes.io.XDSLReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.tests.jayes.LBP.LoopyBeliefPropagation;
+import org.eclipse.recommenders.tests.jayes.testgeneration.TestCase;
+import org.eclipse.recommenders.tests.jayes.testgeneration.TestcaseDeserializer;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JunctionTreeTests {
@@ -146,6 +157,34 @@ public class JunctionTreeTests {
 
         for (BayesNode n : net.getNodes())
             assertArrayEquals(compare.getBeliefs(n), inference.getBeliefs(n), 0.01);
+    }
+    
+    @Test
+    @Ignore
+    public void testLargerScaleCorrectness() throws IOException{
+    	BayesNet net = new XDSLReader().read("alarm.xdsl");//FIXME: use recommender model
+    	TestcaseDeserializer deser = new TestcaseDeserializer(net);
+    	Reader rdr = new BufferedReader(new InputStreamReader(new FileInputStream("testcases_alarm.json")));
+    	StringBuffer buf = new StringBuffer();
+    	CharBuffer cbuff = CharBuffer.allocate(1024);
+    	while(rdr.read(cbuff) != -1){
+    		cbuff.flip();
+    		buf.append(cbuff);
+    		cbuff.clear();
+    	}
+    	rdr.close();
+    	
+    	List<TestCase> testcases = deser.deserialize(buf.toString());
+    	
+    	JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
+    	algo.setNetwork(net);
+    	
+    	for(TestCase tc: testcases){
+    		algo.setEvidence(tc.evidence);
+    		for(BayesNode node: net.getNodes()){
+    			assertArrayEquals(tc.beliefs.get(node),algo.getBeliefs(node),0.00001);
+    		}
+    	}
     }
 
 }

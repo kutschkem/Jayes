@@ -1,8 +1,11 @@
 package org.eclipse.recommenders.jayes.io;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,18 +32,22 @@ public class XDSLReader {
     }
 
     public BayesNet read(File biffile) throws IOException {
-        Document doc = obtainDocument(biffile);
-
-        return readFromDocument(doc);
+    	return read(new BufferedInputStream(new FileInputStream(biffile)));
+    }
+    
+    public BayesNet read(InputStream str) throws IOException{
+    	Document doc = obtainDocument(str);
+    	
+    	return readFromDocument(doc);
     }
 
-    private Document obtainDocument(File xdslFile) throws IOException {
+    private Document obtainDocument(InputStream xdslStream) throws IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         // docBuilderFactory.setValidating(true);
         DocumentBuilder docBldr;
         try {
             docBldr = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBldr.parse(xdslFile);
+            Document doc = docBldr.parse(xdslStream);
 
             doc.normalize();
             return doc;

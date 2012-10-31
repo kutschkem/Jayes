@@ -26,6 +26,7 @@ public class TestcaseDeserializer {
 		rdr.beginArray();
 		while(rdr.hasNext()){//single test cases
 			TestCase tc = new TestCase();
+			rdr.beginObject();
 			while(rdr.hasNext()){
 			BayesNode node = net.getNode(rdr.nextName());
 			rdr.beginObject();
@@ -48,6 +49,7 @@ public class TestcaseDeserializer {
 			tc.beliefs.put(node, (double[]) ArrayUtils.toPrimitiveArray(doubles.toArray(new Double[0])));
 			rdr.endObject();
 			}
+			rdr.endObject();
 			result.add(tc);
 		}
 		rdr.endArray();
