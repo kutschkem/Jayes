@@ -10,13 +10,15 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
+import org.eclipse.recommenders.jayes.util.ArrayWrapper;
+import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class Factor implements Cloneable {
 
 	protected int[] dimensions = new int[0];
 	private int[] dimensionIDs = new int[0];
-	protected double[] values = new double[1];
+	protected ArrayWrapper values = new DoubleArrayWrapper(new double[1]);
 	protected int[] selections = new int[0];
 
 	protected Cut cut = new Cut(this);
@@ -24,21 +26,21 @@ public class Factor implements Cloneable {
 
 	private boolean isLogScale = false;
 
-	public void setValues(double[] values) {
+	public void setValues(ArrayWrapper values) {
 		this.values = values;
-		assert (MathUtils.multiply(dimensions) == values.length);
+		assert (MathUtils.multiply(dimensions) == values.length());
 	}
 
-	public double[] getValues() {
+	public ArrayWrapper getValues() {
 		return values;
 	}
 
 	public double getValue(int i) {
-		return values[i];
+		return values.getDouble(i);
 	}
 
 	public void fill(double d) {
-		Arrays.fill(values, d);
+		values.fill(d);
 	}
 
 	public void setDimensions(int[] dimensions) {
@@ -46,7 +48,7 @@ public class Factor implements Cloneable {
 		selections = new int[dimensions.length];
 		resetSelections();
 		int length = MathUtils.multiply(dimensions);
-		if (length > values.length) values = new double[length];
+		if (length > values.length()) values.set(new double[length]);
 		dimensionIDs = Arrays.copyOf(dimensionIDs, dimensions.length);
 	}
 
@@ -121,9 +123,8 @@ public class Factor implements Cloneable {
 	private void sumToBucket(Cut cut, int offset, int divisor, double[] result) {
 		if (cut.getSubCut() == null) {
 			int last = cut.getIndex() + offset + cut.getLength();
-			double[] val = values;
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				result[(i / divisor) % result.length] += val[i];
+				result[(i / divisor) % result.length] += values.getDouble(i);
 			}
 		} else {
 			Cut c = cut.getSubCut();
@@ -144,7 +145,7 @@ public class Factor implements Cloneable {
 		multiplyPrepared(compatible.values, positions);
 	}
 
-	public void multiplyPrepared(double[] compatibleValues, int[] positions) {
+	public void multiplyPrepared(ArrayWrapper compatibleValues, int[] positions) {
 		validateCut();
 		if (!isLogScale)
 			multiplyPrepared(cut, 0, compatibleValues, positions);
@@ -153,12 +154,12 @@ public class Factor implements Cloneable {
 	}
 
 	private void multiplyPrepared(Cut cut, int offset,
-			double[] compatibleValues, int[] positions) {
+			ArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length, cut.getLength() + cut.getIndex()
+			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				values[i] *= compatibleValues[positions[i]];
+				values.mulAssign(i, compatibleValues, positions[i]);
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
@@ -167,11 +168,11 @@ public class Factor implements Cloneable {
 		}
 	}
 
-	public void sumPrepared(double[] compatibleFactorValues,
+	public void sumPrepared(ArrayWrapper compatibleFactorValues,
 			int[] preparedOperation) {
 		validateCut();
 
-		Arrays.fill(compatibleFactorValues, 0);
+		compatibleFactorValues.fill(0);
 
 		if (!isLogScale)
 			sumPrepared(cut, 0, compatibleFactorValues, preparedOperation);
@@ -180,37 +181,37 @@ public class Factor implements Cloneable {
 
 	}
 
-	private void sumPrepared(Cut cut, int offset, double[] compatibleValues,
+	private void sumPrepared(Cut cut, int offset, ArrayWrapper compatibleFactorValues,
 			int[] positions) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length, cut.getLength() + cut.getIndex()
+			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				compatibleValues[positions[i]] += values[i];
+				compatibleFactorValues.addAssign(positions[i], values, i);
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				sumPrepared(c, offset + i, compatibleValues, positions);
+				sumPrepared(c, offset + i, compatibleFactorValues, positions);
 			}
 		}
 	}
 
-	private void sumPreparedLog(double[] compatible, int[] positions) {
+	private void sumPreparedLog(ArrayWrapper compatibleFactorValues, int[] positions) {
 		double max = findMax(cut, 0, 0);
-		sumPreparedLog(cut, 0, compatible, positions, max);
-		for (int i = 0; i < compatible.length; i++) {
-			compatible[i] = Math.log(compatible[i]) + max;
+		sumPreparedLog(cut, 0, compatibleFactorValues, positions, max);
+		for (int i = 0; i < compatibleFactorValues.length(); i++) {
+			compatibleFactorValues.assign(i, Math.log(compatibleFactorValues.getDouble(i)) + max);
 		}
 	}
 
 	private double findMax(Cut cut, int offset, double max) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length, cut.getLength() + cut.getIndex()
+			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				if (values[i] != Double.NEGATIVE_INFINITY
-						&& Math.abs(values[i]) > Math.abs(max)) {
-					max = values[i];
+				if (values.getDouble(i) != Double.NEGATIVE_INFINITY
+						&& Math.abs(values.getDouble(i)) > Math.abs(max)) {
+					max = values.getDouble(i);
 				}
 			}
 		} else {
@@ -226,28 +227,28 @@ public class Factor implements Cloneable {
 		return max;
 	}
 
-	private void sumPreparedLog(Cut cut, int offset, double[] compatibleValues,
+	private void sumPreparedLog(Cut cut, int offset, ArrayWrapper compatibleFactorValues,
 			int[] positions, double max) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length, cut.getLength() + cut.getIndex()
+			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				compatibleValues[positions[i]] += Math.exp(values[i] - max);
+				compatibleFactorValues.addAssign(positions[i], Math.exp(values.getDouble(i) - max));
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				sumPreparedLog(c, offset + i, compatibleValues, positions, max);
+				sumPreparedLog(c, offset + i, compatibleFactorValues, positions, max);
 			}
 		}
 	}
 
 	private void multiplyPreparedLog(Cut cut, int offset,
-			double[] compatibleValues, int[] positions) {
+			ArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length, cut.getLength() + cut.getIndex()
+			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				values[i] += compatibleValues[positions[i]];
+				values.addAssign(i, compatibleValues, positions[i]);
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
@@ -273,11 +274,11 @@ public class Factor implements Cloneable {
 	 * @return
 	 */
 	public int[] prepareMultiplication(Factor compatible) {
-		int[] positions = new int[values.length];
+		int[] positions = new int[values.length()];
 		int[] counter = new int[dimensions.length];
 		Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
 		counter[counter.length - 1] = -1;
-		for (int i = 0; i < values.length; i++) {
+		for (int i = 0; i < values.length(); i++) {
 			AddressCalc.incrementMultiDimensionalCounter(counter, dimensions,
 					dimensions.length - 1);
 			positions[i] = computeForeignPosition(compatible, counter,
@@ -328,8 +329,8 @@ public class Factor implements Cloneable {
 
 	public void multiplyCompatibleToLog(Factor factor) {
 		int[] positions = prepareMultiplication(factor);
-		for (int i = 0; i < values.length; i++) {
-			values[i] += Math.log(factor.values[positions[i]]);
+		for (int i = 0; i < values.length(); i++) {
+			values.addAssign(i, Math.log(factor.values.getDouble(positions[i])));
 		}
 
 	}

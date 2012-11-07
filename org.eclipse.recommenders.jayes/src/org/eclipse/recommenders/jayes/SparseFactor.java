@@ -14,6 +14,8 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.jayes.util.ArrayWrapper;
+import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class SparseFactor extends Factor {
@@ -36,26 +38,26 @@ public class SparseFactor extends Factor {
 
 	@Override
 	public void copyValues(double[] other) {
-		System.arraycopy(other, 0, getValues(), 0, other.length);
+		values.arrayCopy(new DoubleArrayWrapper(other), 0, 0, other.length);
 	}
 
 	public void multiplyCompatible(Factor compatible) {
-		if (getValues().length == 1) {
-			setValues(createSparseValueArray());
+		if (values.length() == 1) {
+			createSparseValueArray();
 			fill(1);
 			for (int i = 0; i < getSparseness(); i++) {
-				values[i] = 0;
+				values.assign(i, 0);
 			}
 		}
 		int[] positions = prepareMultiplication(compatible);
-		multiplyPrepared(compatible.getValues(), positions);
+		multiplyPrepared(compatible.values, positions);
 	}
 
 	@Override
 	public int[] prepareMultiplication(Factor compatible) {
 		if (!isSparse) return super.prepareMultiplication(compatible);
 
-		int[] positions = new int[getValues().length];
+		int[] positions = new int[values.length()];
 		int[] counter = new int[dimensions.length];
 		Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
 		counter[counter.length - 1] = -1;
@@ -74,11 +76,12 @@ public class SparseFactor extends Factor {
 		return positions;
 	}
 
-	private double[] createSparseValueArray() {
+	private void createSparseValueArray() {
 		// need to treat 0-dimensional factors specially
 		if (dimensions.length == 0) {
 			trie = new int[0];
-			return new double[1];
+			values.newArray(1);
+			return;
 		}
 
 		if (trie == null) {
@@ -93,10 +96,11 @@ public class SparseFactor extends Factor {
 		}
 		if (nonSparse == trie.length) {
 			trie = new int[0];
-			return new double[computeLength()];
+			values.newArray(computeLength());
+			return;
 		} else {
 			isSparse = true;
-			return new double[(nonSparse + 1) * getSparseness()];
+			values.newArray((nonSparse + 1) * getSparseness());
 		}
 	}
 
@@ -268,7 +272,7 @@ public class SparseFactor extends Factor {
 			start++;
 			newSavings = computeSavings(start, factor);
 			newOverhead = (computeLength() >> start) + (1 << start);
-		} while (overhead - savings > newOverhead - newSavings);
+		} while (overhead - savings > newOverhead - newSavings); //TODO take into account size of int vs double
 		if (overhead - savings >= 0) return -1;
 		return start - 1;
 	}
@@ -304,7 +308,7 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void multiplyPrepared(double[] compatibleValues, int[] positions) {
+	public void multiplyPrepared(ArrayWrapper compatibleValues, int[] positions) {
 		if (!isSparse) {
 			super.multiplyPrepared(compatibleValues, positions);
 			return;
@@ -317,13 +321,13 @@ public class SparseFactor extends Factor {
 	}
 
 	private void multiplyPrepared(Cut cut, int offset,
-			double[] compatibleValues, int[] positions) {
+			ArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
 					cut.getLength() + cut.getIndex() + offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
 				int j = getSparsePosition(i);
-				values[j] *= compatibleValues[positions[j]];
+				values.mulAssign(j, compatibleValues, positions[j]);
 			}
 		} else {
 			Cut c = cut.getSubCut();
@@ -334,13 +338,13 @@ public class SparseFactor extends Factor {
 	}
 
 	private void multiplyPreparedLog(Cut cut, int offset,
-			double[] compatibleValues, int[] positions) {
+			ArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
 					cut.getLength() + cut.getIndex() + offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
 				int j = getSparsePosition(i);
-				values[j] += compatibleValues[positions[j]];
+				values.addAssign(j, compatibleValues, positions[j]);
 			}
 		} else {
 			Cut c = cut.getSubCut();
@@ -351,7 +355,7 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void sumPrepared(double[] compatibleFactorValues,
+	public void sumPrepared(ArrayWrapper compatibleFactorValues,
 			int[] preparedOperation) {
 		if (!isSparse) {
 			super.sumPrepared(compatibleFactorValues, preparedOperation);
@@ -359,7 +363,7 @@ public class SparseFactor extends Factor {
 		}
 		validateCut();
 
-		Arrays.fill(compatibleFactorValues, 0);
+		compatibleFactorValues.fill(0);
 
 		if (!isLogScale())
 			sumPrepared(cut, 0, compatibleFactorValues, preparedOperation);
@@ -368,14 +372,14 @@ public class SparseFactor extends Factor {
 
 	}
 
-	private void sumPrepared(Cut cut, int offset, double[] compatibleValues,
+	private void sumPrepared(Cut cut, int offset, ArrayWrapper compatibleValues,
 			int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
 					cut.getLength() + cut.getIndex() + offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
 				int j = getSparsePosition(i);
-				compatibleValues[positions[j]] += values[j];
+				compatibleValues.addAssign(positions[j], values, j);
 			}
 		} else {
 			Cut c = cut.getSubCut();
@@ -385,11 +389,11 @@ public class SparseFactor extends Factor {
 		}
 	}
 
-	private void sumPreparedLog(double[] compatible, int[] positions) {
+	private void sumPreparedLog(ArrayWrapper compatible, int[] positions) {
 		double max = findMax(cut, 0, 0);
 		sumPreparedLog(cut, 0, compatible, positions, max);
-		for (int i = 0; i < compatible.length; i++) {
-			compatible[i] = Math.log(compatible[i]) + max;
+		for (int i = 0; i < compatible.length(); i++) {
+			compatible.assign(i, Math.log(compatible.getDouble(i)) + max);
 		}
 	}
 
@@ -399,9 +403,9 @@ public class SparseFactor extends Factor {
 					cut.getLength() + cut.getIndex() + offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
 				int j = getSparsePosition(i);
-				if (values[j] != Double.NEGATIVE_INFINITY
-						&& Math.abs(values[j]) > Math.abs(max)) {
-					max = values[j];
+				if (values.getDouble(j) != Double.NEGATIVE_INFINITY
+						&& Math.abs(values.getDouble(j)) > Math.abs(max)) {
+					max = values.getDouble(j);
 				}
 			}
 		} else {
@@ -417,14 +421,14 @@ public class SparseFactor extends Factor {
 		return max;
 	}
 
-	private void sumPreparedLog(Cut cut, int offset, double[] compatibleValues,
+	private void sumPreparedLog(Cut cut, int offset, ArrayWrapper compatibleValues,
 			int[] positions, double max) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
 					cut.getLength() + cut.getIndex() + offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
 				int j = getSparsePosition(i);
-				compatibleValues[positions[j]] += Math.exp(values[j] - max);
+				compatibleValues.addAssign(positions[j], Math.exp(values.getDouble(j) - max));
 			}
 		} else {
 			Cut c = cut.getSubCut();
@@ -436,31 +440,31 @@ public class SparseFactor extends Factor {
 
 	@Override
 	public void multiplyCompatibleToLog(Factor compatible) {
-		if (getValues().length == 1) {
-			setValues(createSparseValueArray());
+		if (values.length() == 1) {
+			createSparseValueArray();
 			fill(1);
 		}
 		int[] positions = prepareMultiplication(compatible);
-		for (int i = 0; i < getValues().length; i++) {
-			getValues()[i] += Math.log(compatible.getValues()[positions[i]]);
+		for (int i = 0; i < values.length(); i++) {
+			values.addAssign(i, Math.log(compatible.values.getDouble(positions[i])));
 		}
 	}
 
 	@Override
 	public void fill(double d) {
-		if (getValues().length == 1) {
-			setValues(createSparseValueArray());
+		if (values.length() == 1) {
+			createSparseValueArray();
 		}
 		super.fill(d);
 		if (isSparse) for (int i = 0; i < getSparseness(); i++) {
-			values[i] = isLogScale() ? Double.NEGATIVE_INFINITY : 0;
+			values.assign(i, isLogScale() ? Double.NEGATIVE_INFINITY : 0);
 		}
 	}
 
 	@Override
 	public double getValue(int i) {
-		if (!isSparse) return values[i];
-		return values[getSparsePosition(i)];
+		if (!isSparse) return values.getDouble(i);
+		return values.getDouble(getSparsePosition(i));
 	}
 
 	public boolean isSparse() {

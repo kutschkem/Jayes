@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.recommenders.jayes.Factor;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class FactorTests {
         Factor factor = new Factor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2 });
-        factor.setValues(new double[] { 0.5, 0.5, 1.0, 0.0 });
+        factor.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 1.0, 0.0 }));
         double[] prob = MathUtils.normalize(factor.sum(-1));
         assertArrayEquals(prob, new double[] { 0.75, 0.25 }, 0.00001);
     }
@@ -35,8 +36,8 @@ public class FactorTests {
         Factor factor = new Factor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2, 2 });
-        factor.setValues(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
-                { { 0.4, 0.6 }, { 0.3, 0.7 } } }));
+        factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
+                { { 0.4, 0.6 }, { 0.3, 0.7 } } })));
         factor.select(0, 0);
         double[] prob = MathUtils.normalize(factor.sum(-1));
         assertArrayEquals(prob, new double[] { 0.75, 0.25 }, 0.00001);
@@ -52,8 +53,8 @@ public class FactorTests {
         Factor factor = new Factor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2, 2 });
-        factor.setValues(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
-                { { 0.4, 0.6 }, { 0.3, 0.7 } } }));
+        factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
+                { { 0.4, 0.6 }, { 0.3, 0.7 } } })));
         factor.select(2, 0);
         double[] prob = MathUtils.normalize(factor.sum(1));
         assertArrayEquals(prob, new double[] { 0.9 / 2.2, 1.3 / 2.2 }, 0.00001);
@@ -64,8 +65,8 @@ public class FactorTests {
         Factor factor = new Factor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2, 2 });
-        factor.setValues(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
-                { { 0.4, 0.6 }, { 0.3, 0.7 } } }));
+        factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
+                { { 0.4, 0.6 }, { 0.3, 0.7 } } })));
         factor.select(0, 1);
         factor.select(2, 1);
         double[] prob = MathUtils.normalize(factor.sum(1));
@@ -77,15 +78,15 @@ public class FactorTests {
         Factor f1 = new Factor();
         f1.setDimensions(new int[] { 2, 2, 2 });
         f1.setDimensionIDs(new int[] { 0, 1, 2 });
-        f1.setValues(new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 });
+        f1.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 }));
 
         Factor f2 = new Factor();
         f2.setDimensions(new int[] { 2, 2 });
         f2.setDimensionIDs(new int[] { 2, 0 });
-        f2.setValues(new double[] { 1.0, 0.0, 0.0, 1.0 });
+        f2.setValues(new DoubleArrayWrapper(new double[] { 1.0, 0.0, 0.0, 1.0 }));
 
         f1.multiplyCompatible(f2);
-        assertArrayEquals(f1.getValues(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, 0.0001);
+        assertArrayEquals(f1.getValues().getDouble(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, 0.0001);
     }
 
     @Test

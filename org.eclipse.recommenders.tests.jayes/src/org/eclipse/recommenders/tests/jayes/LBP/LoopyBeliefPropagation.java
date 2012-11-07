@@ -24,6 +24,7 @@ import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.Factor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
+import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
 
@@ -281,17 +282,17 @@ public class LoopyBeliefPropagation extends AbstractInferer {
             e.dirty = false;
             final BayesNode n = net.getNode(e.target);
             final Factor f = n.getFactor().clone();
-            MathUtils.log(f.getValues());
+            MathUtils.log(f.getValues().getDouble());//FIXME this is broken
             f.setLogScale(true);
             selectEvidence(f);
             for (final Edge e2 : transponedGraph.get(index)) {
                 if (e2 != e) {
-                    f.multiplyPrepared(e2.messageXF, preparedOps.get(e2));
+                    f.multiplyPrepared(new DoubleArrayWrapper(e2.messageXF), preparedOps.get(e2));//TODO
                 }
             }
 
             double[] result = new double[net.getNode(e.source).getOutcomeCount()];
-            f.sumPrepared(result, preparedOps.get(e));
+            f.sumPrepared(new DoubleArrayWrapper(result), preparedOps.get(e));
 
             result = MathUtils.normalizeLog(result);
 

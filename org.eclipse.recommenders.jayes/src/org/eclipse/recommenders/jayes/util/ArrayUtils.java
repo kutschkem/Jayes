@@ -137,5 +137,21 @@ public final class ArrayUtils {
 		}
 		return array2;
 	}
+	
+	public static float[] toFloatArray(double[] array){
+		float[] result = new float[array.length];
+		for(int i = 0; i< array.length; i++){
+			result[i] = (float) array[i];
+		}
+		return result;
+	}
+	
+	public static double[] toDoubleArray(float[] array){
+		double[] result = new double[array.length];
+		for(int i = 0; i < array.length; i++){
+			result[i] = (double)array[i];
+		}
+		return result;
+	}
 
 }

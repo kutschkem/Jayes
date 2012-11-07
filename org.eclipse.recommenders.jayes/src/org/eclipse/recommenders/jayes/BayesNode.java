@@ -13,6 +13,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.BidirectionalMap;
+import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class BayesNode {
@@ -31,7 +32,7 @@ public class BayesNode {
 	}
 
 	public void setProbabilities(final double[] probabilities) {
-		factor.setValues(probabilities);
+		factor.setValues(new DoubleArrayWrapper(probabilities));
 	}
 
 	public List<BayesNode> getChildren() {

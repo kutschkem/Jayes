@@ -25,8 +25,10 @@ import org.eclipse.recommenders.jayes.Factor;
 import org.eclipse.recommenders.jayes.SparseFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.jayes.util.ArrayWrapper;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.jayes.util.DoubleArrayFlyWeight;
+import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
 import org.eclipse.recommenders.jayes.util.IntArrayFlyWeight;
@@ -93,7 +95,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private void validateBelief(final int nodeId) {
 		final Factor f = queryFactors[nodeId];
-		f.sumPrepared(beliefs[nodeId], preparedQueries[nodeId]);
+		f.sumPrepared(new DoubleArrayWrapper(beliefs[nodeId]), preparedQueries[nodeId]);//TODO change beliefs to ArrayWrappers
 		if (f.isLogScale()) {
 			MathUtils.exp(beliefs[nodeId]);
 		}
@@ -141,6 +143,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		for (BayesNode n : evidence.keySet()) {
 			incorporateEvidence(n);
 		}
+		
 	}
 
 	private void incorporateEvidence(final BayesNode node) {
@@ -267,27 +270,27 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			return;
 		}
 
-		final double[] newSepValues = sepSet.getValues();
-		System.arraycopy(newSepValues, 0, scratchpad, 0, newSepValues.length);
+		final ArrayWrapper newSepValues = sepSet.getValues();
+		System.arraycopy(newSepValues.getDouble(), 0, scratchpad, 0, newSepValues.length());
 
 		final int[] preparedOp = preparedMultiplications.get(sepSetEdge.getBackEdge());
 		nodePotentials[sepSetEdge.getFirst()].sumPrepared(newSepValues,
 				preparedOp);
 
 		if (isOnlyFirstLogScale(sepSetEdge)) {
-			MathUtils.exp(newSepValues);
+			MathUtils.exp(newSepValues.getDouble()); //FIXME broken for float
 		}
 		if (areBothEndsLogScale(sepSetEdge)) {
-			MathUtils.secureSubtract(newSepValues, scratchpad, scratchpad);
+			MathUtils.secureSubtract(newSepValues.getDouble(), scratchpad, scratchpad); //FIXME
 		} else {
-			MathUtils.secureDivide(newSepValues, scratchpad, scratchpad);
+			MathUtils.secureDivide(newSepValues.getDouble(), scratchpad, scratchpad); //FIXME
 		}
 
 		if (isOnlySecondLogScale(sepSetEdge)) {
 			MathUtils.log(scratchpad);
 		}
-
-		nodePotentials[sepSetEdge.getSecond()].multiplyPrepared(scratchpad,
+//TODO scratchpad -> ArrayWrapper
+		nodePotentials[sepSetEdge.getSecond()].multiplyPrepared(new DoubleArrayWrapper(scratchpad),
 				preparedMultiplications.get(sepSetEdge));
 
 	}
@@ -344,13 +347,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 				SparseFactor _f = (SparseFactor) f;
 				if (_f.isSparse()) {
 					denseLength += _f.computeLength();
-					sparseLength += _f.getValues().length;
+					sparseLength += _f.getValues().length();
 					sparseLength += _f.computeLength() / _f.getSparseness();
 				} else {
-					nonSparseFactorLength += _f.getValues().length;
+					nonSparseFactorLength += _f.getValues().length();
 				}
 			} else {
-				nonSparseFactorLength += f.getValues().length;
+				nonSparseFactorLength += f.getValues().length();
 			}
 		}
 		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
@@ -386,7 +389,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	private void prepareScratch() {
 		int maxSize = 0;
 		for (Factor sepSet : sepSets.values()) {
-			maxSize = Math.max(maxSize, sepSet.getValues().length);
+			maxSize = Math.max(maxSize, sepSet.getValues().length());
 		}
 		scratchpad = new double[maxSize];
 
@@ -465,7 +468,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		for (final BayesNode n : net.getNodes()) {
 			for (final Integer f : concernedClusters[n.getId()]) {
 				final boolean isFirstOrSmallerTable = queryFactors[n.getId()] == null
-						|| queryFactors[n.getId()].getValues().length > nodePotentials[f].getValues().length;
+						|| queryFactors[n.getId()].getValues().length() > nodePotentials[f].getValues().length();
 				if (isFirstOrSmallerTable) {
 					queryFactors[n.getId()] = nodePotentials[f];
 				}
@@ -556,12 +559,12 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		DoubleArrayFlyWeight flyweight = new DoubleArrayFlyWeight();
 		for (final Factor pot : nodePotentials) {
 			initializations.add(new Pair<Factor, double[]>(pot,
-					flyweight.getInstance(pot.getValues().clone())));
+					flyweight.getInstance(pot.getValues().getDouble().clone()))); //FIXME broken, but this will get easier with objects
 		}
 
 		for (final Factor sep : sepSets.values()) {
 			initializations.add(new Pair<Factor, double[]>(sep,
-					flyweight.getInstance(sep.getValues().clone())));
+					flyweight.getInstance(sep.getValues().getDouble().clone())));
 		}
 
 		logMemorySavingsFromFlyweightPattern(flyweight);
@@ -572,11 +575,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			DoubleArrayFlyWeight flyweight) {
 		int factorSizes = 0;
 		for (final Factor pot : nodePotentials) {
-			factorSizes += pot.getValues().length;
+			factorSizes += pot.getValues().length();
 		}
 
 		for (final Factor sep : sepSets.values()) {
-			factorSizes += sep.getValues().length;
+			factorSizes += sep.getValues().length();
 		}
 
 		int flyweightsize = 0;
@@ -585,7 +588,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 
 		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
-		log.log(Level.INFO, "initializations, orgininal size: " + factorSizes);
+		log.log(Level.INFO, "initializations, original size: " + factorSizes);
 		log.log(Level.INFO, "initializations, flyweight size: " + flyweightsize);
 		log.log(Level.INFO, "ratio: " + (flyweightsize / (double) factorSizes));
 	}
@@ -607,15 +610,15 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 
 		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
-		log.log(Level.INFO, "prepared ops, orgininal size: " + factorSizes);
+		log.log(Level.INFO, "prepared ops, original size: " + factorSizes);
 		log.log(Level.INFO, "prepared ops, flyweight size: " + flyweightsize);
-		log.log(Level.INFO, "ratio: " + (flyweightsize / (double) factorSizes));
+		log.log(Level.INFO, "prepared ops, ratio flyw./orig.: " + (flyweightsize / (double) factorSizes));
 	}
 
 	private void logCompleteMemoryInfo() {
 		long size = 0; // size in bytes
 		for (Factor f : nodePotentials) {
-			size += f.getValues().length * 8;
+			size += f.getValues().length() * 8;
 			size += f.getDimensions().length * 4;
 			size += f.getDimensionIDs().length * 4;
 			if (f instanceof SparseFactor) {
@@ -626,7 +629,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			}
 		}
 		for (Factor f : sepSets.values()) {
-			size += f.getValues().length * 8;
+			size += f.getValues().length() * 8;
 			size += f.getDimensions().length * 4;
 			size += f.getDimensionIDs().length * 4;
 		}
