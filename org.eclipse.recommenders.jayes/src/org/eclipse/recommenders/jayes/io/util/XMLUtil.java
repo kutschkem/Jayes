@@ -61,5 +61,9 @@ public class XMLUtil {
 
         return String.format("<%1$s %2$s/>", tagname, attributeBuilder.toString());
     }
+    
+    public static String clean(String text){
+    	return text.replaceAll("[<>]", "_");
+    }
 
 }

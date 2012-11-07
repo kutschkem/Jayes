@@ -70,7 +70,7 @@ public class XMLBIFWriter {
                 bldr.append(XMLUtil.surround(parent.getName(), "GIVEN"));
             }
             bldr.append("\n\t<TABLE>");
-            for (double d : node.getFactor().getValues()) {
+            for (double d : node.getFactor().getValues().getDouble()) {
                 bldr.append(d);
                 bldr.append(" ");
             }
@@ -88,7 +88,7 @@ public class XMLBIFWriter {
             bldr.append(XMLUtil.surround(node.getName(), "NAME"));
             bldr.append("\n");
             for (String outcome : node.getOutcomes()) {
-                bldr.append(XMLUtil.surround(outcome, "OUTCOME"));
+                bldr.append(XMLUtil.surround(XMLUtil.clean(outcome), "OUTCOME"));
                 bldr.append("\n");
             }
             bldr.append("</VARIABLE>\n\n");

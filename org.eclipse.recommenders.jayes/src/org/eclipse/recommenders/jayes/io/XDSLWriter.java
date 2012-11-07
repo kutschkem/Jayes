@@ -43,7 +43,7 @@ public class XDSLWriter {
         StringBuilder bldr = new StringBuilder();
 
         for (String outcome : node.getOutcomes()) {
-            bldr.append(XMLUtil.emptyTag("state", "id", outcome));
+            bldr.append(XMLUtil.emptyTag("state", "id", XMLUtil.clean(outcome)));
             bldr.append("\n");
         }
 
@@ -65,7 +65,7 @@ public class XDSLWriter {
     private String encodeProbabilities(BayesNode node) {
         StringBuilder bldr = new StringBuilder();
 
-        for (double d : node.getFactor().getValues()) {
+        for (double d : node.getFactor().getValues().getDouble()) {
             bldr.append(d);
             bldr.append(" ");
         }
