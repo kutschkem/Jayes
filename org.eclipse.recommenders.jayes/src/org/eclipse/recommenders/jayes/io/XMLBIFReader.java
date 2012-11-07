@@ -10,9 +10,12 @@
  */
 package org.eclipse.recommenders.jayes.io;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,12 +50,12 @@ public class XMLBIFReader {
     }
 
     public BayesNet read(File biffile) throws ParserConfigurationException, SAXException, IOException {
-        Document doc = obtainDocument(biffile);
+        Document doc = obtainDocument(new BufferedInputStream(new FileInputStream(biffile)));
 
         return readFromDocument(doc);
     }
 
-    private Document obtainDocument(File biffile) throws ParserConfigurationException, SAXException, IOException {
+    private Document obtainDocument(InputStream biffile) throws ParserConfigurationException, SAXException, IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setValidating(true);
         DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
@@ -137,5 +140,10 @@ public class XMLBIFReader {
 
         bNode.setProbabilities((double[]) ArrayUtils.toPrimitiveArray(probabilities.toArray(new Double[] {})));
     }
+
+	public BayesNet read(InputStream systemResourceAsStream) throws ParserConfigurationException, SAXException, IOException {
+		Document doc = obtainDocument(systemResourceAsStream);
+		return readFromDocument(doc);
+	}
 
 }

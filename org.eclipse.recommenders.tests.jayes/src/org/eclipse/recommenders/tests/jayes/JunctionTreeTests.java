@@ -22,17 +22,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.io.XDSLReader;
+import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.tests.jayes.LBP.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestCase;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestcaseDeserializer;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class JunctionTreeTests {
 
@@ -158,11 +162,11 @@ public class JunctionTreeTests {
     }
     
     @Test
-    public void testLargerScaleCorrectness() throws IOException{
+    public void testLargerScaleCorrectness() throws IOException, ParserConfigurationException, SAXException{
     	getClass().getClassLoader();
-		BayesNet net = new XDSLReader().read(ClassLoader.getSystemResourceAsStream("Lorg.eclipse.swt.widgets.Button.xdsl"));//FIXME: use recommender model
+		BayesNet net = new XMLBIFReader().read(ClassLoader.getSystemResourceAsStream("JPanel.xml"));
     	TestcaseDeserializer deser = new TestcaseDeserializer(net);
-    	Reader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("testcases_Button.json")));
+    	Reader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("testcases_JPanel.json")));
     	StringBuffer buf = new StringBuffer();
     	CharBuffer cbuff = CharBuffer.allocate(1024);
     	while(rdr.read(cbuff) != -1){
