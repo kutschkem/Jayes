@@ -1,0 +1,1396 @@
+<?xml version="1.0"?>
+<!--
+	 Bayesian Network in XMLBIF v0.3 
+-->
+<!-- DTD for the XMLBIF 0.3 format -->
+<!DOCTYPE BIF [
+	<!ELEMENT BIF ( NETWORK )*>
+		<!ATTLIST BIF VERSION CDATA #REQUIRED>
+	<!ELEMENT NETWORK ( NAME, ( PROPERTY | VARIABLE | DEFINITION )* )>
+	<!ELEMENT NAME (#PCDATA)>
+	<!ELEMENT VARIABLE ( NAME, ( OUTCOME |  PROPERTY )* ) >
+		<!ATTLIST VARIABLE TYPE (nature|decision|utility) "nature">
+	<!ELEMENT OUTCOME (#PCDATA)>
+	<!ELEMENT DEFINITION ( FOR | GIVEN | TABLE | PROPERTY )* >
+	<!ELEMENT FOR (#PCDATA)>
+	<!ELEMENT GIVEN (#PCDATA)>
+	<!ELEMENT TABLE (#PCDATA)>
+	<!ELEMENT PROPERTY (#PCDATA)>
+]>
+<BIF VERSION="0.3">
+<NETWORK>
+<NAME>Bayesian Network</NAME>
+
+<!-- Variables -->
+<VARIABLE>
+<NAME>
+	patterns
+</NAME>
+<OUTCOME>
+	VL-7
+</OUTCOME>
+<OUTCOME>
+	VL-9
+</OUTCOME>
+<OUTCOME>
+	VL-13
+</OUTCOME>
+<OUTCOME>
+	VL-38
+</OUTCOME>
+<OUTCOME>
+	VL-40
+</OUTCOME>
+<OUTCOME>
+	VL-42
+</OUTCOME>
+<OUTCOME>
+	VL-44
+</OUTCOME>
+<OUTCOME>
+	VL-6
+</OUTCOME>
+<OUTCOME>
+	VL-10
+</OUTCOME>
+<OUTCOME>
+	VL-12
+</OUTCOME>
+<OUTCOME>
+	VL-14
+</OUTCOME>
+<OUTCOME>
+	VL-17
+</OUTCOME>
+<OUTCOME>
+	VL-19
+</OUTCOME>
+<OUTCOME>
+	VL-20
+</OUTCOME>
+<OUTCOME>
+	VL-23
+</OUTCOME>
+<OUTCOME>
+	VL-24
+</OUTCOME>
+<OUTCOME>
+	VL-27
+</OUTCOME>
+<OUTCOME>
+	VL-28
+</OUTCOME>
+<OUTCOME>
+	VL-30
+</OUTCOME>
+<OUTCOME>
+	VL-31
+</OUTCOME>
+<OUTCOME>
+	VL-34
+</OUTCOME>
+<OUTCOME>
+	VL-36
+</OUTCOME>
+<OUTCOME>
+	VL-39
+</OUTCOME>
+<OUTCOME>
+	VL-41
+</OUTCOME>
+<OUTCOME>
+	VL-11
+</OUTCOME>
+<OUTCOME>
+	VL-22
+</OUTCOME>
+<OUTCOME>
+	VL-2
+</OUTCOME>
+<OUTCOME>
+	VL-16
+</OUTCOME>
+<OUTCOME>
+	VL-18
+</OUTCOME>
+<OUTCOME>
+	VL-26
+</OUTCOME>
+<OUTCOME>
+	VL-29
+</OUTCOME>
+<OUTCOME>
+	VL-37
+</OUTCOME>
+<OUTCOME>
+	VL-43
+</OUTCOME>
+<OUTCOME>
+	VL-4
+</OUTCOME>
+<OUTCOME>
+	VL-5
+</OUTCOME>
+<OUTCOME>
+	VL-0
+</OUTCOME>
+<OUTCOME>
+	VL-32
+</OUTCOME>
+<OUTCOME>
+	VL-1
+</OUTCOME>
+<OUTCOME>
+	VL-15
+</OUTCOME>
+<OUTCOME>
+	VL-21
+</OUTCOME>
+<OUTCOME>
+	VL-25
+</OUTCOME>
+<OUTCOME>
+	VL-35
+</OUTCOME>
+<OUTCOME>
+	VL-33
+</OUTCOME>
+<OUTCOME>
+	VL-8
+</OUTCOME>
+<OUTCOME>
+	VL-3
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.add(Ljava/awt/Component;)Ljava/awt/Component;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.add(Ljava/awt/Component;Ljava/lang/Object;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.add(Ljava/lang/String;Ljava/awt/Component;)Ljava/awt/Component;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.addMouseListener(Ljava/awt/event/MouseListener;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.dispatchEvent(Ljava/awt/AWTEvent;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.firePropertyChange(Ljava/lang/String;ZZ)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getActionMap()Ljavax/swing/ActionMap;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getComponent(I)Ljava/awt/Component;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getComponents()[Ljava/awt/Component;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getGraphics()Ljava/awt/Graphics;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getHeight()I
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getInputMap(I)Ljavax/swing/InputMap;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getLayout()Ljava/awt/LayoutManager;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getMaximumSize()Ljava/awt/Dimension;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getMinimumSize()Ljava/awt/Dimension;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getPreferredSize()Ljava/awt/Dimension;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getSize()Ljava/awt/Dimension;
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.getWidth()I
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.isVisible()Z
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.nothing()V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.paint(Ljava/awt/Graphics;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.paintComponent(Ljava/awt/Graphics;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.paintImmediately(IIII)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.removeAll()V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.repaint()V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.revalidate()V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setBackground(Ljava/awt/Color;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setBorder(Ljavax/swing/border/Border;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setBounds(IIII)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setLayout(Ljava/awt/LayoutManager;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setLocation(II)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setName(Ljava/lang/String;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setOpaque(Z)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setPreferredSize(Ljava/awt/Dimension;)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setSize(II)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.setVisible(Z)V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	Ljavax/swing/JPanel.validate()V
+</NAME>
+<OUTCOME>
+	true
+</OUTCOME>
+<OUTCOME>
+	false
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	contexts
+</NAME>
+<OUTCOME>
+	Ljava/awt/event/MouseListener.mouseReleased(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/lang/Object._init_(Lorg/eclipse/scout/rt/ui/swing/ext/JSection;Ljava/awt/Color;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.getFromDate(Ljava/lang/Object;)Ljava/util/Date;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.peerInstance()Ljava/lang/Object;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.getMaximumSize()Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/swt/widgets/Control._init_(Lorg/eclipse/swt/widgets/Composite;I)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/AdjustmentListener.adjustmentValueChanged(Ljava/awt/event/AdjustmentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/MouseMotionListener.mouseDragged(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/groupbox/ISwingScoutGroupBox.getSwingGroupBox()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/basic/SwingScoutComposite.initializeSwing()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/MouseListener.mouseClicked(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/MouseListener.mouseExited(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/SwingScoutFieldComposite.setEnabledFromScout(Z)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/lang/Runnable.run()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/lang/Object._init_()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/beans/PropertyChangeListener.propertyChange(Ljava/beans/PropertyChangeEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_([Ljava/lang/Object;Ljava/lang/Object;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/plannerfield/ISwingScoutPlannerField.getResourceTableComposite()Lorg/eclipse/scout/rt/ui/swing/basic/table/ISwingScoutTable;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentHidden(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.isDraggable(Ljava/lang/Object;)Z
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/plannerfield/ISwingScoutPlannerField.getActivityMapComposite()Lorg/eclipse/scout/rt/ui/swing/basic/activitymap/SwingScoutActivityMap;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/WindowListener.windowClosing(Ljava/awt/event/WindowEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/basic/SwingScoutComposite.attachScout()V
+</OUTCOME>
+<OUTCOME>
+	LAny.any()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentResized(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/basic/SwingScoutComposite.detachScout()V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JComponent.paintChildren(Ljava/awt/Graphics;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.moveItem(Ljava/lang/Object;Ljava/util/Date;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.getLabel(Ljava/lang/Object;Ljava/util/Date;)Ljava/lang/String;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/AbstractLayoutManager2.validateLayout(Ljava/awt/Container;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/AbstractLayoutManager2.getLayoutSize(Ljava/awt/Container;I)Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	Lcom/jcraft/jsch/UIKeyboardInteractive.promptKeyboardInteractive(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;[Z)[Ljava/lang/String;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/MouseMotionListener.mouseMoved(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/wb/core/eval/InvocationEvaluatorInterceptor.evaluate(Lorg/eclipse/wb/core/eval/EvaluationContext;Lorg/eclipse/jdt/core/dom/ClassInstanceCreation;Lorg/eclipse/jdt/core/dom/ITypeBinding;Ljava/lang/Class;Ljava/lang/reflect/Constructor;[Ljava/lang/Object;)Ljava/lang/Object;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.paint(Ljava/awt/Graphics;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/zest/layouts/progress/ProgressListener.progressStarted(Lorg/eclipse/zest/layouts/progress/ProgressEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.getColor(Ljava/lang/Object;)Ljava/awt/Color;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/client/ui/action/menu/AbstractMenu._init_(Lorg/eclipse/scout/rt/ui/swing/form/fields/mailfield/SwingScoutMailField;Ljava/io/File;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/window/desktop/toolbar/AbstractJToolTabsBar.rebuild(Lorg/eclipse/scout/rt/client/ui/desktop/IDesktop;)V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_([Ljava/lang/Object;Ljava/lang/Object;Lorg/eclipse/jpt/common/utility/internal/StringConverter;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/groupbox/ISwingScoutGroupBox.getSwingBodyPart()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljava/lang/Object._init_(Lorg/eclipse/scout/rt/ui/swing/ext/calendar/DateChooser;I)V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JComponent.paintComponent(Ljava/awt/Graphics;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/SwingScoutFieldComposite.setLabelVisibleFromScout()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/lang/Object._init_(Lorg/eclipse/scout/rt/ui/swing/form/fields/plannerfield/SwingScoutPlannerField;Ljavax/swing/JScrollBar;Ljavax/swing/JScrollBar;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/client/ui/action/AbstractAction.getConfiguredText()Ljava/lang/String;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/basic/SwingScoutComposite._init_(I)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.getDesignTimeModel()Lorg/eclipse/birt/chart/model/Chart;
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/Icon.paintIcon(Ljava/awt/Component;Ljava/awt/Graphics;II)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.isFullDay(Ljava/lang/Object;)Z
+</OUTCOME>
+<OUTCOME>
+	Lswingintegration/example/EmbeddedSwingComposite2.createSwingComponent()Ljavax/swing/JComponent;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.getMinimumSize()Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/MouseListener.mouseEntered(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentShown(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/groupbox/ISwingScoutGroupBoxButtonbar.getSwingContainer()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/groupbox/ISwingScoutGroupBox.getSwingButtonBarPart()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/LayoutManager.layoutContainer(Ljava/awt/Container;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/SwingScoutValueFieldComposite.setValueFromScout(Ljava/lang/Object;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/zest/layouts/progress/ProgressListener.progressEnded(Lorg/eclipse/zest/layouts/progress/ProgressEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarViewListener.viewChanged(Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarViewEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/job/SwingProgressHandler$IStateChangeListener.stateChanged(Lorg/eclipse/scout/rt/ui/swing/ext/job/SwingProgressHandler;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.regenerateChart()V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/event/HyperlinkListener.hyperlinkUpdate(Ljavax/swing/event/HyperlinkEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/client/ui/action/IAction.doAction()V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/basic/SwingScoutComposite.handleScoutPropertyChange(Ljava/lang/String;Ljava/lang/Object;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/MouseListener.mousePressed(Ljava/awt/event/MouseEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_(Ljava/awt/Component;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/ICallBackNotifier.callback(Ljava/lang/Object;Ljava/lang/Object;Lorg/eclipse/birt/chart/model/attribute/CallBackValue;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/window/desktop/toolbar/AbstractJViewTabsBar.rebuild(Lorg/eclipse/scout/rt/client/ui/desktop/IDesktop;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.getTooltip(Ljava/lang/Object;Ljava/util/Date;)Ljava/lang/String;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ActionListener.actionPerformed(Ljava/awt/event/ActionEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentMoved(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/lang/Object._init_(Lorg/eclipse/wb/core/model/AbstractComponentInfo;Ljava/awt/Component;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/SwingScoutFieldComposite.setLabelFromScout(Ljava/lang/String;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.getRunTimeModel()Lorg/eclipse/birt/chart/model/Chart;
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/Icon.getIconWidth()I
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.getToDate(Ljava/lang/Object;)Ljava/util/Date;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/zest/layouts/progress/ProgressListener.progressUpdated(Lorg/eclipse/zest/layouts/progress/ProgressEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.getPreferredSize()Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	LDummy.dummy()V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/Icon.getIconHeight()I
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_(Lorg/eclipse/scout/rt/ui/swing/form/fields/mailfield/SwingScoutMailField;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/CalendarModel.getItemsAt(Ljava/util/Date;)Ljava/util/Collection;
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_(Lorg/eclipse/scout/rt/ui/swing/window/desktop/status/SwingScoutStatusBar;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.repaintChart()V
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	kinds
+</NAME>
+<OUTCOME>
+	METHOD_RETURN
+</OUTCOME>
+<OUTCOME>
+	FIELD
+</OUTCOME>
+<OUTCOME>
+	THIS
+</OUTCOME>
+<OUTCOME>
+	ANY
+</OUTCOME>
+<OUTCOME>
+	NEW
+</OUTCOME>
+</VARIABLE>
+
+<VARIABLE>
+<NAME>
+	definitions
+</NAME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/DateChooser.getDaysPanel()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentResized(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.repaintChart()V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentMoved(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/DateChooser.getCellsPanel()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentHidden(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	LAny.any()V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/DateChooser.getHeaderPanel()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/TimeChooser.getContainer()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/DateChooser.getContainer()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.regenerateChart()V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/ext/calendar/DateChooser.getControlPanel()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.getMinimumSize()Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.paint(Ljava/awt/Graphics;)V
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JComponent.paintChildren(Ljava/awt/Graphics;)V
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.getMaximumSize()Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/Component.getPreferredSize()Ljava/awt/Dimension;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ActionListener.actionPerformed(Ljava/awt/event/ActionEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.getRunTimeModel()Lorg/eclipse/birt/chart/model/Chart;
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JPanel._init_(Ljava/awt/LayoutManager;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.peerInstance()Ljava/lang/Object;
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/ICallBackNotifier.callback(Ljava/lang/Object;Ljava/lang/Object;Lorg/eclipse/birt/chart/model/attribute/CallBackValue;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/window/desktop/status/SwingScoutStatusBar.getSwingStatusBar()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljava/awt/event/ComponentListener.componentShown(Ljava/awt/event/ComponentEvent;)V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/birt/chart/device/IUpdateNotifier.getDesignTimeModel()Lorg/eclipse/birt/chart/model/Chart;
+</OUTCOME>
+<OUTCOME>
+	LDummy.dummy()V
+</OUTCOME>
+<OUTCOME>
+	Lorg/eclipse/scout/rt/ui/swing/form/fields/groupbox/SwingScoutGroupBoxButtonbar.getSwingContainer()Ljavax/swing/JPanel;
+</OUTCOME>
+<OUTCOME>
+	Ljavax/swing/JComponent.paintComponent(Ljava/awt/Graphics;)V
+</OUTCOME>
+</VARIABLE>
+
+
+<!-- Probability Distributions -->
+<DEFINITION>
+	<FOR>
+	patterns
+</FOR>
+	<TABLE>0.00115 0.00115 0.00115 0.00115 0.00115 0.00115 0.00115 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.0023 0.00346 0.00346 0.00461 0.00461 0.00461 0.00461 0.00461 0.00461 0.00461 0.00922 0.00576 0.00691 0.00691 0.00922 0.00922 0.01152 0.01152 0.01152 0.01613 0.02535 0.79038 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.add(Ljava/awt/Component;)Ljava/awt/Component;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.add(Ljava/awt/Component;Ljava/lang/Object;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.add(Ljava/lang/String;Ljava/awt/Component;)Ljava/awt/Component;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.addMouseListener(Ljava/awt/event/MouseListener;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.dispatchEvent(Ljava/awt/AWTEvent;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.firePropertyChange(Ljava/lang/String;ZZ)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getActionMap()Ljavax/swing/ActionMap;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getComponent(I)Ljava/awt/Component;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getComponents()[Ljava/awt/Component;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getGraphics()Ljava/awt/Graphics;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getHeight()I
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getInputMap(I)Ljavax/swing/InputMap;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getLayout()Ljava/awt/LayoutManager;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getMaximumSize()Ljava/awt/Dimension;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getMinimumSize()Ljava/awt/Dimension;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getPreferredSize()Ljava/awt/Dimension;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getSize()Ljava/awt/Dimension;
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.getWidth()I
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.isVisible()Z
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.nothing()V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.paint(Ljava/awt/Graphics;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.paintComponent(Ljava/awt/Graphics;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.paintImmediately(IIII)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.removeAll()V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.repaint()V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.revalidate()V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setBackground(Ljava/awt/Color;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setBorder(Ljavax/swing/border/Border;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setBounds(IIII)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setLayout(Ljava/awt/LayoutManager;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setLocation(II)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setName(Ljava/lang/String;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setOpaque(Z)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setPreferredSize(Ljava/awt/Dimension;)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setSize(II)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.setVisible(Z)V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 0.99999 1.0E-5 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	Ljavax/swing/JPanel.validate()V
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 1.0E-5 0.99999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	contexts
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49917 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49917 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.66667 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.3325 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49917 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49917 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.25 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.25 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.25 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.24919 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.25 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.375 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.37418 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.33333 0.33333 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.33252 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.75 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.24917 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99916 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.2 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.2 0.2 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.2 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.1992 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.6 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.2 1.0E-5 1.0E-5 1.0E-5 0.19918 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.71429 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.14286 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.14203 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.27273 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.09091 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.54545 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.0901 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.02915 0.00583 0.01458 0.00583 1.0E-5 0.00583 0.00292 0.00146 0.00583 0.02041 0.01458 0.01166 0.00875 0.0277 0.02041 0.01166 1.0E-5 0.00292 0.00583 0.01458 0.00292 0.00146 0.01458 0.2449 0.00875 0.00583 0.00292 0.01458 0.01458 0.01166 0.00875 1.0E-5 0.00146 0.00146 0.00292 0.00146 0.01458 0.00292 1.0E-5 1.0E-5 0.00583 0.01458 0.00583 0.00292 0.00292 0.00292 0.00292 0.00583 0.02041 0.01458 0.00729 1.0E-5 0.02624 0.00583 0.00583 0.00583 0.00583 1.0E-5 0.00146 0.00292 1.0E-5 1.0E-5 0.00292 0.00292 0.01166 0.02915 0.00583 0.00146 1.0E-5 0.01458 0.13557 0.00583 1.0E-5 0.00292 0.00583 0.02041 0.01458 1.0E-5 1.0E-5 1.0E-5 0.02041 0.00292 0.01458 0.00265 1.0E-5 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	kinds
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 0.5 1.0E-5 1.0E-5 0.49997 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 0.5 0.49997 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 0.33333 0.66664 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 0.8 0.19997 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99996 0.01749 0.88047 0.09767 1.0E-5 0.00436 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>
+	definitions
+</FOR>
+	<GIVEN>
+	patterns
+</GIVEN>
+	<TABLE>1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49973 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49973 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.49973 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 1.0E-5 1.0E-5 1.0E-5 0.49973 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.5 0.49973 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.375 1.0E-5 1.0E-5 1.0E-5 0.25 1.0E-5 1.0E-5 1.0E-5 0.37474 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.2 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.4 1.0E-5 0.2 0.19975 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.99972 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.00292 0.00583 1.0E-5 0.00583 1.0E-5 0.00583 0.93003 1.0E-5 1.0E-5 0.00875 1.0E-5 1.0E-5 1.0E-5 1.0E-5 0.00146 1.0E-5 1.0E-5 0.00583 0.00583 1.0E-5 0.00583 0.00146 0.00292 0.00583 0.00583 1.0E-5 0.00568 1.0E-5 </TABLE>
+</DEFINITION>
+
+
+</NETWORK>
+</BIF>

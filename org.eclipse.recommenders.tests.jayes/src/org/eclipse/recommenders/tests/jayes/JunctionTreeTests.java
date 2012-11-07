@@ -14,7 +14,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -33,7 +32,6 @@ import org.eclipse.recommenders.tests.jayes.LBP.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestCase;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestcaseDeserializer;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class JunctionTreeTests {
@@ -160,11 +158,11 @@ public class JunctionTreeTests {
     }
     
     @Test
-    @Ignore
     public void testLargerScaleCorrectness() throws IOException{
-    	BayesNet net = new XDSLReader().read("alarm.xdsl");//FIXME: use recommender model
+    	getClass().getClassLoader();
+		BayesNet net = new XDSLReader().read(ClassLoader.getSystemResourceAsStream("Lorg.eclipse.swt.widgets.Button.xdsl"));//FIXME: use recommender model
     	TestcaseDeserializer deser = new TestcaseDeserializer(net);
-    	Reader rdr = new BufferedReader(new InputStreamReader(new FileInputStream("testcases_alarm.json")));
+    	Reader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("testcases_Button.json")));
     	StringBuffer buf = new StringBuffer();
     	CharBuffer cbuff = CharBuffer.allocate(1024);
     	while(rdr.read(cbuff) != -1){
