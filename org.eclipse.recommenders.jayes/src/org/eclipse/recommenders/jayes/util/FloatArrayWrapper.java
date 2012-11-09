@@ -2,49 +2,60 @@ package org.eclipse.recommenders.jayes.util;
 
 import java.util.Arrays;
 
-public class DoubleArrayWrapper implements ArrayWrapper {
+public class FloatArrayWrapper implements ArrayWrapper {
 
-	private double[] array;
+	@Override
+	public boolean equals(Object obj) {
+		return obj instanceof FloatArrayWrapper &&
+		Arrays.equals(array, ((FloatArrayWrapper)obj).array);
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(array);
+	}
+
+	private float[] array;
 	
-	public DoubleArrayWrapper(double[] array){
+	public FloatArrayWrapper(float[] array){
 		this.array = array;
 	}
 	
 	@Override
 	public void set(double[] array) {
-		this.array = array;
+		set(ArrayUtils.toFloatArray(array));
 
 	}
 
 	@Override
 	public void set(float[] array) {
-		set(ArrayUtils.toDoubleArray(array));
+		this.array = array;
 
 	}
 
 	@Override
 	public double[] getDouble() {
-		return array;
+		return ArrayUtils.toDoubleArray(array);
 	}
 
 	@Override
 	public float[] getFloat() {
-		return ArrayUtils.toFloatArray(array);
+		return array;
 	}
 
 	@Override
 	public void assign(int index, double d) {
-		array[index] = d;
+		array[index] = (float)d;
 	}
 
 	@Override
 	public void assign(int index, float d) {
-		assign(index,(double)d);
+		array[index] = d;
 	}
 
 	@Override
 	public void mulAssign(int index, double d) {
-		array[index] *= d;
+		array[index] *= (float)d;
 	}
 
 	@Override
@@ -54,12 +65,12 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 
 	@Override
 	public void mulAssign(int index, ArrayWrapper arg, int argIndex) {
-		array[index] *= arg.getDouble(argIndex);
+		array[index] *= arg.getFloat(argIndex);
 	}
 
 	@Override
 	public void addAssign(int index, double d) {
-		array[index] += d;
+		array[index] += (float) d;
 	}
 
 	@Override
@@ -69,17 +80,17 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 
 	@Override
 	public void addAssign(int index, ArrayWrapper arg, int argIndex) {
-		array[index] += arg.getDouble(argIndex);
+		array[index] += arg.getFloat(argIndex);
 	}
 
 	@Override
 	public double getDouble(int index) {
-		return array[index];
+		return (double) array[index];
 	}
 
 	@Override
 	public float getFloat(int index) {
-		return (float) array[index];
+		return array[index];
 	}
 
 	@Override
@@ -89,58 +100,56 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 
 	@Override
 	public void copy(double[] array) {
-		set(array.clone());
+		set(array);
 	}
 
 	@Override
 	public void copy(float[] array) {
-		set(ArrayUtils.toDoubleArray(array));
-
+		this.array = array.clone();
 	}
 
 	@Override
 	public void copy(ArrayWrapper array) {
-		copy(array.getDouble());
+		copy(array.getFloat());
 	}
 
 	@Override
 	public void fill(double d) {
-		Arrays.fill(array, d);
+		Arrays.fill(array, (float)d);
 	}
 
 	@Override
 	public void fill(float d) {
-		Arrays.fill(array, (double)d);
+		Arrays.fill(array,d);
+	}
+
+	@Override
+	public void arrayCopy(ArrayWrapper src, int srcOffset, int destOffset,
+			int length) {
+		System.arraycopy(src.getFloat(), srcOffset, array, destOffset, length);
+	}
+
+	@Override
+	public void newArray(int capacity) {
+		array = new float[capacity];
 	}
 	
-	public DoubleArrayWrapper clone(){
+	@Override
+	public FloatArrayWrapper clone(){
+		FloatArrayWrapper clone;
 		try {
-			DoubleArrayWrapper result = (DoubleArrayWrapper) super.clone();
-			result.array = array.clone();
-			return result;
+			clone = (FloatArrayWrapper) super.clone();
+			clone.array = array.clone();
+			return clone;
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
+			// should not happen
 			e.printStackTrace();
 			return null;
 		}
 	}
 
 	@Override
-	public void arrayCopy(ArrayWrapper src, int srcOffset, int destOffset,
-			int length) {
-		System.arraycopy(src.getDouble(),0,array,0,length);
-		
-	}
-
-	@Override
-	public void newArray(int capacity) {
-		this.array = new double[capacity];
-		
-	}
-
-	@Override
 	public int sizeOfElement() {
-		return 8;
+		return 4;
 	}
-
 }

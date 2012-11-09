@@ -335,9 +335,9 @@ public class Factor implements Cloneable {
 
 	}
 
-	public void copyValues(double[] other) {
+	public void copyValues(ArrayWrapper arrayWrapper) {
 		validateCut();
-		System.arraycopy(other, cut.getIndex(), values, cut.getIndex(),
+		values.arrayCopy(arrayWrapper, cut.getIndex(), cut.getIndex(),
 				cut.getLength());
 	}
 

@@ -26,8 +26,8 @@ import org.eclipse.recommenders.jayes.SparseFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.ArrayWrapper;
+import org.eclipse.recommenders.jayes.util.ArrayWrapperFlyWeight;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
-import org.eclipse.recommenders.jayes.util.DoubleArrayFlyWeight;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
@@ -50,7 +50,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	protected Factor[] queryFactors;
 	protected int[][] preparedQueries;
 	protected boolean[] isBeliefValid;
-	protected final List<Pair<Factor, double[]>> initializations = new ArrayList<Pair<Factor, double[]>>();
+	protected final List<Pair<Factor, ArrayWrapper>> initializations = new ArrayList<Pair<Factor, ArrayWrapper>>();
 
 	protected final List<int[]> queryFactorReverseMapping = new ArrayList<int[]>();
 
@@ -129,13 +129,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void replayFactorInitializations() {
-		for (final Pair<Factor, double[]> init : initializations) {
+		for (final Pair<Factor, ArrayWrapper> init : initializations) {
 			init.getFirst().copyValues(init.getSecond());
 		}
 	}
 
 	private void incorporateAllEvidence() {
-		for (Pair<Factor, double[]> init : initializations) {
+		for (Pair<Factor, ArrayWrapper> init : initializations) {
 			init.getFirst().resetSelections();
 		}
 
@@ -278,12 +278,12 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 				preparedOp);
 
 		if (isOnlyFirstLogScale(sepSetEdge)) {
-			MathUtils.exp(newSepValues.getDouble()); //FIXME broken for float
+			MathUtils.exp(newSepValues);
 		}
 		if (areBothEndsLogScale(sepSetEdge)) {
-			MathUtils.secureSubtract(newSepValues.getDouble(), scratchpad, scratchpad); //FIXME
+			MathUtils.secureSubtract(newSepValues.getDouble(), scratchpad, scratchpad);
 		} else {
-			MathUtils.secureDivide(newSepValues.getDouble(), scratchpad, scratchpad); //FIXME
+			MathUtils.secureDivide(newSepValues.getDouble(), scratchpad, scratchpad);
 		}
 
 		if (isOnlySecondLogScale(sepSetEdge)) {
@@ -556,15 +556,15 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void storePotentialValues() {
-		DoubleArrayFlyWeight flyweight = new DoubleArrayFlyWeight();
+		ArrayWrapperFlyWeight flyweight = new ArrayWrapperFlyWeight();
 		for (final Factor pot : nodePotentials) {
-			initializations.add(new Pair<Factor, double[]>(pot,
-					flyweight.getInstance(pot.getValues().getDouble().clone()))); //FIXME broken, but this will get easier with objects
+			initializations.add(new Pair<Factor, ArrayWrapper>(pot,
+					flyweight.getInstance(pot.getValues().clone())));
 		}
 
 		for (final Factor sep : sepSets.values()) {
-			initializations.add(new Pair<Factor, double[]>(sep,
-					flyweight.getInstance(sep.getValues().getDouble().clone())));
+			initializations.add(new Pair<Factor, ArrayWrapper>(sep,
+					flyweight.getInstance(sep.getValues().clone())));
 		}
 
 		logMemorySavingsFromFlyweightPattern(flyweight);
@@ -572,7 +572,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void logMemorySavingsFromFlyweightPattern(
-			DoubleArrayFlyWeight flyweight) {
+			ArrayWrapperFlyWeight flyweight) {
 		int factorSizes = 0;
 		for (final Factor pot : nodePotentials) {
 			factorSizes += pot.getValues().length();
@@ -583,8 +583,8 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 
 		int flyweightsize = 0;
-		for (double[] d : flyweight) {
-			flyweightsize += d.length;
+		for (ArrayWrapper d : flyweight) {
+			flyweightsize += d.length();
 		}
 
 		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
@@ -618,7 +618,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	private void logCompleteMemoryInfo() {
 		long size = 0; // size in bytes
 		for (Factor f : nodePotentials) {
-			size += f.getValues().length() * 8;
+			size += f.getValues().length() * f.getValues().sizeOfElement();
 			size += f.getDimensions().length * 4;
 			size += f.getDimensionIDs().length * 4;
 			if (f instanceof SparseFactor) {
@@ -629,7 +629,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			}
 		}
 		for (Factor f : sepSets.values()) {
-			size += f.getValues().length() * 8;
+			size += f.getValues().length() * f.getValues().sizeOfElement();
 			size += f.getDimensions().length * 4;
 			size += f.getDimensionIDs().length * 4;
 		}
@@ -646,11 +646,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 				size += p.length * 4;
 			}
 		}
-		HashSet<double[]> check2 = new HashSet<double[]>();
-		for (Pair<Factor, double[]> p : initializations) {
+		HashSet<ArrayWrapper> check2 = new HashSet<ArrayWrapper>();
+		for (Pair<Factor, ArrayWrapper> p : initializations) {
 			if (!check2.contains(p.getSecond())) {
 				check2.add(p.getSecond());
-				size += p.getSecond().length * 8;
+				size += p.getSecond().length() * p.getSecond().sizeOfElement();
 			}
 		}
 

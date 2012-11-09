@@ -28,7 +28,6 @@ import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
-import org.eclipse.recommenders.jayes.io.XDSLReader;
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.tests.jayes.LBP.LoopyBeliefPropagation;

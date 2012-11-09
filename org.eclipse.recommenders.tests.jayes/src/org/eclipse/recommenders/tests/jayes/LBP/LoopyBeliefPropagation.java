@@ -282,7 +282,7 @@ public class LoopyBeliefPropagation extends AbstractInferer {
             e.dirty = false;
             final BayesNode n = net.getNode(e.target);
             final Factor f = n.getFactor().clone();
-            MathUtils.log(f.getValues().getDouble());//FIXME this is broken
+            MathUtils.log(f.getValues());
             f.setLogScale(true);
             selectEvidence(f);
             for (final Edge e2 : transponedGraph.get(index)) {

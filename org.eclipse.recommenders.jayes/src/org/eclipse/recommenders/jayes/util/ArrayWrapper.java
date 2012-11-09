@@ -25,4 +25,8 @@ public interface ArrayWrapper extends Cloneable {
 	public void arrayCopy(ArrayWrapper src, int srcOffset, int destOffset, int length);
 	public ArrayWrapper clone();
 	public void newArray(int capacity);
+	/**
+	 * @return size of a single array element in bytes
+	 */
+	public int sizeOfElement();
 }

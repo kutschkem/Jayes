@@ -17,10 +17,22 @@ public class MathUtils {
             vector[i] = Math.exp(vector[i]);
         }
     }
+	
+	public static void exp(ArrayWrapper array){
+		for(int i = 0; i < array.length(); i++){
+			array.assign(i, Math.exp(array.getDouble(i)));
+		}
+	}
 
     public static void log(double[] vector) {
         for (int i = 0; i < vector.length; i++) {
             vector[i] = Math.log(vector[i]);
+        }
+    }
+	
+    public static void log(ArrayWrapper vector) {
+        for (int i = 0; i < vector.length(); i++) {
+            vector.assign(i, Math.log(vector.getDouble(i)));
         }
     }
 

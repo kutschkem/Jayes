@@ -15,7 +15,7 @@ import java.util.Map;
 import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.ArrayWrapper;
-import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.util.FloatArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class SparseFactor extends Factor {
@@ -26,6 +26,10 @@ public class SparseFactor extends Factor {
 	private int sparsenessExponent;
 	private int[] trie;
 	private boolean isSparse = false;
+	
+	{
+//		this.values = new FloatArrayWrapper(new float[1]);
+	}
 
 	@Override
 	public void setDimensions(int[] dimensions) {
@@ -37,8 +41,8 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void copyValues(double[] other) {
-		values.arrayCopy(new DoubleArrayWrapper(other), 0, 0, other.length);
+	public void copyValues(ArrayWrapper other) {
+		values.arrayCopy(other, 0, 0, other.length());
 	}
 
 	public void multiplyCompatible(Factor compatible) {
