@@ -29,6 +29,7 @@ public class RejectionSamplerTests {
 
         RejectionSampling sampler = new RejectionSampling();
         sampler.setSampleCount(10000);
+        sampler.seed(1337);	//for reproducibility
         sampler.setNetwork(net);
         sampler.addEvidence(a, "false");
         sampler.addEvidence(b, "lu");

@@ -65,5 +65,9 @@ public class LikelihoodWeightedSampling extends AbstractInferer {
     public void setSampleCount(int sampleCount) {
         this.sampleCount = sampleCount;
     }
+    
+    public void seed(long seed){
+    	sampler.seed(seed);
+    }
 
 }
