@@ -18,7 +18,7 @@ public class MathUtils {
         }
     }
 	
-	public static void exp(ArrayWrapper array){
+	public static void exp(IArrayWrapper array){
 		for(int i = 0; i < array.length(); i++){
 			array.assign(i, Math.exp(array.getDouble(i)));
 		}
@@ -30,7 +30,7 @@ public class MathUtils {
         }
     }
 	
-    public static void log(ArrayWrapper vector) {
+    public static void log(IArrayWrapper vector) {
         for (int i = 0; i < vector.length(); i++) {
             vector.assign(i, Math.log(vector.getDouble(i)));
         }

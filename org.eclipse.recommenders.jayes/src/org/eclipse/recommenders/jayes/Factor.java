@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
-import org.eclipse.recommenders.jayes.util.ArrayWrapper;
+import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
@@ -18,7 +18,7 @@ public class Factor implements Cloneable {
 
 	protected int[] dimensions = new int[0];
 	private int[] dimensionIDs = new int[0];
-	protected ArrayWrapper values = new DoubleArrayWrapper(new double[1]);
+	protected IArrayWrapper values = new DoubleArrayWrapper(new double[1]);
 	protected int[] selections = new int[0];
 
 	protected Cut cut = new Cut(this);
@@ -26,12 +26,12 @@ public class Factor implements Cloneable {
 
 	private boolean isLogScale = false;
 
-	public void setValues(ArrayWrapper values) {
+	public void setValues(IArrayWrapper values) {
 		this.values = values;
 		assert (MathUtils.multiply(dimensions) == values.length());
 	}
 
-	public ArrayWrapper getValues() {
+	public IArrayWrapper getValues() {
 		return values;
 	}
 
@@ -145,7 +145,7 @@ public class Factor implements Cloneable {
 		multiplyPrepared(compatible.values, positions);
 	}
 
-	public void multiplyPrepared(ArrayWrapper compatibleValues, int[] positions) {
+	public void multiplyPrepared(IArrayWrapper compatibleValues, int[] positions) {
 		validateCut();
 		if (!isLogScale)
 			multiplyPrepared(cut, 0, compatibleValues, positions);
@@ -154,7 +154,7 @@ public class Factor implements Cloneable {
 	}
 
 	private void multiplyPrepared(Cut cut, int offset,
-			ArrayWrapper compatibleValues, int[] positions) {
+			IArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
@@ -168,7 +168,7 @@ public class Factor implements Cloneable {
 		}
 	}
 
-	public void sumPrepared(ArrayWrapper compatibleFactorValues,
+	public void sumPrepared(IArrayWrapper compatibleFactorValues,
 			int[] preparedOperation) {
 		validateCut();
 
@@ -181,7 +181,7 @@ public class Factor implements Cloneable {
 
 	}
 
-	private void sumPrepared(Cut cut, int offset, ArrayWrapper compatibleFactorValues,
+	private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
 			int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
@@ -196,7 +196,7 @@ public class Factor implements Cloneable {
 		}
 	}
 
-	private void sumPreparedLog(ArrayWrapper compatibleFactorValues, int[] positions) {
+	private void sumPreparedLog(IArrayWrapper compatibleFactorValues, int[] positions) {
 		double max = findMax(cut, 0, 0);
 		sumPreparedLog(cut, 0, compatibleFactorValues, positions, max);
 		for (int i = 0; i < compatibleFactorValues.length(); i++) {
@@ -227,7 +227,7 @@ public class Factor implements Cloneable {
 		return max;
 	}
 
-	private void sumPreparedLog(Cut cut, int offset, ArrayWrapper compatibleFactorValues,
+	private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
 			int[] positions, double max) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
@@ -243,7 +243,7 @@ public class Factor implements Cloneable {
 	}
 
 	private void multiplyPreparedLog(Cut cut, int offset,
-			ArrayWrapper compatibleValues, int[] positions) {
+			IArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
 					+ offset);
@@ -335,7 +335,7 @@ public class Factor implements Cloneable {
 
 	}
 
-	public void copyValues(ArrayWrapper arrayWrapper) {
+	public void copyValues(IArrayWrapper arrayWrapper) {
 		validateCut();
 		values.arrayCopy(arrayWrapper, cut.getIndex(), cut.getIndex(),
 				cut.getLength());

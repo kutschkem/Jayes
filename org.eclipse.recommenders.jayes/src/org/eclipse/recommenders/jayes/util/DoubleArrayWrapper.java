@@ -12,7 +12,7 @@ package org.eclipse.recommenders.jayes.util;
 
 import java.util.Arrays;
 
-public class DoubleArrayWrapper implements ArrayWrapper {
+public class DoubleArrayWrapper implements IArrayWrapper {
 
 	private double[] array;
 	
@@ -63,7 +63,7 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void mulAssign(int index, ArrayWrapper arg, int argIndex) {
+	public void mulAssign(int index, IArrayWrapper arg, int argIndex) {
 		array[index] *= arg.getDouble(argIndex);
 	}
 
@@ -78,7 +78,7 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void addAssign(int index, ArrayWrapper arg, int argIndex) {
+	public void addAssign(int index, IArrayWrapper arg, int argIndex) {
 		array[index] += arg.getDouble(argIndex);
 	}
 
@@ -109,7 +109,7 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void copy(ArrayWrapper array) {
+	public void copy(IArrayWrapper array) {
 		copy(array.getDouble());
 	}
 
@@ -136,7 +136,7 @@ public class DoubleArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void arrayCopy(ArrayWrapper src, int srcOffset, int destOffset,
+	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
 			int length) {
 		System.arraycopy(src.getDouble(),0,array,0,length);
 		

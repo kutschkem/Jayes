@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.ArrayWrapper;
+import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.FloatArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
@@ -41,7 +41,7 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void copyValues(ArrayWrapper other) {
+	public void copyValues(IArrayWrapper other) {
 		values.arrayCopy(other, 0, 0, other.length());
 	}
 
@@ -312,7 +312,7 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void multiplyPrepared(ArrayWrapper compatibleValues, int[] positions) {
+	public void multiplyPrepared(IArrayWrapper compatibleValues, int[] positions) {
 		if (!isSparse) {
 			super.multiplyPrepared(compatibleValues, positions);
 			return;
@@ -325,7 +325,7 @@ public class SparseFactor extends Factor {
 	}
 
 	private void multiplyPrepared(Cut cut, int offset,
-			ArrayWrapper compatibleValues, int[] positions) {
+			IArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
 					cut.getLength() + cut.getIndex() + offset);
@@ -342,7 +342,7 @@ public class SparseFactor extends Factor {
 	}
 
 	private void multiplyPreparedLog(Cut cut, int offset,
-			ArrayWrapper compatibleValues, int[] positions) {
+			IArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
 					cut.getLength() + cut.getIndex() + offset);
@@ -359,7 +359,7 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void sumPrepared(ArrayWrapper compatibleFactorValues,
+	public void sumPrepared(IArrayWrapper compatibleFactorValues,
 			int[] preparedOperation) {
 		if (!isSparse) {
 			super.sumPrepared(compatibleFactorValues, preparedOperation);
@@ -376,7 +376,7 @@ public class SparseFactor extends Factor {
 
 	}
 
-	private void sumPrepared(Cut cut, int offset, ArrayWrapper compatibleValues,
+	private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleValues,
 			int[] positions) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),
@@ -393,7 +393,7 @@ public class SparseFactor extends Factor {
 		}
 	}
 
-	private void sumPreparedLog(ArrayWrapper compatible, int[] positions) {
+	private void sumPreparedLog(IArrayWrapper compatible, int[] positions) {
 		double max = findMax(cut, 0, 0);
 		sumPreparedLog(cut, 0, compatible, positions, max);
 		for (int i = 0; i < compatible.length(); i++) {
@@ -425,7 +425,7 @@ public class SparseFactor extends Factor {
 		return max;
 	}
 
-	private void sumPreparedLog(Cut cut, int offset, ArrayWrapper compatibleValues,
+	private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleValues,
 			int[] positions, double max) {
 		if (cut.getSubCut() == null) {
 			int last = Math.min(computeLength(),

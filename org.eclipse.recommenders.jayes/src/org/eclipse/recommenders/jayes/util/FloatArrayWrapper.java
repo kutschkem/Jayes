@@ -12,7 +12,7 @@ package org.eclipse.recommenders.jayes.util;
 
 import java.util.Arrays;
 
-public class FloatArrayWrapper implements ArrayWrapper {
+public class FloatArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public boolean equals(Object obj) {
@@ -74,7 +74,7 @@ public class FloatArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void mulAssign(int index, ArrayWrapper arg, int argIndex) {
+	public void mulAssign(int index, IArrayWrapper arg, int argIndex) {
 		array[index] *= arg.getFloat(argIndex);
 	}
 
@@ -89,7 +89,7 @@ public class FloatArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void addAssign(int index, ArrayWrapper arg, int argIndex) {
+	public void addAssign(int index, IArrayWrapper arg, int argIndex) {
 		array[index] += arg.getFloat(argIndex);
 	}
 
@@ -119,7 +119,7 @@ public class FloatArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void copy(ArrayWrapper array) {
+	public void copy(IArrayWrapper array) {
 		copy(array.getFloat());
 	}
 
@@ -134,7 +134,7 @@ public class FloatArrayWrapper implements ArrayWrapper {
 	}
 
 	@Override
-	public void arrayCopy(ArrayWrapper src, int srcOffset, int destOffset,
+	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
 			int length) {
 		System.arraycopy(src.getFloat(), srcOffset, array, destOffset, length);
 	}

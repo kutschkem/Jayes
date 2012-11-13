@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ArrayWrapperFlyWeight implements Iterable<ArrayWrapper> {
+public class ArrayWrapperFlyWeight implements Iterable<IArrayWrapper> {
 	
 	
-	private Map<ArrayWrapper,ArrayWrapper> flyweight = new HashMap<ArrayWrapper,ArrayWrapper>();
+	private Map<IArrayWrapper,IArrayWrapper> flyweight = new HashMap<IArrayWrapper,IArrayWrapper>();
 
-	public ArrayWrapper getInstance(ArrayWrapper array){
+	public IArrayWrapper getInstance(IArrayWrapper array){
 		if(! flyweight.containsKey(array)){
 			flyweight.put(array, array);
 		}
@@ -27,7 +27,7 @@ public class ArrayWrapperFlyWeight implements Iterable<ArrayWrapper> {
 	}
 	
     @Override
-    public Iterator<ArrayWrapper> iterator() {
+    public Iterator<IArrayWrapper> iterator() {
         return flyweight.keySet().iterator();
     }
 	
