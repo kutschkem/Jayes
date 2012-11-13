@@ -138,7 +138,7 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 	@Override
 	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
 			int length) {
-		System.arraycopy(src.getDouble(),0,array,0,length);
+		System.arraycopy(src.getDouble(),srcOffset,array,destOffset,length);
 		
 	}
 

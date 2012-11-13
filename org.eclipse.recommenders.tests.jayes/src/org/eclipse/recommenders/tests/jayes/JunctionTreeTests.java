@@ -27,6 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
+import org.eclipse.recommenders.jayes.inference.Options;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
@@ -178,6 +179,37 @@ public class JunctionTreeTests {
     	List<TestCase> testcases = deser.deserialize(buf.toString());
     	
     	JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
+    	algo.setNetwork(net);
+    	
+    	for(TestCase tc: testcases){
+    		algo.setEvidence(tc.evidence);
+    		for(BayesNode node: net.getNodes()){
+    			assertArrayEquals(tc.beliefs.get(node),algo.getBeliefs(node),0.00001);
+    		}
+    	}
+    }
+    
+    @Test
+    public void testLargerScaleCorrectnessFloats() throws IOException, ParserConfigurationException, SAXException{
+    	getClass().getClassLoader();
+		BayesNet net = new XMLBIFReader().read(ClassLoader.getSystemResourceAsStream("JPanel.xml"));
+    	TestcaseDeserializer deser = new TestcaseDeserializer(net);
+    	Reader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("testcases_JPanel.json")));
+    	StringBuffer buf = new StringBuffer();
+    	CharBuffer cbuff = CharBuffer.allocate(1024);
+    	while(rdr.read(cbuff) != -1){
+    		cbuff.flip();
+    		buf.append(cbuff);
+    		cbuff.clear();
+    	}
+    	rdr.close();
+    	
+    	List<TestCase> testcases = deser.deserialize(buf.toString());
+    	
+    	JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
+    	Options options = new Options();
+    	options.allowFloats(true);
+    	algo.setOptions(options);
     	algo.setNetwork(net);
     	
     	for(TestCase tc: testcases){

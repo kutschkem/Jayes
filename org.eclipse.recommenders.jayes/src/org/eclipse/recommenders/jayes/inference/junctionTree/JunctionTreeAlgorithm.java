@@ -25,10 +25,11 @@ import org.eclipse.recommenders.jayes.Factor;
 import org.eclipse.recommenders.jayes.SparseFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.ArrayWrapper;
+import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.ArrayWrapperFlyWeight;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.util.FloatArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
 import org.eclipse.recommenders.jayes.util.IntArrayFlyWeight;
@@ -50,7 +51,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	protected Factor[] queryFactors;
 	protected int[][] preparedQueries;
 	protected boolean[] isBeliefValid;
-	protected final List<Pair<Factor, ArrayWrapper>> initializations = new ArrayList<Pair<Factor, ArrayWrapper>>();
+	protected final List<Pair<Factor, IArrayWrapper>> initializations = new ArrayList<Pair<Factor, IArrayWrapper>>();
 
 	protected final List<int[]> queryFactorReverseMapping = new ArrayList<int[]>();
 
@@ -59,7 +60,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private int logThreshold = Integer.MAX_VALUE;
 	protected double[] scratchpad;
-
+	
 	/**
 	 * cliques bigger (in the number of variables) than the threshold are computed on the log-scale.
 	 * Validate different values if you encounter numerical instabilities.
@@ -129,13 +130,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void replayFactorInitializations() {
-		for (final Pair<Factor, ArrayWrapper> init : initializations) {
+		for (final Pair<Factor, IArrayWrapper> init : initializations) {
 			init.getFirst().copyValues(init.getSecond());
 		}
 	}
 
 	private void incorporateAllEvidence() {
-		for (Pair<Factor, ArrayWrapper> init : initializations) {
+		for (Pair<Factor, IArrayWrapper> init : initializations) {
 			init.getFirst().resetSelections();
 		}
 
@@ -270,7 +271,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			return;
 		}
 
-		final ArrayWrapper newSepValues = sepSet.getValues();
+		final IArrayWrapper newSepValues = sepSet.getValues();
 		System.arraycopy(newSepValues.getDouble(), 0, scratchpad, 0, newSepValues.length());
 
 		final int[] preparedOp = preparedMultiplications.get(sepSetEdge.getBackEdge());
@@ -440,6 +441,9 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	protected Factor createFactor(final List<Integer> vars) {
 		final Factor f = new SparseFactor();
+		if(options.areFloatsAllowed()){
+			f.setValues(new FloatArrayWrapper(new float[1]));
+		}
 		final List<Integer> dimensions = new ArrayList<Integer>();
 		for (final Integer dim : vars) {
 			dimensions.add(net.getNode(dim).getOutcomeCount());
@@ -558,12 +562,12 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	private void storePotentialValues() {
 		ArrayWrapperFlyWeight flyweight = new ArrayWrapperFlyWeight();
 		for (final Factor pot : nodePotentials) {
-			initializations.add(new Pair<Factor, ArrayWrapper>(pot,
+			initializations.add(new Pair<Factor, IArrayWrapper>(pot,
 					flyweight.getInstance(pot.getValues().clone())));
 		}
 
 		for (final Factor sep : sepSets.values()) {
-			initializations.add(new Pair<Factor, ArrayWrapper>(sep,
+			initializations.add(new Pair<Factor, IArrayWrapper>(sep,
 					flyweight.getInstance(sep.getValues().clone())));
 		}
 
@@ -583,7 +587,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 
 		int flyweightsize = 0;
-		for (ArrayWrapper d : flyweight) {
+		for (IArrayWrapper d : flyweight) {
 			flyweightsize += d.length();
 		}
 
@@ -646,8 +650,8 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 				size += p.length * 4;
 			}
 		}
-		HashSet<ArrayWrapper> check2 = new HashSet<ArrayWrapper>();
-		for (Pair<Factor, ArrayWrapper> p : initializations) {
+		HashSet<IArrayWrapper> check2 = new HashSet<IArrayWrapper>();
+		for (Pair<Factor, IArrayWrapper> p : initializations) {
 			if (!check2.contains(p.getSecond())) {
 				check2.add(p.getSecond());
 				size += p.getSecond().length() * p.getSecond().sizeOfElement();

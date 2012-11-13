@@ -18,13 +18,21 @@ import org.eclipse.recommenders.jayes.BayesNode;
 
 public abstract class AbstractInferer implements IBayesInferer {
 
-    protected Map<BayesNode, String> evidence = new HashMap<BayesNode, String>();
+	protected Map<BayesNode, String> evidence = new HashMap<BayesNode, String>();
     protected BayesNet net;
 
     protected double[][] beliefs;
     protected boolean beliefsValid;
 
-    @Override
+    protected Options options = new Options();
+
+	@Override
+	public void setOptions(Options options) {
+		this.options = options;
+		
+	}
+
+	@Override
     public void addEvidence(final BayesNode node, final String outcome) {
         evidence.put(node, outcome);
         beliefsValid = false;

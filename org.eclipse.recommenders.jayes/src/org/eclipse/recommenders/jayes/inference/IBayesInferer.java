@@ -26,5 +26,7 @@ public interface IBayesInferer {
     public Map<BayesNode, String> getEvidence();
 
     public double[] getBeliefs(BayesNode node);
+    
+    public void setOptions(Options options);
 
 }
