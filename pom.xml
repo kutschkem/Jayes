@@ -8,6 +8,7 @@
   	<properties>
   		<tycho-version>0.16.0</tycho-version>
 		<tycho-test-jvmArgs></tycho-test-jvmArgs>
+<tycho.scmUrl>scm:git:http://github.todo</tycho.scmUrl>
 
   		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   		
@@ -18,7 +19,7 @@
 		<module>plugins</module>
 		<module>tests</module>
 		<module>features/org.eclipse.recommenders.jayes.feature</module>
-		<module>features/org.eclipse.recommenders.jayes.feature.source</module>
+		<!--<module>features/org.eclipse.recommenders.jayes.feature.source</module>-->
 		<module>repositories/org.eclipse.recommenders.jayes.repository</module>
 	</modules>
   
@@ -45,6 +46,19 @@
 				<artifactId>tycho-maven-plugin</artifactId>
 				<extensions>true</extensions>
 			</plugin>
+			<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>target-platform-configuration</artifactId>
+						<configuration>
+							<target>
+								<artifact>
+									<groupId>org.eclipse.recommenders.target</groupId>
+									<artifactId>e42</artifactId>
+									<version>1.0.2-SNAPSHOT</version>
+								</artifact>
+							</target>
+						</configuration>
+					</plugin>
 		</plugins>
   		<pluginManagement>
   			<plugins>
