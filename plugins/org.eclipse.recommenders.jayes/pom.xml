@@ -2,14 +2,15 @@
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-		<parent>
+	<parent>
 		<groupId>org.eclipse.recommenders</groupId>
 		<artifactId>org.eclipse.recommenders.jayes-main-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../org.eclipse.recommenders.jayes-main-parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>org.eclipse.recommenders.jayes.source-feature</artifactId>
-	<packaging>eclipse-feature</packaging>
-
+	<artifactId>org.eclipse.recommenders.jayes</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	<dependencies>
+	</dependencies>
 </project>

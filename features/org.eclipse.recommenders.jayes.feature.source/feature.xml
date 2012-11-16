@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.recommenders.jayes.source-feature"
-      label="BayesNet Feature (Sources)"
-      version="0.3.0.qualifier"
+      id="org.eclipse.recommenders.jayes.feature.source"
+      label="Jayes Feature (Sources)"
+      version="1.0.0.qualifier"
       provider-name="Eclipse Code Recommenders">
 
    <description url="http://www.example.com/description">

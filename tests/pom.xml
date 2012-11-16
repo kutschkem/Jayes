@@ -7,8 +7,12 @@
 		<groupId>org.eclipse.recommenders</groupId>
 		<artifactId>org.eclipse.recommenders.jayes-main-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../org.eclipse.recommenders.jayes-main-parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
+
+	<modules>
+		<module>org.eclipse.recommenders.tests.jayes</module>
+	</modules>
   
   	<properties>
   		<emma.session.out.file>${project.build.directory}/emma/${project.artifactId}.es</emma.session.out.file>
