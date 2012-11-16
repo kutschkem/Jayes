@@ -164,9 +164,9 @@ public class JunctionTreeTests {
     @Test
     public void testLargerScaleCorrectness() throws IOException, ParserConfigurationException, SAXException{
     	getClass().getClassLoader();
-		BayesNet net = new XMLBIFReader().read(ClassLoader.getSystemResourceAsStream("JPanel.xml"));
+		BayesNet net = new XMLBIFReader().read(getClass().getClassLoader().getResourceAsStream("JPanel.xml"));
     	TestcaseDeserializer deser = new TestcaseDeserializer(net);
-    	Reader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("testcases_JPanel.json")));
+    	Reader rdr = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("testcases_JPanel.json")));
     	StringBuffer buf = new StringBuffer();
     	CharBuffer cbuff = CharBuffer.allocate(1024);
     	while(rdr.read(cbuff) != -1){
@@ -192,9 +192,9 @@ public class JunctionTreeTests {
     @Test
     public void testLargerScaleCorrectnessFloats() throws IOException, ParserConfigurationException, SAXException{
     	getClass().getClassLoader();
-		BayesNet net = new XMLBIFReader().read(ClassLoader.getSystemResourceAsStream("JPanel.xml"));
+		BayesNet net = new XMLBIFReader().read(getClass().getClassLoader().getResourceAsStream("JPanel.xml"));
     	TestcaseDeserializer deser = new TestcaseDeserializer(net);
-    	Reader rdr = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream("testcases_JPanel.json")));
+    	Reader rdr = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("testcases_JPanel.json")));
     	StringBuffer buf = new StringBuffer();
     	CharBuffer cbuff = CharBuffer.allocate(1024);
     	while(rdr.read(cbuff) != -1){
