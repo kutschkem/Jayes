@@ -8,7 +8,7 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.tests.jayes.LBP;
+package org.eclipse.recommenders.tests.jayes.lbp;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

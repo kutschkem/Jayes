@@ -31,7 +31,7 @@ import org.eclipse.recommenders.jayes.inference.Options;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
-import org.eclipse.recommenders.tests.jayes.LBP.LoopyBeliefPropagation;
+import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestCase;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestcaseDeserializer;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
