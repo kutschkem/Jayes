@@ -36,7 +36,7 @@ public class Factor implements Cloneable {
 	}
 
 	public double getValue(int i) {
-		return values.getDouble(i);
+		return values.getDouble(getRealPosition(i));
 	}
 
 	public void fill(double d) {
@@ -156,10 +156,12 @@ public class Factor implements Cloneable {
 	private void multiplyPrepared(Cut cut, int offset,
 			IArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
+			int last = Math.min(computeLength(), cut.getLength() + cut.getIndex()
 					+ offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				values.mulAssign(i, compatibleValues, positions[i]);
+			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()){
+				int j = getRealPosition(i);
+				values.mulAssign(j, compatibleValues, positions[j]);
+			}
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
@@ -184,10 +186,12 @@ public class Factor implements Cloneable {
 	private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
 			int[] positions) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
+			int last = Math.min(computeLength(), cut.getLength() + cut.getIndex()
 					+ offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				compatibleFactorValues.addAssign(positions[i], values, i);
+			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()){
+				int j = getRealPosition(i);
+				compatibleFactorValues.addAssign(positions[j], values, j);
+			}
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
@@ -206,12 +210,13 @@ public class Factor implements Cloneable {
 
 	private double findMax(Cut cut, int offset, double max) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
+			int last = Math.min(computeLength(), cut.getLength() + cut.getIndex()
 					+ offset);
 			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				if (values.getDouble(i) != Double.NEGATIVE_INFINITY
-						&& Math.abs(values.getDouble(i)) > Math.abs(max)) {
-					max = values.getDouble(i);
+				int j = getRealPosition(i);
+				if (values.getDouble(j) != Double.NEGATIVE_INFINITY
+						&& Math.abs(values.getDouble(j)) > Math.abs(max)) {
+					max = values.getDouble(j);
 				}
 			}
 		} else {
@@ -230,10 +235,12 @@ public class Factor implements Cloneable {
 	private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
 			int[] positions, double max) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
+			int last = Math.min(computeLength(), cut.getLength() + cut.getIndex()
 					+ offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				compatibleFactorValues.addAssign(positions[i], Math.exp(values.getDouble(i) - max));
+			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()){
+				int j = getRealPosition(i);
+				compatibleFactorValues.addAssign(positions[j], Math.exp(values.getDouble(j) - max));
+			}
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
@@ -245,10 +252,12 @@ public class Factor implements Cloneable {
 	private void multiplyPreparedLog(Cut cut, int offset,
 			IArrayWrapper compatibleValues, int[] positions) {
 		if (cut.getSubCut() == null) {
-			int last = Math.min(values.length(), cut.getLength() + cut.getIndex()
+			int last = Math.min(computeLength(), cut.getLength() + cut.getIndex()
 					+ offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize())
-				values.addAssign(i, compatibleValues, positions[i]);
+			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()){
+				int j = getRealPosition(i);
+				values.addAssign(j, compatibleValues, positions[j]);
+			}
 		} else {
 			Cut c = cut.getSubCut();
 			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
@@ -263,6 +272,15 @@ public class Factor implements Cloneable {
 			isCutValid = true;
 		}
 
+	}
+
+	protected int getRealPosition(int virtualPosition) {
+		//for non-sparse factors, no address translation needs to be done
+		return virtualPosition;
+	}
+
+	public int computeLength() {
+		return values.length();
 	}
 
 	/**

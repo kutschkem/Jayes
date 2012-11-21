@@ -18,7 +18,7 @@ import org.eclipse.recommenders.jayes.inference.LikelihoodWeightedSampling;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
 
-public class LikelyhoodWeightedSamplingTests {
+public class LikelyhoodWeightedSamplingTest {
 
     @Test
     public void testSampler1() {

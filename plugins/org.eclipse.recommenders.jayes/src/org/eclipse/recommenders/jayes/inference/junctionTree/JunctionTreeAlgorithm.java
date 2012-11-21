@@ -16,9 +16,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.Factor;
@@ -334,37 +331,6 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		invokeInitialBeliefUpdate();
 		storePotentialValues();
 
-		logSparsenessInfo();
-		logCompleteMemoryInfo();
-
-	}
-
-	private void logSparsenessInfo() {
-		int denseLength = 0;
-		int sparseLength = 0;
-		int nonSparseFactorLength = 0;
-		for (Factor f : nodePotentials) {
-			if (f instanceof SparseFactor) {
-				SparseFactor _f = (SparseFactor) f;
-				if (_f.isSparse()) {
-					denseLength += _f.computeLength();
-					sparseLength += _f.getValues().length();
-					sparseLength += _f.computeLength() / _f.getSparseness();
-				} else {
-					nonSparseFactorLength += _f.getValues().length();
-				}
-			} else {
-				nonSparseFactorLength += f.getValues().length();
-			}
-		}
-		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
-
-		sparseLength += nonSparseFactorLength;
-		denseLength += nonSparseFactorLength;
-
-		log.log(Level.INFO, "dense factor size: " + denseLength);
-		log.log(Level.INFO, "sparse factor size: " + sparseLength);
-		log.log(Level.INFO, "ratio: " + (sparseLength / (double) denseLength));
 	}
 
 	private void sparsifyPotentials() {
@@ -495,8 +461,6 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		final IntArrayFlyWeight flyWeight = new IntArrayFlyWeight();
 		prepareSepsetMultiplications(flyWeight);
 		prepareQueries(flyWeight);
-
-		logMemorySavingsFromFlyweightPattern(flyWeight);
 	}
 
 	private void prepareSepsetMultiplications(final IntArrayFlyWeight flyWeight) {
@@ -570,97 +534,6 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			initializations.add(new Pair<Factor, IArrayWrapper>(sep,
 					flyweight.getInstance(sep.getValues().clone())));
 		}
-
-		logMemorySavingsFromFlyweightPattern(flyweight);
-
-	}
-
-	private void logMemorySavingsFromFlyweightPattern(
-			ArrayWrapperFlyWeight flyweight) {
-		int factorSizes = 0;
-		for (final Factor pot : nodePotentials) {
-			factorSizes += pot.getValues().length();
-		}
-
-		for (final Factor sep : sepSets.values()) {
-			factorSizes += sep.getValues().length();
-		}
-
-		int flyweightsize = 0;
-		for (IArrayWrapper d : flyweight) {
-			flyweightsize += d.length();
-		}
-
-		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
-		log.log(Level.INFO, "initializations, original size: " + factorSizes);
-		log.log(Level.INFO, "initializations, flyweight size: " + flyweightsize);
-		log.log(Level.INFO, "ratio: " + (flyweightsize / (double) factorSizes));
-	}
-
-	private void logMemorySavingsFromFlyweightPattern(
-			IntArrayFlyWeight flyweight) {
-		int factorSizes = 0;
-		for (int[] intArr : preparedMultiplications.values()) {
-			factorSizes += intArr.length;
-		}
-
-		for (int[] prep : preparedQueries) {
-			factorSizes += prep.length;
-		}
-
-		int flyweightsize = 0;
-		for (int[] d : flyweight) {
-			flyweightsize += d.length;
-		}
-
-		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
-		log.log(Level.INFO, "prepared ops, original size: " + factorSizes);
-		log.log(Level.INFO, "prepared ops, flyweight size: " + flyweightsize);
-		log.log(Level.INFO, "prepared ops, ratio flyw./orig.: " + (flyweightsize / (double) factorSizes));
-	}
-
-	private void logCompleteMemoryInfo() {
-		long size = 0; // size in bytes
-		for (Factor f : nodePotentials) {
-			size += f.getValues().length() * f.getValues().sizeOfElement();
-			size += f.getDimensions().length * 4;
-			size += f.getDimensionIDs().length * 4;
-			if (f instanceof SparseFactor) {
-				SparseFactor g = ((SparseFactor) f);
-				if (g.isSparse()) {
-					size += g.computeLength() / g.getSparseness();
-				}
-			}
-		}
-		for (Factor f : sepSets.values()) {
-			size += f.getValues().length() * f.getValues().sizeOfElement();
-			size += f.getDimensions().length * 4;
-			size += f.getDimensionIDs().length * 4;
-		}
-		HashSet<int[]> check = new HashSet<int[]>();
-		for (int[] p : preparedMultiplications.values()) {
-			if (!check.contains(p)) {
-				check.add(p);
-				size += p.length * 4;
-			}
-		}
-		for (int[] p : preparedQueries) {
-			if (!check.contains(p)) {
-				check.add(p);
-				size += p.length * 4;
-			}
-		}
-		HashSet<IArrayWrapper> check2 = new HashSet<IArrayWrapper>();
-		for (Pair<Factor, IArrayWrapper> p : initializations) {
-			if (!check2.contains(p.getSecond())) {
-				check2.add(p.getSecond());
-				size += p.getSecond().length() * p.getSecond().sizeOfElement();
-			}
-		}
-
-		Logger log = Logger.getLogger("org.eclipse.recommenders.jayes");
-		log.log(Level.INFO, "approx. total size of the model, in bytes: "
-				+ size);
 	}
 
 }

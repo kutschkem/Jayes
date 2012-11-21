@@ -18,7 +18,7 @@ import org.eclipse.recommenders.jayes.inference.RejectionSampling;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
 
-public class RejectionSamplerTests {
+public class RejectionSamplerTest {
 
     @Test
     public void testSampler1() {

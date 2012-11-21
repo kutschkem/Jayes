@@ -20,10 +20,10 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
 public class SparseFactor extends Factor {
 
 	/**
-	 * 2^sparsenessExponent values in the original array correspond to one trie entry
+	 * blockSize values in the original array correspond to one block pointer
 	 */
-	private int sparsenessExponent;
-	private int[] trie;
+	private int blockSize;
+	private int[] blockPointers;
 	private boolean isSparse = false;
 
 	@Override
@@ -39,7 +39,8 @@ public class SparseFactor extends Factor {
 	public void copyValues(IArrayWrapper other) {
 		if(isSparse){
 			validateCut();
-			int offset = getSparsePosition(cut.getIndex());
+			int offset = getRealPosition(cut.getIndex());
+			// we don't know how many values need to be copied, thus copy everything until the end
 			int length = other.length() - offset;
 		
 			values.arrayCopy(other, offset, offset, length);
@@ -68,15 +69,15 @@ public class SparseFactor extends Factor {
 		int[] counter = new int[dimensions.length];
 		Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
 		counter[counter.length - 1] = -1;
-		for (int i = 0; i < trie.length; i++) {
+		for (int i = 0; i < blockPointers.length; i++) {
 			for (int j = 0; j < getSparseness(); j++) {
 				if (i * getSparseness() + j >= computeLength()) break;
 				AddressCalc.incrementMultiDimensionalCounter(counter,
 						dimensions, dimensions.length - 1);
-				if (trie[i] != 0) {
+				if (blockPointers[i] != 0) {
 					int pos = computeForeignPosition(compatible, counter,
 							foreignIdToIndex);
-					positions[getSparsePosition(i * getSparseness() + j)] = pos;
+					positions[getRealPosition(i * getSparseness() + j)] = pos;
 				}
 			}
 		}
@@ -86,23 +87,23 @@ public class SparseFactor extends Factor {
 	private void createSparseValueArray() {
 		// need to treat 0-dimensional factors specially
 		if (dimensions.length == 0) {
-			trie = new int[0];
+			blockPointers = new int[0];
 			values.newArray(1);
 			return;
 		}
 
-		if (trie == null) {
-			trie = new int[0];
+		if (blockPointers == null) {
+			blockPointers = new int[0];
 		}
 
 		int nonSparse = 0;
-		for (int i = 0; i < trie.length; i++) {
-			if (trie[i] != 0) {
+		for (int i = 0; i < blockPointers.length; i++) {
+			if (blockPointers[i] != 0) {
 				nonSparse++;
 			}
 		}
-		if (nonSparse == trie.length) {
-			trie = new int[0];
+		if (nonSparse == blockPointers.length) {
+			blockPointers = new int[0];
 			values.newArray(computeLength());
 			return;
 		} else {
@@ -122,41 +123,41 @@ public class SparseFactor extends Factor {
 	 */
 	public void sparsify(List<Factor> compatible) {
 		optimizeDimensionOrder(compatible);
-		sparsenessExponent = computeOptimalSparsenessExponent(1, compatible);
-		if (sparsenessExponent != -1) {
-			System.out.println("Sparseness: " + sparsenessExponent);
+		blockSize = computeOptimalSparseness(compatible);
+		if (blockSize != -1) {
+			System.out.println("Sparseness: " + blockSize);
 		}
-		if (sparsenessExponent == -1) {
+		if (blockSize == -1) {
 			// HACKHACK cue for createSparseValueArray to make factor nonsparse
-			trie = new int[1];
-			trie[0] = 1;
+			blockPointers = new int[1];
+			blockPointers[0] = 1;
 			return;
 		}
 		int length = computeLength();
-		trie = new int[length / getSparseness()
+		blockPointers = new int[length / getSparseness()
 				+ (length % getSparseness() == 0 ? 0 : 1)];
-		Arrays.fill(trie, Integer.MIN_VALUE);
+		Arrays.fill(blockPointers, Integer.MIN_VALUE);
 		Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
 		counter[counter.length - 1] = -1;
 		int triesize = 0;
-		for (int i = 0; i < trie.length; i++) {
+		for (int i = 0; i < blockPointers.length; i++) {
 			boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
 					foreignIdToIndex, getSparseness());
-			if (isZero || trie[i] == 0) {
-				trie[i] = 0;
+			if (isZero || blockPointers[i] == 0) {
+				blockPointers[i] = 0;
 			} else {
 				triesize++;
-				trie[i] = triesize * getSparseness();
+				blockPointers[i] = triesize * getSparseness();
 			}
 		}
 		System.out.println("Sparse entries: "
-				+ ((trie.length - triesize) * getSparseness()));
+				+ ((blockPointers.length - triesize) * getSparseness()));
 	}
 
 	private void optimizeDimensionOrder(List<Factor> compatible) {
 		int[][] zerosByDimension = countZerosByDimension(compatible);
-		final double[] infogain = calcInfoGain(zerosByDimension);
+		final double[] infogain = computeInfoGain(zerosByDimension);
 		Integer[] indices = ArrayUtils.indexArray(infogain);
 		Arrays.sort(indices, new Comparator<Integer>() {
 
@@ -176,7 +177,7 @@ public class SparseFactor extends Factor {
 		setDimensions(ArrayUtils.permute(getDimensions(), indices));
 	}
 
-	private double[] calcInfoGain(int[][] zerosByDimension) {
+	private double[] computeInfoGain(int[][] zerosByDimension) {
 		int totalZeros = 0;
 		for (int i = 0; i < zerosByDimension[0].length; i++) {
 			totalZeros += zerosByDimension[0][i];
@@ -237,27 +238,21 @@ public class SparseFactor extends Factor {
 		return foreignIdToIndex;
 	}
 
-	private boolean checkIfPartitionIsZero(int partition, int[] counter,
+	private boolean checkIfPartitionIsZero(final int partition, int[] counter,
 			List<Factor> compatible,
-			Map<Factor, Map<Integer, Integer>> foreignIdToIndex, int sparseness) {
+			Map<Factor, Map<Integer, Integer>> foreignIdToIndex, final int blockSize) {
 		boolean isZero = true;
-		for (int j = 0; j < sparseness; j++) {
-			if (partition * sparseness + j >= computeLength()) break;
+		for (int j = 0; j < blockSize; j++) {
+			if (partition * blockSize + j >= computeLength()) break;
 			AddressCalc.incrementMultiDimensionalCounter(counter, dimensions,
 					dimensions.length - 1);
 			boolean isNotZero = true;
 			for (Factor f : compatible) {
-				//				System.out.println(Arrays.toString(f.getDimensionIDs()));
 				int pos = computeForeignPosition(f, counter,
 						foreignIdToIndex.get(f));
-				try {
 					if (f.getValue(pos) == 0) {
 						isNotZero = false;
 					}
-				} catch (RuntimeException e) {
-					System.out.println();
-					throw e;
-				}
 			}
 			if (isNotZero) {
 				isZero = false;
@@ -266,44 +261,53 @@ public class SparseFactor extends Factor {
 		return isZero;
 	}
 
-	private int computeOptimalSparsenessExponent(int start, List<Factor> factor) {
-		int savings;
+	private int computeOptimalSparseness(List<Factor> factor) {
+		int arraySize;
 		int overhead;
 		int newOverhead;
-		int newSavings;
-		newSavings = computeSavings(start, factor);
-		newOverhead = (computeLength() >> start) + (1 << start);
+		int newArraySize;
+		int blocksize = 1;
+		newArraySize = predictLengthOfValueArray(blocksize, factor) * values.sizeOfElement();
+		newOverhead = (computeLength() / blocksize) * 4; // integer is 4 byte TODO: make this a constant dependent on Integer.SIZE
 		do { // greedy strategy
-			savings = newSavings;
+			blocksize*=2;
+			arraySize = newArraySize;
 			overhead = newOverhead;
-			start++;
-			newSavings = computeSavings(start, factor);
-			newOverhead = (computeLength() >> start) + (1 << start);
-		} while (overhead - savings > newOverhead - newSavings); //TODO take into account size of int vs double
-		if (overhead - savings >= 0) return -1;
-		return start - 1;
+			newArraySize = predictLengthOfValueArray(blocksize, factor) * values.sizeOfElement();
+			newOverhead = (computeLength() / blocksize) * 4;
+		} while (newArraySize + newOverhead <= arraySize + overhead);
+		
+		int sparseMemory = overhead + arraySize;
+		int denseMemory = computeLength() * values.sizeOfElement();
+		if (sparseMemory >= denseMemory) return -1;
+		return blocksize/2;
 	}
 
-	private int computeSavings(int exponent, List<Factor> compatible) {
+	private int predictLengthOfValueArray(int blockSize, List<Factor> compatible) {
 		Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
 		counter[counter.length - 1] = -1;
 		int length = computeLength();
-		int saving = 0;
-		for (int i = 0; i < length / (1 << exponent); i++) {
+		int futureLength = length + blockSize;
+		for (int i = 0; i < length / blockSize; i++) {
 			boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
-					foreignIdToIndex, 1 << exponent);
+					foreignIdToIndex, blockSize);
 			if (isZero) {
-				saving += 1 << exponent;
+				futureLength -= blockSize;
 			}
 		}
-		return saving;
+		return futureLength;
 	}
 
-	private int getSparsePosition(int pos) {
-		return trie[pos >> sparsenessExponent] + (pos & (getSparseness() - 1));
+	@Override
+	protected int getRealPosition(int virtualPosition) {
+		if(! isSparse) {
+			return super.getRealPosition(virtualPosition);
+		}
+		return blockPointers[virtualPosition / getSparseness()] + (virtualPosition % getSparseness());
 	}
 
+	@Override
 	public int computeLength() {
 		return MathUtils.multiply(dimensions);
 	}
@@ -315,146 +319,12 @@ public class SparseFactor extends Factor {
 	}
 
 	@Override
-	public void multiplyPrepared(IArrayWrapper compatibleValues, int[] positions) {
-		if (!isSparse) {
-			super.multiplyPrepared(compatibleValues, positions);
-			return;
-		}
-		validateCut();
-		if (!isLogScale())
-			multiplyPrepared(cut, 0, compatibleValues, positions);
-		else
-			multiplyPreparedLog(cut, 0, compatibleValues, positions);
-	}
-
-	private void multiplyPrepared(Cut cut, int offset,
-			IArrayWrapper compatibleValues, int[] positions) {
-		if (cut.getSubCut() == null) {
-			int last = Math.min(computeLength(),
-					cut.getLength() + cut.getIndex() + offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				int j = getSparsePosition(i);
-				values.mulAssign(j, compatibleValues, positions[j]);
-			}
-		} else {
-			Cut c = cut.getSubCut();
-			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				multiplyPrepared(c, offset + i, compatibleValues, positions);
-			}
-		}
-	}
-
-	private void multiplyPreparedLog(Cut cut, int offset,
-			IArrayWrapper compatibleValues, int[] positions) {
-		if (cut.getSubCut() == null) {
-			int last = Math.min(computeLength(),
-					cut.getLength() + cut.getIndex() + offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				int j = getSparsePosition(i);
-				values.addAssign(j, compatibleValues, positions[j]);
-			}
-		} else {
-			Cut c = cut.getSubCut();
-			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				multiplyPreparedLog(c, offset + i, compatibleValues, positions);
-			}
-		}
-	}
-
-	@Override
-	public void sumPrepared(IArrayWrapper compatibleFactorValues,
-			int[] preparedOperation) {
-		if (!isSparse) {
-			super.sumPrepared(compatibleFactorValues, preparedOperation);
-			return;
-		}
-		validateCut();
-
-		compatibleFactorValues.fill(0);
-
-		if (!isLogScale())
-			sumPrepared(cut, 0, compatibleFactorValues, preparedOperation);
-		else
-			sumPreparedLog(compatibleFactorValues, preparedOperation);
-
-	}
-
-	private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleValues,
-			int[] positions) {
-		if (cut.getSubCut() == null) {
-			int last = Math.min(computeLength(),
-					cut.getLength() + cut.getIndex() + offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				int j = getSparsePosition(i);
-				compatibleValues.addAssign(positions[j], values, j);
-			}
-		} else {
-			Cut c = cut.getSubCut();
-			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				sumPrepared(c, offset + i, compatibleValues, positions);
-			}
-		}
-	}
-
-	private void sumPreparedLog(IArrayWrapper compatible, int[] positions) {
-		double max = findMax(cut, 0, 0);
-		sumPreparedLog(cut, 0, compatible, positions, max);
-		for (int i = 0; i < compatible.length(); i++) {
-			compatible.assign(i, Math.log(compatible.getDouble(i)) + max);
-		}
-	}
-
-	private double findMax(Cut cut, int offset, double max) {
-		if (cut.getSubCut() == null) {
-			int last = Math.min(computeLength(),
-					cut.getLength() + cut.getIndex() + offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				int j = getSparsePosition(i);
-				if (values.getDouble(j) != Double.NEGATIVE_INFINITY
-						&& Math.abs(values.getDouble(j)) > Math.abs(max)) {
-					max = values.getDouble(j);
-				}
-			}
-		} else {
-			Cut c = cut.getSubCut();
-			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				double pot = findMax(c, offset + i, max);
-				if (pot != Double.NEGATIVE_INFINITY
-						&& Math.abs(pot) > Math.abs(max)) {
-					max = pot;
-				}
-			}
-		}
-		return max;
-	}
-
-	private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleValues,
-			int[] positions, double max) {
-		if (cut.getSubCut() == null) {
-			int last = Math.min(computeLength(),
-					cut.getLength() + cut.getIndex() + offset);
-			for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-				int j = getSparsePosition(i);
-				compatibleValues.addAssign(positions[j], Math.exp(values.getDouble(j) - max));
-			}
-		} else {
-			Cut c = cut.getSubCut();
-			for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-				sumPreparedLog(c, offset + i, compatibleValues, positions, max);
-			}
-		}
-	}
-
-	@Override
 	public void multiplyCompatibleToLog(Factor compatible) {
 		if (values.length() == 1) {
 			createSparseValueArray();
 			fill(1);
 		}
-		int[] positions = prepareMultiplication(compatible);
-		for (int i = 0; i < values.length(); i++) {
-			values.addAssign(i, Math.log(compatible.values.getDouble(positions[i])));
-		}
+		super.multiplyCompatibleToLog(compatible);
 	}
 
 	@Override
@@ -468,18 +338,12 @@ public class SparseFactor extends Factor {
 		}
 	}
 
-	@Override
-	public double getValue(int i) {
-		if (!isSparse) return values.getDouble(i);
-		return values.getDouble(getSparsePosition(i));
-	}
-
 	public boolean isSparse() {
 		return isSparse;
 	}
 
 	public int getSparseness() {
-		return 1 << sparsenessExponent;
+		return blockSize;
 	}
 
 }

@@ -11,15 +11,13 @@
 package org.eclipse.recommenders.tests.jayes;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.eclipse.recommenders.jayes.Factor;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.junit.Test;
 
-public class FactorTests {
+public class FactorTest {
 
     @Test
     public void sumTest() {
@@ -90,7 +88,7 @@ public class FactorTests {
     }
 
     @Test
-    public void microSumTest() {
+    public void preparedSumTest() {
         Factor f = new Factor();
         f.setDimensions(new int[] { 4, 4, 4 });
         f.setDimensionIDs(new int[] { 0, 1, 2 });
@@ -100,57 +98,9 @@ public class FactorTests {
         f2.setDimensions(new int[] { 4 });
         f2.setDimensionIDs(new int[] { 2 });
 
-        int oft = 10000;
-
-        long time = System.nanoTime();
-        for (int i = 0; i < oft; i++) {
-            f.sum(-1);
-        }
-        long elapsed1 = System.nanoTime() - time;
-
-        time = System.nanoTime();
-        for (int i = 0; i < oft; i++) {
-            f.sumPrepared(f2.getValues(), f.prepareMultiplication(f2));
-        }
-        long elapsed2 = System.nanoTime() - time;
-
-        int[] prepared = f.prepareMultiplication(f2);
-        time = System.nanoTime();
-        for (int i = 0; i < oft; i++) {
-            f.sumPrepared(f2.getValues(), prepared);
-        }
-        long elapsed3 = System.nanoTime() - time;
-
-        assertTrue(elapsed3 < Math.min(elapsed2, elapsed1));
-
-    }
-
-    @Test
-    public void microMultTest() {
-        Factor f = new Factor();
-        f.setDimensions(new int[] { 4, 4, 4 });
-        f.setDimensionIDs(new int[] { 0, 1, 2 });
-        f.fill(1);
-
-        Factor f2 = new Factor();
-        f2.setDimensions(new int[] { 4 });
-        f2.setDimensionIDs(new int[] { 2 });
-
-        int oft = 10000;
-
-        long time = System.nanoTime();
-        for (int i = 0; i < oft; i++)
-            f.multiplyCompatible(f2);
-        long elapsed1 = System.nanoTime() - time;
-
-        int[] prepared = f.prepareMultiplication(f2);
-        time = System.nanoTime();
-        for (int i = 0; i < oft; i++)
-            f.multiplyPrepared(f2.getValues(), prepared);
-        long elapsed2 = System.nanoTime() - time;
-
-        assertTrue(elapsed2 < elapsed1);
-
+        f.sumPrepared(f2.getValues(), f.prepareMultiplication(f2));
+        
+        assertArrayEquals(f.sum(-1),f2.getValues().getDouble(),0.0000001);
     }
 
 }

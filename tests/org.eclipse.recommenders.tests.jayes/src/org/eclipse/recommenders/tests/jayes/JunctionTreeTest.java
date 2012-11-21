@@ -32,13 +32,15 @@ import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorit
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
+import org.eclipse.recommenders.tests.jayes.logging.JTATestAdapter;
+import org.eclipse.recommenders.tests.jayes.logging.JunctionTreeMemoryLogger;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestCase;
 import org.eclipse.recommenders.tests.jayes.testgeneration.TestcaseDeserializer;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-public class JunctionTreeTests {
+public class JunctionTreeTest {
 
     @Test
     public void testInference1() {
@@ -178,8 +180,13 @@ public class JunctionTreeTests {
     	
     	List<TestCase> testcases = deser.deserialize(buf.toString());
     	
-    	JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
+    	JTATestAdapter algo = new JTATestAdapter();
     	algo.setNetwork(net);
+    	
+    	JunctionTreeMemoryLogger logger = new JunctionTreeMemoryLogger(algo);
+    	logger.logMemorySavingsFromFlyweights();
+    	logger.logSparsenessInfo();
+    	logger.logCompleteMemoryInfo();
     	
     	for(TestCase tc: testcases){
     		algo.setEvidence(tc.evidence);
@@ -206,11 +213,16 @@ public class JunctionTreeTests {
     	
     	List<TestCase> testcases = deser.deserialize(buf.toString());
     	
-    	JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
+    	JTATestAdapter algo = new JTATestAdapter();
     	Options options = new Options();
     	options.allowFloats(true);
     	algo.setOptions(options);
     	algo.setNetwork(net);
+    	
+    	JunctionTreeMemoryLogger logger = new JunctionTreeMemoryLogger(algo);
+    	logger.logMemorySavingsFromFlyweights();
+    	logger.logSparsenessInfo();
+    	logger.logCompleteMemoryInfo();
     	
     	for(TestCase tc: testcases){
     		algo.setEvidence(tc.evidence);
