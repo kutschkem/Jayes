@@ -13,9 +13,9 @@ package org.eclipse.recommenders.tests.jayes.logging;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 
-import org.eclipse.recommenders.jayes.Factor;
-import org.eclipse.recommenders.jayes.SparseFactor;
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.util.IArrayWrapper;
+import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +37,12 @@ public class JunctionTreeMemoryLogger {
 	private void logMemorySavingsFromFlyweightPatternForInitalizations() {
 		IdentityHashMap<IArrayWrapper,IArrayWrapper> instances = new IdentityHashMap<IArrayWrapper, IArrayWrapper>();
 		int factorSizes = 0;
-		for (final Factor pot : jta.getNodePotentials()) {
+		for (final AbstractFactor pot : jta.getNodePotentials()) {
 			factorSizes += pot.getValues().length();
 			instances.put(pot.getValues(), pot.getValues());
 		}
 
-		for (final Factor sep : jta.getSepsets().values()) {
+		for (final AbstractFactor sep : jta.getSepsets().values()) {
 			factorSizes += sep.getValues().length();
 			instances.put(sep.getValues(),sep.getValues());
 		}
@@ -83,15 +83,9 @@ public class JunctionTreeMemoryLogger {
 	public void logSparsenessInfo() {
 		int denseLength = 0;
 		int sparseLength = 0;
-		for (Factor f : jta.getNodePotentials()) {
-			denseLength += f.computeLength();
-			sparseLength += f.getValues().length();
-			if (f instanceof SparseFactor) {
-				SparseFactor _f = (SparseFactor) f;
-				if (_f.isSparse()) {
-					sparseLength += _f.computeLength() / _f.getSparseness();
-				}
-			}
+		for (AbstractFactor f : jta.getNodePotentials()) {
+			denseLength += MathUtils.multiply(f.getDimensions());//the length that a dense factor would have
+			sparseLength += f.getValues().length() + f.getOverhead();
 		}
 		
 		logger.info("dense factor size: " + denseLength);
@@ -109,18 +103,13 @@ public class JunctionTreeMemoryLogger {
 
 	private long estimateMemoryConsumption() {
 		long size = 0; // size in bytes
-		for (Factor f : jta.getNodePotentials()) {
+		for (AbstractFactor f : jta.getNodePotentials()) {
 			size += f.getValues().length() * f.getValues().sizeOfElement();
 			size += f.getDimensions().length * 4;
 			size += f.getDimensionIDs().length * 4;
-			if (f instanceof SparseFactor) {
-				SparseFactor g = ((SparseFactor) f);
-				if (g.isSparse()) {
-					size += g.computeLength() / g.getSparseness();
-				}
-			}
+			size += f.getOverhead();
 		}
-		for (Factor f : jta.getSepsets().values()) {
+		for (AbstractFactor f : jta.getSepsets().values()) {
 			size += f.getValues().length() * f.getValues().sizeOfElement();
 			size += f.getDimensions().length * 4;
 			size += f.getDimensionIDs().length * 4;
@@ -139,7 +128,7 @@ public class JunctionTreeMemoryLogger {
 			}
 		}
 		HashSet<IArrayWrapper> check2 = new HashSet<IArrayWrapper>();
-		for (Pair<Factor, IArrayWrapper> p : jta.getInitializations()) {
+		for (Pair<AbstractFactor, IArrayWrapper> p : jta.getInitializations()) {
 			if (!check2.contains(p.getSecond())) {
 				check2.add(p.getSecond());
 				size += p.getSecond().length() * p.getSecond().sizeOfElement();

@@ -27,10 +27,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
-import org.eclipse.recommenders.jayes.inference.Options;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
+import org.eclipse.recommenders.jayes.util.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.logging.JTATestAdapter;
 import org.eclipse.recommenders.tests.jayes.logging.JunctionTreeMemoryLogger;
@@ -69,7 +69,7 @@ public class JunctionTreeTest {
         BayesNode b = net.getNode("b");
 
         JunctionTreeAlgorithm inferer = new JunctionTreeAlgorithm();
-        inferer.setLogThreshold(0);
+        inferer.getFactory().setLogThreshold(0);
         inferer.addEvidence(a, "false");
         inferer.addEvidence(b, "lu");
         inferer.setNetwork(net);
@@ -92,7 +92,7 @@ public class JunctionTreeTest {
         JunctionTreeAlgorithm inferer = new JunctionTreeAlgorithm();
         // a treshold of two will make the a,b,c clique log scale but the
         // c,d clique normal
-        inferer.setLogThreshold(2);
+        inferer.getFactory().setLogThreshold(2);
         inferer.addEvidence(a, "false");
         inferer.addEvidence(b, "lu");
         inferer.setNetwork(net);
@@ -214,9 +214,8 @@ public class JunctionTreeTest {
     	List<TestCase> testcases = deser.deserialize(buf.toString());
     	
     	JTATestAdapter algo = new JTATestAdapter();
-    	Options options = new Options();
-    	options.allowFloats(true);
-    	algo.setOptions(options);
+    	
+    	algo.getFactory().setArrayType(new FloatArrayWrapper(new float[1]));
     	algo.setNetwork(net);
     	
     	JunctionTreeMemoryLogger logger = new JunctionTreeMemoryLogger(algo);

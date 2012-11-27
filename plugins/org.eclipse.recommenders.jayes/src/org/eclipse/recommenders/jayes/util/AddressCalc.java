@@ -13,7 +13,7 @@ package org.eclipse.recommenders.jayes.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.recommenders.jayes.Factor;
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 
 public final class AddressCalc {
 
@@ -49,7 +49,7 @@ public final class AddressCalc {
         }
     }
 
-    public static Map<Integer, Integer> computeIdToDimensionIndexMap(Factor factor) {
+    public static Map<Integer, Integer> computeIdToDimensionIndexMap(AbstractFactor factor) {
         Map<Integer, Integer> foreignIds = new HashMap<Integer, Integer>();
         for (int i = 0; i < factor.getDimensionIDs().length; i++) {
             foreignIds.put(factor.getDimensionIDs()[i], i);

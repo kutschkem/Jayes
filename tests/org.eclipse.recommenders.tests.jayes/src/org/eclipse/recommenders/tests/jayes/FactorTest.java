@@ -11,7 +11,9 @@
 package org.eclipse.recommenders.tests.jayes;
 
 import static org.junit.Assert.assertArrayEquals;
-import org.eclipse.recommenders.jayes.Factor;
+
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
@@ -21,7 +23,7 @@ public class FactorTest {
 
     @Test
     public void sumTest() {
-        Factor factor = new Factor();
+        AbstractFactor factor = new DenseFactor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2 });
         factor.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 1.0, 0.0 }));
@@ -31,7 +33,7 @@ public class FactorTest {
 
     @Test
     public void selectAndSumTest() {
-        Factor factor = new Factor();
+        AbstractFactor factor = new DenseFactor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2, 2 });
         factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
@@ -48,7 +50,7 @@ public class FactorTest {
 
     @Test
     public void sumMiddleTest1() {
-        Factor factor = new Factor();
+        AbstractFactor factor = new DenseFactor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2, 2 });
         factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
@@ -60,7 +62,7 @@ public class FactorTest {
 
     @Test
     public void sumMiddleTest2() {
-        Factor factor = new Factor();
+        AbstractFactor factor = new DenseFactor();
         factor.setDimensionIDs(new int[] { 0, 1, 2 });
         factor.setDimensions(new int[] { 2, 2, 2 });
         factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
@@ -73,12 +75,12 @@ public class FactorTest {
 
     @Test
     public void multiplicationTest() {
-        Factor f1 = new Factor();
+        AbstractFactor f1 = new DenseFactor();
         f1.setDimensions(new int[] { 2, 2, 2 });
         f1.setDimensionIDs(new int[] { 0, 1, 2 });
         f1.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 }));
 
-        Factor f2 = new Factor();
+        AbstractFactor f2 = new DenseFactor();
         f2.setDimensions(new int[] { 2, 2 });
         f2.setDimensionIDs(new int[] { 2, 0 });
         f2.setValues(new DoubleArrayWrapper(new double[] { 1.0, 0.0, 0.0, 1.0 }));
@@ -89,12 +91,12 @@ public class FactorTest {
 
     @Test
     public void preparedSumTest() {
-        Factor f = new Factor();
+        AbstractFactor f = new DenseFactor();
         f.setDimensions(new int[] { 4, 4, 4 });
         f.setDimensionIDs(new int[] { 0, 1, 2 });
         f.fill(1);
 
-        Factor f2 = new Factor();
+        AbstractFactor f2 = new DenseFactor();
         f2.setDimensions(new int[] { 4 });
         f2.setDimensionIDs(new int[] { 2 });
 

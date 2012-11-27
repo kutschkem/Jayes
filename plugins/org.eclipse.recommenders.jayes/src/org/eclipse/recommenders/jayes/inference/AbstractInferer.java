@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
+import org.eclipse.recommenders.jayes.factor.FactorFactory;
 
 public abstract class AbstractInferer implements IBayesInferer {
 
@@ -24,12 +25,15 @@ public abstract class AbstractInferer implements IBayesInferer {
     protected double[][] beliefs;
     protected boolean beliefsValid;
 
-    protected Options options = new Options();
+    protected FactorFactory factory = FactorFactory.defaultFactory();
 
-	@Override
-	public void setOptions(Options options) {
-		this.options = options;
+	public void setFactorFactory(FactorFactory factory) {
+		this.factory = factory;
 		
+	}
+	
+	public FactorFactory getFactory(){
+		return factory;
 	}
 
 	@Override
@@ -54,6 +58,7 @@ public abstract class AbstractInferer implements IBayesInferer {
         for (final BayesNode n : net.getNodes()) {
             beliefs[n.getId()] = new double[n.getOutcomeCount()];
         }
+        this.factory.setReferenceNetwork(net);
     }
 
     @Override

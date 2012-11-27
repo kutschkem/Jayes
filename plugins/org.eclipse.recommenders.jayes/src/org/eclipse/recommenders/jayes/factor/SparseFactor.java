@@ -4,7 +4,7 @@
  * this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html Contributors:
  * Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes;
+package org.eclipse.recommenders.jayes.factor;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,14 +17,13 @@ import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
-public class SparseFactor extends Factor {
+public class SparseFactor extends AbstractFactor {
 
 	/**
-	 * blockSize values in the original array correspond to one block pointer
+	 * blockSize values in the original value array correspond to one block pointer
 	 */
 	private int blockSize;
 	private int[] blockPointers;
-	private boolean isSparse = false;
 
 	@Override
 	public void setDimensions(int[] dimensions) {
@@ -37,47 +36,34 @@ public class SparseFactor extends Factor {
 
 	@Override
 	public void copyValues(IArrayWrapper other) {
-		if(isSparse){
 			validateCut();
 			int offset = getRealPosition(cut.getIndex());
 			// we don't know how many values need to be copied, thus copy everything until the end
-			int length = other.length() - offset;
+			int length = other.length() - offset;;
 		
 			values.arrayCopy(other, offset, offset, length);
-		}else{
-			super.copyValues(other);
-		}
 	}
 
-	public void multiplyCompatible(Factor compatible) {
-		if (values.length() == 1) {
-			createSparseValueArray();
-			fill(1);
-			for (int i = 0; i < getSparseness(); i++) {
-				values.assign(i, 0);
-			}
-		}
+	public void multiplyCompatible(AbstractFactor compatible) {
 		int[] positions = prepareMultiplication(compatible);
 		multiplyPrepared(compatible.values, positions);
 	}
 
 	@Override
-	public int[] prepareMultiplication(Factor compatible) {
-		if (!isSparse) return super.prepareMultiplication(compatible);
-
+	public int[] prepareMultiplication(AbstractFactor compatible) {
 		int[] positions = new int[values.length()];
 		int[] counter = new int[dimensions.length];
 		Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
 		counter[counter.length - 1] = -1;
 		for (int i = 0; i < blockPointers.length; i++) {
-			for (int j = 0; j < getSparseness(); j++) {
-				if (i * getSparseness() + j >= computeLength()) break;
+			for (int j = 0; j < blockSize; j++) {
+				if (i * blockSize + j >= computeLength()) break;
 				AddressCalc.incrementMultiDimensionalCounter(counter,
 						dimensions, dimensions.length - 1);
 				if (blockPointers[i] != 0) {
 					int pos = computeForeignPosition(compatible, counter,
 							foreignIdToIndex);
-					positions[getRealPosition(i * getSparseness() + j)] = pos;
+					positions[getRealPosition(i * blockSize + j)] = pos;
 				}
 			}
 		}
@@ -85,31 +71,18 @@ public class SparseFactor extends Factor {
 	}
 
 	private void createSparseValueArray() {
-		// need to treat 0-dimensional factors specially
-		if (dimensions.length == 0) {
-			blockPointers = new int[0];
-			values.newArray(1);
-			return;
-		}
+		int nonSparse = countNonzeroBlocks();
+		values.newArray((nonSparse + 1) * blockSize);
+	}
 
-		if (blockPointers == null) {
-			blockPointers = new int[0];
-		}
-
+	private int countNonzeroBlocks() {
 		int nonSparse = 0;
 		for (int i = 0; i < blockPointers.length; i++) {
 			if (blockPointers[i] != 0) {
 				nonSparse++;
 			}
 		}
-		if (nonSparse == blockPointers.length) {
-			blockPointers = new int[0];
-			values.newArray(computeLength());
-			return;
-		} else {
-			isSparse = true;
-			values.newArray((nonSparse + 1) * getSparseness());
-		}
+		return nonSparse;
 	}
 
 	/**
@@ -121,41 +94,49 @@ public class SparseFactor extends Factor {
 	 * @param compatible
 	 *            a Factor with compatible dimensions
 	 */
-	public void sparsify(List<Factor> compatible) {
+	/*
+	 * can't put this in a constructor because we already need full information about the dimensions here
+	 */
+	public void sparsify(List<AbstractFactor> compatible) {
 		optimizeDimensionOrder(compatible);
 		blockSize = computeOptimalSparseness(compatible);
 		if (blockSize != -1) {
 			System.out.println("Sparseness: " + blockSize);
 		}
-		if (blockSize == -1) {
-			// HACKHACK cue for createSparseValueArray to make factor nonsparse
-			blockPointers = new int[1];
-			blockPointers[0] = 1;
-			return;
-		}
 		int length = computeLength();
-		blockPointers = new int[length / getSparseness()
-				+ (length % getSparseness() == 0 ? 0 : 1)];
+		if (blockSize == -1) {
+			// this will result in a non-sparse factor with a minimum of overhead
+			// still, avoid using a SparseFactor in this case
+			blockSize = (int) Math.sqrt(length);
+		}
+		blockPointers = new int[length / blockSize
+				+ (length % blockSize == 0 ? 0 : 1)];
 		Arrays.fill(blockPointers, Integer.MIN_VALUE);
-		Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
+		Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
 		counter[counter.length - 1] = -1;
-		int triesize = 0;
+		int numberOfNonzeroBlocks = 0;
 		for (int i = 0; i < blockPointers.length; i++) {
 			boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
-					foreignIdToIndex, getSparseness());
+					foreignIdToIndex, blockSize);
 			if (isZero || blockPointers[i] == 0) {
 				blockPointers[i] = 0;
 			} else {
-				triesize++;
-				blockPointers[i] = triesize * getSparseness();
+				numberOfNonzeroBlocks++;
+				blockPointers[i] = numberOfNonzeroBlocks * blockSize;
 			}
 		}
 		System.out.println("Sparse entries: "
-				+ ((blockPointers.length - triesize) * getSparseness()));
+				+ ((blockPointers.length - numberOfNonzeroBlocks) * blockSize));
+		createSparseValueArray();
 	}
 
-	private void optimizeDimensionOrder(List<Factor> compatible) {
+	private void optimizeDimensionOrder(List<AbstractFactor> compatible) {
+		if(dimensions.length < 2) {
+			// countZerosByDimension breaks for 0-dimensional factors
+			// so don't try to optimize 0- and 1- dimensional factors
+			return;
+		}
 		int[][] zerosByDimension = countZerosByDimension(compatible);
 		final double[] infogain = computeInfoGain(zerosByDimension);
 		Integer[] indices = ArrayUtils.indexArray(infogain);
@@ -206,13 +187,13 @@ public class SparseFactor extends Factor {
 		return entropyValues;
 	}
 
-	private int[][] countZerosByDimension(List<Factor> compatible) {
+	private int[][] countZerosByDimension(List<AbstractFactor> compatible) {
 		int[][] zeros = new int[dimensions.length][];
 		for (int i = 0; i < zeros.length; i++) {
 			zeros[i] = new int[dimensions[i]];
 		}
 
-		Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
+		Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
 		counter[counter.length - 1] = -1;
 		int length = computeLength();
@@ -229,25 +210,25 @@ public class SparseFactor extends Factor {
 		return zeros;
 	}
 
-	private Map<Factor, Map<Integer, Integer>> computeIDToIndexMaps(
-			List<Factor> compatible) {
-		Map<Factor, Map<Integer, Integer>> foreignIdToIndex = new HashMap<Factor, Map<Integer, Integer>>();
-		for (Factor f : compatible) {
+	private Map<AbstractFactor, Map<Integer, Integer>> computeIDToIndexMaps(
+			List<AbstractFactor> compatible) {
+		Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex = new HashMap<AbstractFactor, Map<Integer, Integer>>();
+		for (AbstractFactor f : compatible) {
 			foreignIdToIndex.put(f, AddressCalc.computeIdToDimensionIndexMap(f));
 		}
 		return foreignIdToIndex;
 	}
 
 	private boolean checkIfPartitionIsZero(final int partition, int[] counter,
-			List<Factor> compatible,
-			Map<Factor, Map<Integer, Integer>> foreignIdToIndex, final int blockSize) {
+			List<AbstractFactor> compatible,
+			Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex, final int blockSize) {
 		boolean isZero = true;
 		for (int j = 0; j < blockSize; j++) {
 			if (partition * blockSize + j >= computeLength()) break;
 			AddressCalc.incrementMultiDimensionalCounter(counter, dimensions,
 					dimensions.length - 1);
 			boolean isNotZero = true;
-			for (Factor f : compatible) {
+			for (AbstractFactor f : compatible) {
 				int pos = computeForeignPosition(f, counter,
 						foreignIdToIndex.get(f));
 					if (f.getValue(pos) == 0) {
@@ -261,30 +242,36 @@ public class SparseFactor extends Factor {
 		return isZero;
 	}
 
-	private int computeOptimalSparseness(List<Factor> factor) {
+	private int computeOptimalSparseness(List<AbstractFactor> compatible) {
+		if(dimensions.length == 0){
+			// zero dimensions -> exactly one value, no need to optimize
+			// (also predictLengthOfValueArray breaks for zero dimensions)
+			return -1;
+		}
 		int arraySize;
 		int overhead;
 		int newOverhead;
 		int newArraySize;
 		int blocksize = 1;
-		newArraySize = predictLengthOfValueArray(blocksize, factor) * values.sizeOfElement();
+		newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
 		newOverhead = (computeLength() / blocksize) * 4; // integer is 4 byte TODO: make this a constant dependent on Integer.SIZE
 		do { // greedy strategy
+			//TODO enhance with second stage of searching by binary search
 			blocksize*=2;
 			arraySize = newArraySize;
 			overhead = newOverhead;
-			newArraySize = predictLengthOfValueArray(blocksize, factor) * values.sizeOfElement();
+			newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
 			newOverhead = (computeLength() / blocksize) * 4;
 		} while (newArraySize + newOverhead <= arraySize + overhead);
 		
-		int sparseMemory = overhead + arraySize;
-		int denseMemory = computeLength() * values.sizeOfElement();
+		int sparseMemory = arraySize + overhead;
+		int denseMemory = computeLength() * values.sizeOfElement() + 2* (int) Math.sqrt(computeLength());
 		if (sparseMemory >= denseMemory) return -1;
 		return blocksize/2;
 	}
 
-	private int predictLengthOfValueArray(int blockSize, List<Factor> compatible) {
-		Map<Factor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
+	private int predictLengthOfValueArray(int blockSize, List<AbstractFactor> compatible) {
+		Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
 		counter[counter.length - 1] = -1;
 		int length = computeLength();
@@ -301,49 +288,69 @@ public class SparseFactor extends Factor {
 
 	@Override
 	protected int getRealPosition(int virtualPosition) {
-		if(! isSparse) {
-			return super.getRealPosition(virtualPosition);
-		}
-		return blockPointers[virtualPosition / getSparseness()] + (virtualPosition % getSparseness());
+		return blockPointers[virtualPosition / blockSize] + (virtualPosition % blockSize);
 	}
 
 	@Override
-	public int computeLength() {
+	protected int computeLength() {
 		return MathUtils.multiply(dimensions);
 	}
 
 	@Override
 	public double[] sum(int sumDimensionID) {
-		if (!isSparse) return super.sum(sumDimensionID);
 		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
-	public void multiplyCompatibleToLog(Factor compatible) {
-		if (values.length() == 1) {
-			createSparseValueArray();
-			fill(1);
-		}
-		super.multiplyCompatibleToLog(compatible);
-	}
-
-	@Override
 	public void fill(double d) {
-		if (values.length() == 1) {
-			createSparseValueArray();
-		}
-		super.fill(d);
-		if (isSparse) for (int i = 0; i < getSparseness(); i++) {
+		values.fill(d);
+		for (int i = 0; i < blockSize; i++) {
 			values.assign(i, isLogScale() ? Double.NEGATIVE_INFINITY : 0);
 		}
 	}
-
-	public boolean isSparse() {
-		return isSparse;
+	
+	@Override
+	public int getOverhead(){
+		return blockPointers.length * 4;
+	}
+	
+	@Override
+	public SparseFactor clone(){
+		return (SparseFactor) super.clone();
+	}
+	
+	
+	/**
+	 * approximates whether creating a sparse factor will save memory compared to a
+	 * dense factor
+	 * @param futureLength the length that the new factor's value array would have in a dense factor
+	 * @param multiplicationCandidates
+	 * @return
+	 */
+	public static boolean isSuitable(int futureLength, List<AbstractFactor> multiplicationCandidates){
+		for(AbstractFactor f: multiplicationCandidates){
+			if(isSparseEnough(f,futureLength))
+				return true;
+		}
+		return false;
 	}
 
-	public int getSparseness() {
-		return blockSize;
+	/*
+	 * the minimal overhead is 2*sqrt(length).
+	 * The formula follows from (futureL. / f.length) * nbrOfZ > 2 * sqrt(futureL.)
+	 */
+	private static boolean isSparseEnough(AbstractFactor f, int futureLength) {
+		return countZeros(f.getValues()) > 2 * f.computeLength() / Math.sqrt(futureLength);
+	}
+
+	private static double countZeros(IArrayWrapper values) {
+		int result = 0;
+		for(double d: values.getDouble()){
+			if(d == 0){
+				result ++;
+			}
+		}
+		return result;
 	}
 
 }

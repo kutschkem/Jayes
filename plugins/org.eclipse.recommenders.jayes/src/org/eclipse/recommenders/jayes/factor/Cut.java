@@ -8,7 +8,7 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes;
+package org.eclipse.recommenders.jayes.factor;
 
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
@@ -24,7 +24,7 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
  */
 public class Cut implements Cloneable {
 
-    private final Factor factor;
+    private final AbstractFactor factor;
     private int index;
     private int stepSize;
     private int length;
@@ -38,7 +38,7 @@ public class Cut implements Cloneable {
     // decision tree
     private Cut subCut;
 
-    public Cut(Factor factor) {
+    public Cut(AbstractFactor factor) {
         this.factor = factor;
     }
 

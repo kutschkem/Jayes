@@ -22,7 +22,8 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.Factor;
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
@@ -132,7 +133,7 @@ public class LoopyBeliefPropagation extends AbstractInferer {
                 // we always pass via mult/sum from target to source (or from
                 // all other sources),
                 // so we need to prepare operations with c's factor
-                final Factor f = new Factor();
+                final AbstractFactor f = new DenseFactor();
                 f.setDimensions(new int[] { n.getOutcomeCount() });
                 f.setDimensionIDs(new int[] { n.getId() });
                 final int[] prep = c.getFactor().prepareMultiplication(f);
@@ -145,7 +146,7 @@ public class LoopyBeliefPropagation extends AbstractInferer {
     }
 
     private void prepareOwnFactor(final BayesNode n, final Edge own) {
-        final Factor fOwn = new Factor();
+        final AbstractFactor fOwn = new DenseFactor();
         fOwn.setDimensions(new int[] { n.getOutcomeCount() });
         fOwn.setDimensionIDs(new int[] { n.getId() });
         final int[] prepOwn = n.getFactor().prepareMultiplication(fOwn);
@@ -281,7 +282,7 @@ public class LoopyBeliefPropagation extends AbstractInferer {
         for (final Edge e : transponedGraph.get(index)) {
             e.dirty = false;
             final BayesNode n = net.getNode(e.target);
-            final Factor f = n.getFactor().clone();
+            final AbstractFactor f = n.getFactor().clone();
             MathUtils.log(f.getValues());
             f.setLogScale(true);
             selectEvidence(f);
@@ -302,7 +303,7 @@ public class LoopyBeliefPropagation extends AbstractInferer {
 
     }
 
-    private void selectEvidence(final Factor f) {
+    private void selectEvidence(final AbstractFactor f) {
         for (int dim : f.getDimensionIDs()) {
             BayesNode node = net.getNode(dim);
             if (evidence.containsKey(node)) {

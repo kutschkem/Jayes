@@ -13,7 +13,7 @@ package org.eclipse.recommenders.tests.jayes.logging;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.recommenders.jayes.Factor;
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Pair;
@@ -21,11 +21,11 @@ import org.eclipse.recommenders.jayes.util.Graph.Edge;
 
 public class JTATestAdapter extends JunctionTreeAlgorithm {
 	
-	public Factor[] getNodePotentials(){
+	public AbstractFactor[] getNodePotentials(){
 		return nodePotentials;
 	}
 	
-	public Map<Edge,Factor> getSepsets(){
+	public Map<Edge,AbstractFactor> getSepsets(){
 		return sepSets;
 	}
 	
@@ -37,7 +37,7 @@ public class JTATestAdapter extends JunctionTreeAlgorithm {
 		return preparedQueries;
 	}
 	
-	public List<Pair<Factor, IArrayWrapper>> getInitializations(){
+	public List<Pair<AbstractFactor, IArrayWrapper>> getInitializations(){
 		return initializations;
 	}
 

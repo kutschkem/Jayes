@@ -8,6 +8,7 @@ package org.eclipse.recommenders.jayes.inference.junctionTree;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -16,19 +17,18 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.Factor;
-import org.eclipse.recommenders.jayes.SparseFactor;
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.ArrayWrapperFlyWeight;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
-import org.eclipse.recommenders.jayes.util.FloatArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
+import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.IntArrayFlyWeight;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.NumericalInstabilityException;
@@ -36,41 +36,26 @@ import org.eclipse.recommenders.jayes.util.Pair;
 
 public class JunctionTreeAlgorithm extends AbstractInferer {
 
-	protected final Map<Edge, Factor> sepSets = new HashMap<Edge, Factor>();
+	protected final Map<Edge, AbstractFactor> sepSets = new HashMap<Edge, AbstractFactor>();
 	protected Graph junctionTree;
-	protected Factor[] nodePotentials;
+	protected AbstractFactor[] nodePotentials;
 	protected int[] homeClusters;
 	// need IdentityHashmap here because an Edge and
 	// it's backward Edge are considered equal
 	// (which is also needed for simplicity)
 	protected final IdentityHashMap<Edge, int[]> preparedMultiplications = new IdentityHashMap<Edge, int[]>();
 	protected List<Integer>[] concernedClusters;
-	protected Factor[] queryFactors;
+	protected AbstractFactor[] queryFactors;
 	protected int[][] preparedQueries;
 	protected boolean[] isBeliefValid;
-	protected final List<Pair<Factor, IArrayWrapper>> initializations = new ArrayList<Pair<Factor, IArrayWrapper>>();
+	protected final List<Pair<AbstractFactor, IArrayWrapper>> initializations = new ArrayList<Pair<AbstractFactor, IArrayWrapper>>();
 
 	protected final List<int[]> queryFactorReverseMapping = new ArrayList<int[]>();
 
 	// used for computing evidence collection skip
 	protected final Set<Integer> clustersHavingEvidence = new HashSet<Integer>();
 
-	private int logThreshold = Integer.MAX_VALUE;
 	protected double[] scratchpad;
-	
-	/**
-	 * cliques bigger (in the number of variables) than the threshold are computed on the log-scale.
-	 * Validate different values if you encounter numerical instabilities.
-	 * 
-	 * @param logThreshold
-	 */
-	public void setLogThreshold(final int logThreshold) {
-		this.logThreshold = logThreshold;
-	}
-
-	public int getLogThreshold() {
-		return logThreshold;
-	}
 
 	@Override
 	public double[] getBeliefs(final BayesNode node) {
@@ -92,7 +77,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void validateBelief(final int nodeId) {
-		final Factor f = queryFactors[nodeId];
+		final AbstractFactor f = queryFactors[nodeId];
 		f.sumPrepared(new DoubleArrayWrapper(beliefs[nodeId]), preparedQueries[nodeId]);//TODO change beliefs to ArrayWrappers
 		if (f.isLogScale()) {
 			MathUtils.exp(beliefs[nodeId]);
@@ -127,13 +112,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void replayFactorInitializations() {
-		for (final Pair<Factor, IArrayWrapper> init : initializations) {
+		for (final Pair<AbstractFactor, IArrayWrapper> init : initializations) {
 			init.getFirst().copyValues(init.getSecond());
 		}
 	}
 
 	private void incorporateAllEvidence() {
-		for (Pair<Factor, IArrayWrapper> init : initializations) {
+		for (Pair<AbstractFactor, IArrayWrapper> init : initializations) {
 			init.getFirst().resetSelections();
 		}
 
@@ -263,7 +248,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private void messagePass(final Edge sepSetEdge) {
 
-		final Factor sepSet = sepSets.get(sepSetEdge);
+		final AbstractFactor sepSet = sepSets.get(sepSetEdge);
 		if (!needMessagePass(sepSet)) {
 			return;
 		}
@@ -297,7 +282,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	 * we don't get additional information if all variables in the sepSet are
 	 * observed, so skip message pass
 	 */
-	private boolean needMessagePass(final Factor sepSet) {
+	private boolean needMessagePass(final AbstractFactor sepSet) {
 		for (final int var : sepSet.getDimensionIDs()) {
 			if (!evidence.containsKey(net.getNode(var))) {
 				return true;
@@ -320,10 +305,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	public void setNetwork(final BayesNet bn) {
 		super.setNetwork(bn);
 		initializeFields();
-		final List<List<Integer>> clusters = buildJunctionTree().getClusters();
-		setHomeClusters(clusters);
+		JunctionTree jtree = buildJunctionTree();
+		setHomeClusters(jtree.getClusters());
+		initializeClusterFactors(jtree.getClusters());
+		initializeSepsetFactors(jtree.getSepSets());
 		setQueryFactors();
-		sparsifyPotentials();
 		initializePotentialValues();
 		multiplyCPTsIntoPotentials();
 		prepareMultiplications();
@@ -333,42 +319,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	}
 
-	private void sparsifyPotentials() {
-		Map<SparseFactor, List<Factor>> potentialMap = new HashMap<SparseFactor, List<Factor>>();
-		for (final BayesNode node : net.getNodes()) {
-			final Factor nodeHome = nodePotentials[homeClusters[node.getId()]];
-			if (nodeHome instanceof SparseFactor) {
-				SparseFactor f = ((SparseFactor) nodeHome);
-				if (!potentialMap.containsKey(f)) {
-					potentialMap.put(f, new ArrayList<Factor>());
-				}
-				potentialMap.get(f).add(node.getFactor());
-			}
-		}
-		for (Factor f : nodePotentials) {
-			if (potentialMap.containsKey(f)) {
-				((SparseFactor) f).sparsify(potentialMap.get(f));
-			}
-		}
-
-	}
-
-	private void prepareScratch() {
-		int maxSize = 0;
-		for (Factor sepSet : sepSets.values()) {
-			maxSize = Math.max(maxSize, sepSet.getValues().length());
-		}
-		scratchpad = new double[maxSize];
-
-	}
-
 	@SuppressWarnings("unchecked")
 	private void initializeFields() {
 		isBeliefValid = new boolean[beliefs.length];
 		Arrays.fill(isBeliefValid, false);
 		final int numNodes = net.getNodes().size();
 		homeClusters = new int[numNodes];
-		queryFactors = new Factor[numNodes];
+		queryFactors = new AbstractFactor[numNodes];
 		preparedQueries = new int[numNodes][];
 		concernedClusters = new List[numNodes];
 		for (int i = 0; i < concernedClusters.length; i++) {
@@ -379,47 +336,8 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	private JunctionTree buildJunctionTree() {
 		final JunctionTree jtree = JunctionTreeBuilder.fromNet(net);
 		this.junctionTree = jtree.getGraph();
-
-		initializeClusterFactors(jtree.getClusters());
-		initializeSepsetFactors(jtree.getSepSets());
-
+	
 		return jtree;
-	}
-
-	private void initializeClusterFactors(final List<List<Integer>> clusters) {
-		nodePotentials = new Factor[clusters.size()];
-		for (final ListIterator<List<Integer>> cliqueIt = clusters.listIterator(); cliqueIt.hasNext();) {
-			final List<Integer> cluster = cliqueIt.next();
-			final Factor cliqueFactor = createFactor(cluster);
-			nodePotentials[cliqueIt.nextIndex() - 1] = cliqueFactor;
-			for (final Integer var : cluster) {
-				concernedClusters[var].add(cliqueIt.nextIndex() - 1);
-			}
-		}
-	}
-
-	private void initializeSepsetFactors(
-			final List<Pair<Edge, List<Integer>>> sepSets) {
-		for (final Pair<Edge, List<Integer>> sep : sepSets) {
-			this.sepSets.put(sep.getFirst(), createFactor(sep.getSecond()));
-		}
-	}
-
-	protected Factor createFactor(final List<Integer> vars) {
-		final Factor f = new SparseFactor();
-		if(options.areFloatsAllowed()){
-			f.setValues(new FloatArrayWrapper(new float[1]));
-		}
-		final List<Integer> dimensions = new ArrayList<Integer>();
-		for (final Integer dim : vars) {
-			dimensions.add(net.getNode(dim).getOutcomeCount());
-		}
-		f.setDimensions((int[]) ArrayUtils.toPrimitiveArray(dimensions.toArray(new Integer[0])));
-		f.setDimensionIDs((int[]) ArrayUtils.toPrimitiveArray(vars.toArray(new Integer[0])));
-		if (vars.size() > getLogThreshold()) {
-			f.setLogScale(true);
-		}
-		return f;
 	}
 
 	private void setHomeClusters(final List<List<Integer>> clusters) {
@@ -434,6 +352,39 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 	}
 
+	private void initializeClusterFactors(final List<List<Integer>> clusters) {
+		nodePotentials = new AbstractFactor[clusters.size()];
+		Map<Integer, List<AbstractFactor>> multiplicationPartners = findMultiplicationPartners();
+		for (final ListIterator<List<Integer>> cliqueIt = clusters.listIterator(); cliqueIt.hasNext();) {
+			final List<Integer> cluster = cliqueIt.next();
+			int current = cliqueIt.nextIndex() - 1;
+			final AbstractFactor cliqueFactor = factory.create(cluster, multiplicationPartners.get(current));
+			nodePotentials[current] = cliqueFactor;
+			for (final Integer var : cluster) {
+				concernedClusters[var].add(current);
+			}
+		}
+	}
+
+	private Map<Integer, List<AbstractFactor>> findMultiplicationPartners() {
+		Map<Integer, List<AbstractFactor>> potentialMap = new HashMap<Integer, List<AbstractFactor>>();
+		for (final BayesNode node : net.getNodes()) {
+			final Integer nodeHome = homeClusters[node.getId()];
+			if (!potentialMap.containsKey(nodeHome)) {
+					potentialMap.put(nodeHome, new ArrayList<AbstractFactor>());
+			}
+			potentialMap.get(nodeHome).add(node.getFactor());
+		}
+		return potentialMap;
+	}
+
+	private void initializeSepsetFactors(
+			final List<Pair<Edge, List<Integer>>> sepSets) {
+		for (final Pair<Edge, List<Integer>> sep : sepSets) {
+			this.sepSets.put(sep.getFirst(), factory.create(sep.getSecond(), Collections.<AbstractFactor>emptyList()));
+		}
+	}
+
 	private void setQueryFactors() {
 		for (final BayesNode n : net.getNodes()) {
 			for (final Integer f : concernedClusters[n.getId()]) {
@@ -444,7 +395,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 				}
 			}
 		}
-
+	
 		for (int i = 0; i < nodePotentials.length; i++) {
 			List<Integer> queryVars = new ArrayList<Integer>();
 			for (int var : nodePotentials[i].getDimensionIDs()) {
@@ -475,12 +426,19 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private void prepareQueries(final IntArrayFlyWeight flyWeight) {
 		for (final BayesNode node : net.getNodes()) {
-			final Factor beliefFactor = new Factor();
-			beliefFactor.setDimensions(new int[] { node.getOutcomeCount() });
-			beliefFactor.setDimensionIDs(new int[] { node.getId() });
+			final AbstractFactor beliefFactor = factory.create(Arrays.asList(node.getId()), Collections.<AbstractFactor>emptyList());
 			final int[] preparedQuery = queryFactors[node.getId()].prepareMultiplication(beliefFactor);
 			preparedQueries[node.getId()] = flyWeight.getInstance(preparedQuery);
 		}
+	}
+
+	private void prepareScratch() {
+		int maxSize = 0;
+		for (AbstractFactor sepSet : sepSets.values()) {
+			maxSize = Math.max(maxSize, sepSet.getValues().length());
+		}
+		scratchpad = new double[maxSize];
+
 	}
 
 	private void invokeInitialBeliefUpdate() {
@@ -493,11 +451,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		final double ONE_LOG = 0.0;
 		final double ONE = 1.0;
 
-		for (final Factor f : nodePotentials) {
+		for (final AbstractFactor f : nodePotentials) {
 			f.fill(f.isLogScale() ? ONE_LOG : ONE);
 		}
 
-		for (final Entry<Edge, Factor> sepSet : sepSets.entrySet()) {
+		for (final Entry<Edge, AbstractFactor> sepSet : sepSets.entrySet()) {
 			if (!areBothEndsLogScale(sepSet.getKey())) {
 				// if one part is log-scale, we transform to non-log-scale
 				sepSet.getValue().fill(ONE);
@@ -509,7 +467,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private void multiplyCPTsIntoPotentials() {
 		for (final BayesNode node : net.getNodes()) {
-			final Factor nodeHome = nodePotentials[homeClusters[node.getId()]];
+			final AbstractFactor nodeHome = nodePotentials[homeClusters[node.getId()]];
 			if (nodeHome.isLogScale()) {
 				nodeHome.multiplyCompatibleToLog(node.getFactor());
 			} else {
@@ -525,13 +483,13 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private void storePotentialValues() {
 		ArrayWrapperFlyWeight flyweight = new ArrayWrapperFlyWeight();
-		for (final Factor pot : nodePotentials) {
-			initializations.add(new Pair<Factor, IArrayWrapper>(pot,
+		for (final AbstractFactor pot : nodePotentials) {
+			initializations.add(new Pair<AbstractFactor, IArrayWrapper>(pot,
 					flyweight.getInstance(pot.getValues().clone())));
 		}
 
-		for (final Factor sep : sepSets.values()) {
-			initializations.add(new Pair<Factor, IArrayWrapper>(sep,
+		for (final AbstractFactor sep : sepSets.values()) {
+			initializations.add(new Pair<AbstractFactor, IArrayWrapper>(sep,
 					flyweight.getInstance(sep.getValues().clone())));
 		}
 	}
