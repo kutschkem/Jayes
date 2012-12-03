@@ -9,7 +9,7 @@ package org.eclipse.recommenders.jayes.factor;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class DenseFactor extends AbstractFactor {
 

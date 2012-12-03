@@ -75,7 +75,7 @@ public class XDSLWriter {
     private String encodeProbabilities(BayesNode node) {
         StringBuilder bldr = new StringBuilder();
 
-        for (double d : node.getFactor().getValues().getDouble()) {
+        for (Number d : node.getFactor().getValues()) {
             bldr.append(d);
             bldr.append(" ");
         }

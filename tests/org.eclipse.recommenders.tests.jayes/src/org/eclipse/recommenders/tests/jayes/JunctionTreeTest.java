@@ -30,7 +30,7 @@ import org.eclipse.recommenders.jayes.inference.IBayesInferer;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
-import org.eclipse.recommenders.jayes.util.FloatArrayWrapper;
+import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.logging.JTATestAdapter;
 import org.eclipse.recommenders.tests.jayes.logging.JunctionTreeMemoryLogger;

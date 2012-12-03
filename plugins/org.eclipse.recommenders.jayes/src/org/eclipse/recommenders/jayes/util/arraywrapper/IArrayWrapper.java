@@ -8,16 +8,16 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util;
+package org.eclipse.recommenders.jayes.util.arraywrapper;
 
-public interface IArrayWrapper extends Cloneable {
+public interface IArrayWrapper extends Cloneable, Iterable<Number>{
 	
 	public void set(double[] array);
 	public void set(float[] array);
-	public double[] getDouble();
-	public float[] getFloat();
-	public void assign(int index, double d);
-	public void assign(int index, float d);
+	public double[] toDoubleArray();
+	public float[] toFloatArray();
+	public void set(int index, double d);
+	public void set(int index, float d);
 	public void mulAssign(int index, double d);
 	public void mulAssign(int index, float d);
 	public void mulAssign(int index, IArrayWrapper arg, int argIndex);

@@ -14,8 +14,8 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.util.BidirectionalMap;
-import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
+import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 
 public class BayesNode {
 

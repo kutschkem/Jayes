@@ -14,8 +14,8 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class SparseFactor extends AbstractFactor {
 
@@ -305,7 +305,7 @@ public class SparseFactor extends AbstractFactor {
 	public void fill(double d) {
 		values.fill(d);
 		for (int i = 0; i < blockSize; i++) {
-			values.assign(i, isLogScale() ? Double.NEGATIVE_INFINITY : 0);
+			values.set(i, isLogScale() ? Double.NEGATIVE_INFINITY : 0);
 		}
 	}
 	
@@ -345,7 +345,7 @@ public class SparseFactor extends AbstractFactor {
 
 	private static double countZeros(IArrayWrapper values) {
 		int result = 0;
-		for(double d: values.getDouble()){
+		for(double d: values.toDoubleArray()){
 			if(d == 0){
 				result ++;
 			}

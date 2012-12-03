@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
-import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
+import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public abstract class AbstractFactor implements Cloneable{
 
@@ -184,7 +184,7 @@ public abstract class AbstractFactor implements Cloneable{
 		double max = findMax(cut, 0, 0);
 		sumPreparedLog(cut, 0, compatibleFactorValues, positions, max);
 		for (int i = 0; i < compatibleFactorValues.length(); i++) {
-			compatibleFactorValues.assign(i, Math.log(compatibleFactorValues.getDouble(i)) + max);
+			compatibleFactorValues.set(i, Math.log(compatibleFactorValues.getDouble(i)) + max);
 		}
 	}
 

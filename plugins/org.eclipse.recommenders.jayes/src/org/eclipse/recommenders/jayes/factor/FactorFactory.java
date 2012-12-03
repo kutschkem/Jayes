@@ -15,9 +15,9 @@ import java.util.List;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
+import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class FactorFactory {
 	

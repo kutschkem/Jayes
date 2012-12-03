@@ -23,13 +23,13 @@ import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.ArrayWrapperFlyWeight;
 import org.eclipse.recommenders.jayes.util.BayesUtils;
-import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
-import org.eclipse.recommenders.jayes.util.IntArrayFlyWeight;
+import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
+import org.eclipse.recommenders.jayes.util.sharing.CanonicalArrayWrapperManager;
+import org.eclipse.recommenders.jayes.util.sharing.CanonicalIntArrayManager;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.NumericalInstabilityException;
 import org.eclipse.recommenders.jayes.util.Pair;
@@ -254,7 +254,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 
 		final IArrayWrapper newSepValues = sepSet.getValues();
-		System.arraycopy(newSepValues.getDouble(), 0, scratchpad, 0, newSepValues.length());
+		System.arraycopy(newSepValues.toDoubleArray(), 0, scratchpad, 0, newSepValues.length());
 
 		final int[] preparedOp = preparedMultiplications.get(sepSetEdge.getBackEdge());
 		nodePotentials[sepSetEdge.getFirst()].sumPrepared(newSepValues,
@@ -264,9 +264,9 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 			MathUtils.exp(newSepValues);
 		}
 		if (areBothEndsLogScale(sepSetEdge)) {
-			MathUtils.secureSubtract(newSepValues.getDouble(), scratchpad, scratchpad);
+			MathUtils.secureSubtract(newSepValues.toDoubleArray(), scratchpad, scratchpad);
 		} else {
-			MathUtils.secureDivide(newSepValues.getDouble(), scratchpad, scratchpad);
+			MathUtils.secureDivide(newSepValues.toDoubleArray(), scratchpad, scratchpad);
 		}
 
 		if (isOnlySecondLogScale(sepSetEdge)) {
@@ -409,12 +409,12 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
 	private void prepareMultiplications() {
 		// compress by combining equal prepared statements, thus saving memory
-		final IntArrayFlyWeight flyWeight = new IntArrayFlyWeight();
+		final CanonicalIntArrayManager flyWeight = new CanonicalIntArrayManager();
 		prepareSepsetMultiplications(flyWeight);
 		prepareQueries(flyWeight);
 	}
 
-	private void prepareSepsetMultiplications(final IntArrayFlyWeight flyWeight) {
+	private void prepareSepsetMultiplications(final CanonicalIntArrayManager flyWeight) {
 		for (int node = 0; node < nodePotentials.length; node++) {
 			for (final Edge e : junctionTree.getIncidentEdges(node)) {
 				final int[] preparedMultiplication = nodePotentials[e.getSecond()].prepareMultiplication(sepSets.get(e));
@@ -424,7 +424,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 		}
 	}
 
-	private void prepareQueries(final IntArrayFlyWeight flyWeight) {
+	private void prepareQueries(final CanonicalIntArrayManager flyWeight) {
 		for (final BayesNode node : net.getNodes()) {
 			final AbstractFactor beliefFactor = factory.create(Arrays.asList(node.getId()), Collections.<AbstractFactor>emptyList());
 			final int[] preparedQuery = queryFactors[node.getId()].prepareMultiplication(beliefFactor);
@@ -482,7 +482,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 	}
 
 	private void storePotentialValues() {
-		ArrayWrapperFlyWeight flyweight = new ArrayWrapperFlyWeight();
+		CanonicalArrayWrapperManager flyweight = new CanonicalArrayWrapperManager();
 		for (final AbstractFactor pot : nodePotentials) {
 			initializations.add(new Pair<AbstractFactor, IArrayWrapper>(pot,
 					flyweight.getInstance(pot.getValues().clone())));

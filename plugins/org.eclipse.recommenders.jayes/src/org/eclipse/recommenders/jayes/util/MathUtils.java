@@ -10,6 +10,8 @@
  */
 package org.eclipse.recommenders.jayes.util;
 
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
+
 public class MathUtils {
 
     public static void exp(double[] vector) {
@@ -20,7 +22,7 @@ public class MathUtils {
 	
 	public static void exp(IArrayWrapper array){
 		for(int i = 0; i < array.length(); i++){
-			array.assign(i, Math.exp(array.getDouble(i)));
+			array.set(i, Math.exp(array.getDouble(i)));
 		}
 	}
 
@@ -32,7 +34,7 @@ public class MathUtils {
 	
     public static void log(IArrayWrapper vector) {
         for (int i = 0; i < vector.length(); i++) {
-            vector.assign(i, Math.log(vector.getDouble(i)));
+            vector.set(i, Math.log(vector.getDouble(i)));
         }
     }
 

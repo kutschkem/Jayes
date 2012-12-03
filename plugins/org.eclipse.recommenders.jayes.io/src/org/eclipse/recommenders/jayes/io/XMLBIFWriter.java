@@ -70,7 +70,7 @@ public class XMLBIFWriter {
                 bldr.append(XMLUtil.surround(parent.getName(), "GIVEN"));
             }
             bldr.append("\n\t<TABLE>");
-            for (double d : node.getFactor().getValues().getDouble()) {
+            for (Number d : node.getFactor().getValues()) {
                 bldr.append(d);
                 bldr.append(" ");
             }

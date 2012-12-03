@@ -8,13 +8,11 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util;
+package org.eclipse.recommenders.jayes.util.sharing;
 
-import java.util.Iterator;
+public class CanonicalIntArrayManager {
 
-public class IntArrayFlyWeight implements Iterable<int[]> {
-
-    private DeepIntArrayHashSet registered = new DeepIntArrayHashSet();
+    private CanonicalIntArraySet registered = new CanonicalIntArraySet();
 
     public int[] getInstance(int[] intArr) {
         if (registered.contains(intArr)) {
@@ -22,15 +20,6 @@ public class IntArrayFlyWeight implements Iterable<int[]> {
         }
         registered.add(intArr);
         return intArr;
-    }
-
-    public int size() {
-        return registered.size();
-    }
-
-    @Override
-    public Iterator<int[]> iterator() {
-        return registered.iterator();
     }
 
 }

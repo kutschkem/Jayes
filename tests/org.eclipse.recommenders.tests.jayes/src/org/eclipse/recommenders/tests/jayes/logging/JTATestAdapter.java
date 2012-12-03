@@ -15,9 +15,9 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.Pair;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class JTATestAdapter extends JunctionTreeAlgorithm {
 	

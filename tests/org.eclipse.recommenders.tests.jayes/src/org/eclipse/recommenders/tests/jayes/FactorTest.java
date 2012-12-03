@@ -15,8 +15,8 @@ import static org.junit.Assert.assertArrayEquals;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
-import org.eclipse.recommenders.jayes.util.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
+import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 import org.junit.Test;
 
 public class FactorTest {
@@ -86,7 +86,7 @@ public class FactorTest {
         f2.setValues(new DoubleArrayWrapper(new double[] { 1.0, 0.0, 0.0, 1.0 }));
 
         f1.multiplyCompatible(f2);
-        assertArrayEquals(f1.getValues().getDouble(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, 0.0001);
+        assertArrayEquals(f1.getValues().toDoubleArray(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, 0.0001);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class FactorTest {
 
         f.sumPrepared(f2.getValues(), f.prepareMultiplication(f2));
         
-        assertArrayEquals(f.sum(-1),f2.getValues().getDouble(),0.0000001);
+        assertArrayEquals(f.sum(-1),f2.getValues().toDoubleArray(),0.0000001);
     }
 
 }

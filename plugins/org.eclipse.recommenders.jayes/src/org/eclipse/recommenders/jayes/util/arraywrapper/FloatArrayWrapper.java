@@ -8,22 +8,14 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util;
+package org.eclipse.recommenders.jayes.util.arraywrapper;
 
 import java.util.Arrays;
+import java.util.Iterator;
+
+import org.eclipse.recommenders.jayes.util.ArrayUtils;
 
 public class FloatArrayWrapper implements IArrayWrapper {
-
-	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof FloatArrayWrapper &&
-		Arrays.equals(array, ((FloatArrayWrapper)obj).array);
-	}
-
-	@Override
-	public int hashCode() {
-		return Arrays.hashCode(array);
-	}
 
 	private float[] array;
 	
@@ -44,22 +36,22 @@ public class FloatArrayWrapper implements IArrayWrapper {
 	}
 
 	@Override
-	public double[] getDouble() {
+	public double[] toDoubleArray() {
 		return ArrayUtils.toDoubleArray(array);
 	}
 
 	@Override
-	public float[] getFloat() {
+	public float[] toFloatArray() {
 		return array;
 	}
 
 	@Override
-	public void assign(int index, double d) {
+	public void set(int index, double d) {
 		array[index] = (float)d;
 	}
 
 	@Override
-	public void assign(int index, float d) {
+	public void set(int index, float d) {
 		array[index] = d;
 	}
 
@@ -120,7 +112,7 @@ public class FloatArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void copy(IArrayWrapper array) {
-		copy(array.getFloat());
+		copy(array.toFloatArray());
 	}
 
 	@Override
@@ -136,7 +128,7 @@ public class FloatArrayWrapper implements IArrayWrapper {
 	@Override
 	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
 			int length) {
-		System.arraycopy(src.getFloat(), srcOffset, array, destOffset, length);
+		System.arraycopy(src.toFloatArray(), srcOffset, array, destOffset, length);
 	}
 
 	@Override
@@ -152,14 +144,37 @@ public class FloatArrayWrapper implements IArrayWrapper {
 			clone.array = array.clone();
 			return clone;
 		} catch (CloneNotSupportedException e) {
-			// should not happen
-			e.printStackTrace();
-			return null;
+			throw new AssertionError("This should not happen");
 		}
 	}
 
 	@Override
 	public int sizeOfElement() {
 		return 4;
+	}
+	
+	@Override
+	public Iterator<Number> iterator() {
+		return new Iterator<Number>(){
+			
+			private int index = 0;
+
+			@Override
+			public boolean hasNext() {
+				return index < array.length;
+			}
+
+			@Override
+			public Number next() {
+				index++;
+				return array[index-1];
+			}
+
+			@Override
+			public void remove() {
+				throw new UnsupportedOperationException();
+			}
+			
+		};
 	}
 }

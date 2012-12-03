@@ -14,9 +14,9 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
-import org.eclipse.recommenders.jayes.util.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
+import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
