@@ -7,6 +7,7 @@
   
 	<modules>
 		<module>plugins/org.eclipse.recommenders.jayes</module>
+		<module>plugins/org.eclipse.recommenders.jayes.io</module>
 		<module>tests/org.eclipse.recommenders.tests.jayes</module>
 		<module>features/org.eclipse.recommenders.jayes.feature</module>
 		<module>repositories/org.eclipse.recommenders.jayes.repository</module>

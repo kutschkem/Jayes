@@ -8,7 +8,6 @@ Export-Package:
  org.eclipse.recommenders.jayes.factor,
  org.eclipse.recommenders.jayes.inference,
  org.eclipse.recommenders.jayes.inference.junctionTree,
- org.eclipse.recommenders.jayes.io,
  org.eclipse.recommenders.jayes.sampling,
  org.eclipse.recommenders.jayes.util
 Bundle-ManifestVersion: 2
