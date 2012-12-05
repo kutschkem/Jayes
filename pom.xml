@@ -8,7 +8,9 @@
 	<modules>
 		<module>plugins/org.eclipse.recommenders.jayes</module>
 		<module>plugins/org.eclipse.recommenders.jayes.io</module>
+		<module>plugins/org.eclipse.recommenders.jayes.testgen</module>
 		<module>tests/org.eclipse.recommenders.tests.jayes</module>
+		<module>tests/org.eclipse.recommenders.tests.jayes.io</module>
 		<module>features/org.eclipse.recommenders.jayes.feature</module>
 		<module>repositories/org.eclipse.recommenders.jayes.repository</module>
 		<module>etc/license-headers</module>

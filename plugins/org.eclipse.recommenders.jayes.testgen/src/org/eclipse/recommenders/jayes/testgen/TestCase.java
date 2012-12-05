@@ -8,7 +8,7 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.tests.jayes.testgeneration;
+package org.eclipse.recommenders.jayes.testgen;
 
 import java.util.HashMap;
 import java.util.Map;

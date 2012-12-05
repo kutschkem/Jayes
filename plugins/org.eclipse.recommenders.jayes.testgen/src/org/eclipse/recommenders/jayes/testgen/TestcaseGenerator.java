@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010, 2011 Michael Kutschke.
+ * Copyright (c) 2011 Michael Kutschke.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.tests.jayes.testgeneration;
+package org.eclipse.recommenders.jayes.testgen;
 
 import java.util.HashMap;
 import java.util.HashSet;
