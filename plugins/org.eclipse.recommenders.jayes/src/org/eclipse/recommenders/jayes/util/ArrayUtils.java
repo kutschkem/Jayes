@@ -9,7 +9,6 @@ package org.eclipse.recommenders.jayes.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public final class ArrayUtils {
@@ -18,7 +17,7 @@ public final class ArrayUtils {
 
 	}
 
-	public static <T extends Number> Object toPrimitiveArray(final T[] array) {
+	public static <T extends Number> Object unboxArray(final T[] array) {
 		final Class<?> primitiveClass = getPrimitiveClass(array.getClass().getComponentType());
 		final Object arr = Array.newInstance(primitiveClass, array.length);
 		for (int i = 0; i < array.length; i++) {
@@ -28,15 +27,15 @@ public final class ArrayUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends Number> T[] toWrapperArray(final Object array) {
-		if (!array.getClass().isArray()) {
+	public static <T extends Number> T[] boxArray(final Object primitiveArray) {
+		if (!primitiveArray.getClass().isArray()) {
 			throw new IllegalArgumentException("not an array");
 		}
-		final Class<? extends T> primitiveClass = (Class<? extends T>) getWrapperClass(array.getClass().getComponentType());
+		final Class<? extends T> primitiveClass = (Class<? extends T>) getWrapperClass(primitiveArray.getClass().getComponentType());
 		final Object arr = Array.newInstance(primitiveClass,
-				Array.getLength(array));
-		for (int i = 0; i < Array.getLength(array); i++) {
-			Array.set(arr, i, Array.get(array, i));
+				Array.getLength(primitiveArray));
+		for (int i = 0; i < Array.getLength(primitiveArray); i++) {
+			Array.set(arr, i, Array.get(primitiveArray, i));
 		}
 		return (T[]) arr;
 	}
@@ -59,14 +58,6 @@ public final class ArrayUtils {
 			return double.class;
 		}
 		throw new UnsupportedOperationException("Mapping not implemented");
-	}
-
-	public static <T> T[] shift(final T[] arr, final int amount) {
-		final T[] result = Arrays.copyOf(arr, arr.length);
-		for (int i = 0; i < arr.length; i++) {
-			result[(i + amount) % arr.length] = arr[i];
-		}
-		return result;
 	}
 
 	public static double[] flatten(final Object array) {
@@ -105,39 +96,6 @@ public final class ArrayUtils {
 		return doubles;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T[] reverse(T[] array) {
-		List<T> l = Arrays.asList(array);
-		Collections.reverse(l);
-		return l.toArray((T[]) Array.newInstance(
-				array.getClass().getComponentType(), array.length));
-	}
-
-	public static Integer[] indexArray(Object array) {
-		if (!array.getClass().isArray()) {
-			throw new IllegalArgumentException("not an array");
-		}
-		int l = Array.getLength(array);
-		Integer[] indices = new Integer[l];
-		for (int i = 0; i < l; i++) {
-			indices[i] = i;
-		}
-		return indices;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T permute(T array, Integer[] permutation) {
-		if (!array.getClass().isArray()) {
-			throw new IllegalArgumentException("not an array");
-		}
-		T array2 = (T) Array.newInstance(array.getClass().getComponentType(),
-				Array.getLength(array));
-		for (int i = 0; i < Array.getLength(array); i++) {
-			Array.set(array2, i, Array.get(array, permutation[i]));
-		}
-		return array2;
-	}
-	
 	public static float[] toFloatArray(double[] array){
 		float[] result = new float[array.length];
 		for(int i = 0; i< array.length; i++){
@@ -150,6 +108,16 @@ public final class ArrayUtils {
 		double[] result = new double[array.length];
 		for(int i = 0; i < array.length; i++){
 			result[i] = (double)array[i];
+		}
+		return result;
+	}
+	
+	public static int[] toIntArray(List<Integer> ints){
+		int[] result = new int[ints.size()];
+		int i = 0;
+		for(Integer j: ints){
+			result[i] = j;
+			i++;
 		}
 		return result;
 	}

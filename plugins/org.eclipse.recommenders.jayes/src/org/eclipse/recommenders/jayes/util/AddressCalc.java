@@ -17,28 +17,10 @@ import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 
 public final class AddressCalc {
 
-    private AddressCalc() {
-
-    }
-
-    public static int realAddr(int[] dimensions, int[] address) {
-        int result = address[0];
-        for (int i = 1; i < dimensions.length; i++) {
-            result *= dimensions[i];
-            result += address[i];
-        }
-        return result;
-    }
-
-    public static int[] virtualAddr(int[] dimensions, int address) {
-        int[] result = new int[dimensions.length];
-        for (int i = dimensions.length - 1; i >= 0; i--) {
-            result[i] = address % dimensions[i];
-            address /= dimensions[i];
-        }
-        return result;
-    }
-
+	private AddressCalc(){
+		
+	}
+	
     public static void incrementMultiDimensionalCounter(final int[] counter, final int[] dimensions, final int dim) {
         counter[dim]++;
         if (counter[dim] == dimensions[dim]) {

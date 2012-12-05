@@ -56,7 +56,7 @@ public class TestcaseDeserializer {
 				doubles.add(rdr.nextDouble());
 			}
 			rdr.endArray();
-			tc.beliefs.put(node, (double[]) ArrayUtils.toPrimitiveArray(doubles.toArray(new Double[0])));
+			tc.beliefs.put(node, (double[]) ArrayUtils.unboxArray(doubles.toArray(new Double[0])));
 			rdr.endObject();
 			}
 			rdr.endObject();

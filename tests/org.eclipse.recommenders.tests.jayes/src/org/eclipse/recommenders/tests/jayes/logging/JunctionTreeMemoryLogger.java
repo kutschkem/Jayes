@@ -84,7 +84,7 @@ public class JunctionTreeMemoryLogger {
 		int denseLength = 0;
 		int sparseLength = 0;
 		for (AbstractFactor f : jta.getNodePotentials()) {
-			denseLength += MathUtils.multiply(f.getDimensions());//the length that a dense factor would have
+			denseLength += MathUtils.product(f.getDimensions());//the length that a dense factor would have
 			sparseLength += f.getValues().length() + f.getOverhead();
 		}
 		

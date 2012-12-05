@@ -13,7 +13,6 @@ package org.eclipse.recommenders.jayes.factor;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
@@ -52,7 +51,7 @@ public abstract class AbstractFactor implements Cloneable{
 
 	public void setValues(IArrayWrapper values) {
 		this.values = values;
-		assert (MathUtils.multiply(dimensions) == values.length());
+		assert (MathUtils.product(dimensions) == values.length());
 	}
 
 	public IArrayWrapper getValues() {
@@ -67,7 +66,7 @@ public abstract class AbstractFactor implements Cloneable{
 		this.dimensions = Arrays.copyOf(dimensions, dimensions.length);
 		selections = new int[dimensions.length];
 		resetSelections();
-		int length = MathUtils.multiply(dimensions);
+		int length = MathUtils.product(dimensions);
 		if (length > values.length()) values.newArray(length);
 		dimensionIDs = Arrays.copyOf(dimensionIDs, dimensions.length);
 	}
@@ -263,9 +262,18 @@ public abstract class AbstractFactor implements Cloneable{
 				int[] foreignPos = transformLocalToForeignPosition(counter,
 						foreignIdToIndex);
 			
-				return AddressCalc.realAddr(compatible.getDimensions(), foreignPos);
+				return realAddr(compatible.getDimensions(), foreignPos);
 			
 			}
+
+	private int realAddr(int[] dimensions, int[] address) {
+	    int result = address[0];
+	    for (int i = 1; i < dimensions.length; i++) {
+	        result *= dimensions[i];
+	        result += address[i];
+	    }
+	    return result;
+	}
 
 	private int[] transformLocalToForeignPosition(int[] localPosition, Map<Integer, Integer> foreignIdToIndex) {
 		int[] foreignPosition = new int[foreignIdToIndex.size()];

@@ -31,7 +31,7 @@ public class TestcaseGenerator {
     private Random random = new Random();
 
     public void setBN(BayesNet bn) {
-        sampler.setBN(bn);
+        sampler.setNetwork(bn);
     }
 
     public void setEvidenceRate(double rate) {

@@ -116,20 +116,12 @@ public class MathUtils {
         return result;
     }
 
-    public static int multiply(int[] intArr) {
+    public static int product(int[] vector) {
         int r = 1;
-        for (int i : intArr) {
+        for (int i : vector) {
             r *= i;
         }
         return r;
-    }
-
-    public static double entropy(int positive, int total) {
-        double p = positive / (double) total;
-        if (p == 0 || p == 1) {
-            return 0;
-        }
-        return -(p * Math.log(p) + (1 - p) * Math.log(1 - p));
     }
 
 }

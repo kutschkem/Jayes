@@ -43,7 +43,7 @@ public class Cut implements Cloneable {
     }
 
     public void initialize() {
-        length = MathUtils.multiply(this.factor.getDimensions());
+        length = MathUtils.product(this.factor.getDimensions());
         index = 0;
         stepSize = 1;
         rootDimension = 0;

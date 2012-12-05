@@ -12,13 +12,15 @@ package org.eclipse.recommenders.jayes.sampling;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.util.BayesUtils;
 
 public class BasicSampler implements ISampler {
 
@@ -56,11 +58,29 @@ public class BasicSampler implements ISampler {
     }
 
     @Override
-    public void setBN(BayesNet net) {
-        topologicallySortedNodes = BayesUtils.topsort(net.getNodes());
+    public void setNetwork(BayesNet net) {
+        topologicallySortedNodes = topsort(net.getNodes());
     }
 
-    @Override
+    private List<BayesNode> topsort(List<BayesNode> list) {
+	    List<BayesNode> result = new LinkedList<BayesNode>();
+	    Set<BayesNode> visited = new HashSet<BayesNode>();
+	    for (BayesNode n : list)
+	        DFS(n, visited, result);
+	    Collections.reverse(result);
+	    return result;
+	}
+
+	private void DFS(BayesNode n, Set<BayesNode> visited, List<BayesNode> finished) {
+	    if (visited.contains(n))
+	        return;
+	    visited.add(n);
+	    for (BayesNode c : n.getChildren())
+	        DFS(c, visited, finished);
+	    finished.add(n);
+	}
+
+	@Override
     public void setEvidence(Map<BayesNode, String> evidence) {
         this.evidence = evidence;
 

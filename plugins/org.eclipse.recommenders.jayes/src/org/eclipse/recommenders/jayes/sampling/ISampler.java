@@ -17,7 +17,7 @@ import org.eclipse.recommenders.jayes.BayesNode;
 
 public interface ISampler {
 
-    public void setBN(BayesNet net);
+    public void setNetwork(BayesNet net);
 
     public void setEvidence(Map<BayesNode, String> evidence);
 

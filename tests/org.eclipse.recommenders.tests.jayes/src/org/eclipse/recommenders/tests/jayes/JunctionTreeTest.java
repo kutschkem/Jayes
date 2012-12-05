@@ -31,7 +31,6 @@ import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorit
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.testgen.TestCase;
 import org.eclipse.recommenders.jayes.testgen.TestcaseDeserializer;
-import org.eclipse.recommenders.jayes.util.BayesUtils;
 import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.logging.JTATestAdapter;
@@ -110,15 +109,17 @@ public class JunctionTreeTest {
     public void testFailedCase1() {
         BayesNet net = NetExamples.testNet1();
 
+        BayesNode a = net.getNode("a");
         BayesNode b = net.getNode("b");
+        BayesNode c = net.getNode("c");
 
         JunctionTreeAlgorithm inferer = new JunctionTreeAlgorithm();
         inferer.setNetwork(net);
 
-        Map<Integer, Integer> evidence = new HashMap<Integer, Integer>();
-        evidence.put(0, 1);
-        evidence.put(2, 0);
-        inferer.setEvidence(BayesUtils.toNodeMap(net, evidence));
+        Map<BayesNode, String> evidence = new HashMap<BayesNode, String>();
+        evidence.put(a, "false");
+        evidence.put(c, "true");
+        inferer.setEvidence(evidence);
         assertEquals(0.22, inferer.getBeliefs(b)[0], 0.01);
     }
 

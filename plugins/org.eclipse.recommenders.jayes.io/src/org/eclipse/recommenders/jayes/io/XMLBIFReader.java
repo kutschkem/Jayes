@@ -138,7 +138,7 @@ public class XMLBIFReader {
             probabilities.add(Double.valueOf(tok.nextToken()));
         }
 
-        bNode.setProbabilities((double[]) ArrayUtils.toPrimitiveArray(probabilities.toArray(new Double[] {})));
+        bNode.setProbabilities((double[]) ArrayUtils.unboxArray(probabilities.toArray(new Double[] {})));
     }
 
 	public BayesNet read(InputStream systemResourceAsStream) throws ParserConfigurationException, SAXException, IOException {

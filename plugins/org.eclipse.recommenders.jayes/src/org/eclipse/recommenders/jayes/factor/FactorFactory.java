@@ -56,7 +56,7 @@ public class FactorFactory {
 		
 		final int[] dimensions = getDimensionSizes(vars);
 
-		if(SparseFactor.isSuitable(MathUtils.multiply(dimensions), multiplicationPartners)){
+		if(SparseFactor.isSuitable(MathUtils.product(dimensions), multiplicationPartners)){
 			SparseFactor f = new SparseFactor();
 			initializeFactor(vars, dimensions, f);
 			f.sparsify(multiplicationPartners);
@@ -72,7 +72,7 @@ public class FactorFactory {
 			final int[] dimensions, AbstractFactor f) {
 		f.setValues(prototype.clone());
 		f.setDimensions(dimensions);
-		f.setDimensionIDs((int[]) ArrayUtils.toPrimitiveArray(vars.toArray(new Integer[0])));
+		f.setDimensionIDs(ArrayUtils.toIntArray(vars));
 		if (vars.size() > getLogThreshold()) {
 			f.setLogScale(true);
 		}
@@ -83,7 +83,7 @@ public class FactorFactory {
 		for (final Integer dim : vars) {
 			dimensions.add(net.getNode(dim).getOutcomeCount());
 		}
-		return (int[]) ArrayUtils.toPrimitiveArray(dimensions.toArray(new Integer[0]));
+		return ArrayUtils.toIntArray(dimensions);
 	}
 
 	private int getLogThreshold() {

@@ -36,12 +36,12 @@ public class SparseFactor extends AbstractFactor {
 
 	@Override
 	public void copyValues(IArrayWrapper other) {
-			validateCut();
-			int offset = getRealPosition(cut.getIndex());
-			// we don't know how many values need to be copied, thus copy everything until the end
-			int length = other.length() - offset;;
-		
-			values.arrayCopy(other, offset, offset, length);
+		validateCut();
+		int offset = getRealPosition(cut.getIndex());
+		// we don't know how many values need to be copied, thus copy everything until the end
+		int length = other.length() - offset;;
+	
+		values.arrayCopy(other, offset, offset, length);
 	}
 
 	public void multiplyCompatible(AbstractFactor compatible) {
@@ -109,9 +109,7 @@ public class SparseFactor extends AbstractFactor {
 			// still, avoid using a SparseFactor in this case
 			blockSize = (int) Math.sqrt(length);
 		}
-		blockPointers = new int[length / blockSize
-				+ (length % blockSize == 0 ? 0 : 1)];
-		Arrays.fill(blockPointers, Integer.MIN_VALUE);
+		blockPointers = new int[(int) Math.ceil((double)length / blockSize)];
 		Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
 		counter[counter.length - 1] = -1;
@@ -119,43 +117,64 @@ public class SparseFactor extends AbstractFactor {
 		for (int i = 0; i < blockPointers.length; i++) {
 			boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
 					foreignIdToIndex, blockSize);
-			if (isZero || blockPointers[i] == 0) {
+			if (isZero) {
 				blockPointers[i] = 0;
 			} else {
 				numberOfNonzeroBlocks++;
 				blockPointers[i] = numberOfNonzeroBlocks * blockSize;
 			}
 		}
-		System.out.println("Sparse entries: "
-				+ ((blockPointers.length - numberOfNonzeroBlocks) * blockSize));
 		createSparseValueArray();
 	}
 
 	private void optimizeDimensionOrder(List<AbstractFactor> compatible) {
 		if(dimensions.length < 2) {
 			// countZerosByDimension breaks for 0-dimensional factors
-			// so don't try to optimize 0- and 1- dimensional factors
+			// and there is not point in optimizing the order if there is only one dimension
 			return;
 		}
 		int[][] zerosByDimension = countZerosByDimension(compatible);
 		final double[] infogain = computeInfoGain(zerosByDimension);
-		Integer[] indices = ArrayUtils.indexArray(infogain);
-		Arrays.sort(indices, new Comparator<Integer>() {
+
+		setDimensionIDs(sortByKey(infogain,getDimensionIDs()));
+		setDimensions(sortByKey(infogain,getDimensions()));
+	}
+
+	private int[] indexArray(int length) {
+		int[] indices = new int[length];
+		for (int i = 0; i < length; i++) {
+			indices[i] = i;
+		}
+		return indices;
+	}
+	
+	// sorts in descending order of the keys
+	private int[] sortByKey(final double[] key, int[] array){
+		int[] permutation = sort(indexArray(key.length), 
+				new Comparator<Integer>() {
 
 			@Override
 			public int compare(Integer o1, Integer o2) {
-				return -Double.compare(infogain[o1], infogain[o2]);
+				return -Double.compare(key[o1], key[o2]);
 			}
 
 		});
+		return permute(array,permutation);
+	}
 
-		if (!Arrays.equals(indices, ArrayUtils.indexArray(infogain))) {
-			System.out.println("Reordering variables...");
-			System.out.println("Infogain: " + Arrays.toString(infogain));
+	private int[] sort(int[] array, Comparator<Integer> comparator){
+		Integer[] boxed = ArrayUtils.boxArray(array);
+		Arrays.sort(boxed, comparator);
+		return (int[]) ArrayUtils.unboxArray(boxed);
+	}
+
+	private int[] permute(int[] array, int[] permutation) {
+		int[] array2 = new int[array.length];
+		for (int i = 0; i < array.length; i++) {
+			array2[i]=  array[permutation[i]];
 		}
-
-		setDimensionIDs(ArrayUtils.permute(getDimensionIDs(), indices));
-		setDimensions(ArrayUtils.permute(getDimensions(), indices));
+		
+		return array2;
 	}
 
 	private double[] computeInfoGain(int[][] zerosByDimension) {
@@ -164,7 +183,7 @@ public class SparseFactor extends AbstractFactor {
 			totalZeros += zerosByDimension[0][i];
 		}
 
-		double entropy = MathUtils.entropy(totalZeros, computeLength());
+		double entropy = entropy(totalZeros, computeLength() - totalZeros);
 		double[] conditionalEntropy = conditionalEntropy(zerosByDimension);
 
 		for (int i = 0; i < conditionalEntropy.length; i++) {
@@ -174,15 +193,28 @@ public class SparseFactor extends AbstractFactor {
 		return conditionalEntropy;
 	}
 
+	/**
+	 * compute the entropy of a binary class distribution
+	 */
+	private double entropy(int classOne, int classTwo) {
+	    double p = classOne / (double) (classOne + classTwo);
+	    if (p == 0 || p == 1) {
+	        return 0;
+	    }
+	    return -(p * Math.log(p) + (1 - p) * Math.log(1 - p));
+	}
+
 	private double[] conditionalEntropy(int[][] zerosByDimension) {
-		double[] entropyValues = new double[zerosByDimension.length];
+		double[] entropyValues = new double[dimensions.length];
 		int length = computeLength();
-		for (int i = 0; i < zerosByDimension.length; i++) {
+		for (int i = 0; i < dimensions.length; i++) {
 			int l = length / dimensions[i];
-			for (int j = 0; j < zerosByDimension[i].length; j++) {
-				entropyValues[i] += MathUtils.entropy(zerosByDimension[i][j], l);
+			for (int j = 0; j < dimensions[i]; j++) {
+				int zeroes = zerosByDimension[i][j];
+				entropyValues[i] += entropy(zeroes, l - zeroes);
 			}
-			entropyValues[i] /= zerosByDimension[i].length;
+			entropyValues[i] /= dimensions[i];
+			//for the ends of compression, use a uniform distribution for the outcomes
 		}
 		return entropyValues;
 	}
@@ -293,7 +325,7 @@ public class SparseFactor extends AbstractFactor {
 
 	@Override
 	protected int computeLength() {
-		return MathUtils.multiply(dimensions);
+		return MathUtils.product(dimensions);
 	}
 
 	@Override
