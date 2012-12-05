@@ -19,6 +19,7 @@ import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class SparseFactor extends AbstractFactor {
 
+	private static final int SIZE_OF_INT = 4;
 	/**
 	 * blockSize values in the original value array correspond to one block pointer
 	 */
@@ -99,16 +100,10 @@ public class SparseFactor extends AbstractFactor {
 	 */
 	public void sparsify(List<AbstractFactor> compatible) {
 		optimizeDimensionOrder(compatible);
-		blockSize = computeOptimalSparseness(compatible);
-		if (blockSize != -1) {
-			System.out.println("Sparseness: " + blockSize);
-		}
+		optimizeBlockSize(compatible);
+		System.out.println("Sparseness: " + blockSize);
+
 		int length = computeLength();
-		if (blockSize == -1) {
-			// this will result in a non-sparse factor with a minimum of overhead
-			// still, avoid using a SparseFactor in this case
-			blockSize = (int) Math.sqrt(length);
-		}
 		blockPointers = new int[(int) Math.ceil((double)length / blockSize)];
 		Map<AbstractFactor, Map<Integer, Integer>> foreignIdToIndex = computeIDToIndexMaps(compatible);
 		int[] counter = new int[dimensions.length];
@@ -274,32 +269,58 @@ public class SparseFactor extends AbstractFactor {
 		return isZero;
 	}
 
-	private int computeOptimalSparseness(List<AbstractFactor> compatible) {
+	private void optimizeBlockSize(List<AbstractFactor> compatible) {
 		if(dimensions.length == 0){
 			// zero dimensions -> exactly one value, no need to optimize
 			// (also predictLengthOfValueArray breaks for zero dimensions)
-			return -1;
+			this.blockSize = 1;
+		}else{
+		int blocksize = computeLocallyOptimalPowerOf2BlockSize(compatible);
+		blocksize = refineBlockSizeByBinarySearch(compatible, blocksize);
+	
+		this.blockSize = blocksize;
 		}
+	}
+
+	private int computeLocallyOptimalPowerOf2BlockSize(List<AbstractFactor> compatible) {
+		//stage 1: greedy search restricted on powers of 2 
+		int blocksize = 1;
 		int arraySize;
 		int overhead;
 		int newOverhead;
 		int newArraySize;
-		int blocksize = 1;
 		newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
-		newOverhead = (computeLength() / blocksize) * 4; // integer is 4 byte TODO: make this a constant dependent on Integer.SIZE
-		do { // greedy strategy
-			//TODO enhance with second stage of searching by binary search
+		newOverhead = (computeLength() / blocksize) * SIZE_OF_INT; // integer is 4 byte TODO: make this a constant dependent on Integer.SIZE
+		do {
 			blocksize*=2;
 			arraySize = newArraySize;
 			overhead = newOverhead;
 			newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
-			newOverhead = (computeLength() / blocksize) * 4;
+			newOverhead = (computeLength() / blocksize) * SIZE_OF_INT;
 		} while (newArraySize + newOverhead <= arraySize + overhead);
-		
-		int sparseMemory = arraySize + overhead;
-		int denseMemory = computeLength() * values.sizeOfElement() + 2* (int) Math.sqrt(computeLength());
-		if (sparseMemory >= denseMemory) return -1;
-		return blocksize/2;
+		blocksize /= 2;
+		return blocksize;
+	}
+
+	private int refineBlockSizeByBinarySearch(
+			List<AbstractFactor> compatible, int blocksize) {
+		//stage 2: greedy binary search
+		int upperBound = blocksize * 2;
+		int lowerBound = blocksize;
+		while(upperBound - lowerBound > 1){
+			//invariant: lowerBound is a better block size than upperBound
+			int lowerArraySize = predictLengthOfValueArray(lowerBound, compatible) * values.sizeOfElement();
+			int lowerOverhead = (computeLength() / lowerBound) * SIZE_OF_INT;
+			int middle = (lowerBound + upperBound) / 2;
+			int middleArraySize = predictLengthOfValueArray(lowerBound, compatible) * values.sizeOfElement();
+			int middleOverhead = (computeLength() / lowerBound) * SIZE_OF_INT;
+			if(middleArraySize + middleOverhead < lowerArraySize + lowerOverhead){
+				lowerBound = middle;
+			}else{
+				upperBound = middle;
+			}
+		}
+		return lowerBound;
 	}
 
 	private int predictLengthOfValueArray(int blockSize, List<AbstractFactor> compatible) {
@@ -343,7 +364,7 @@ public class SparseFactor extends AbstractFactor {
 	
 	@Override
 	public int getOverhead(){
-		return blockPointers.length * 4;
+		return blockPointers.length * SIZE_OF_INT;
 	}
 	
 	@Override
