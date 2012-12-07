@@ -95,8 +95,10 @@ public class DenseFactor extends AbstractFactor {
 	@Override
 	public void copyValues(IArrayWrapper arrayWrapper) {
 		validateCut();
-		values.arrayCopy(arrayWrapper, cut.getIndex(), cut.getIndex(),
-				cut.getLength());
+		int index = cut.getIndex();
+		int length = Math.min(cut.getLength(), values.length() - index);
+		values.arrayCopy(arrayWrapper, index, index,
+				length);
 	}
 
 	@Override

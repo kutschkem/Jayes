@@ -360,6 +360,9 @@ public class SparseFactor extends AbstractFactor {
 	 * @return
 	 */
 	public static boolean isSuitable(int futureLength, List<AbstractFactor> multiplicationCandidates){
+		if(multiplicationCandidates == null){
+			return false;
+		}
 		for(AbstractFactor f: multiplicationCandidates){
 			if(isSparseEnough(f,futureLength))
 				return true;

@@ -97,7 +97,6 @@ public class Cut implements Cloneable {
 
     private void ascendSelectedDimension() {
         index += this.factor.selections[leafDimension] * stepSize;
-        length -= this.factor.selections[leafDimension] * stepSize;
         stepSize *= this.factor.dimensions[leafDimension];
         leafDimension--;
     }

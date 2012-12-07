@@ -10,99 +10,142 @@
  */
 package org.eclipse.recommenders.tests.jayes;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
+import org.eclipse.recommenders.jayes.factor.SparseFactor;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
 
 public class FactorTest {
 
-    @Test
-    public void sumTest() {
-        AbstractFactor factor = new DenseFactor();
-        factor.setDimensionIDs(new int[] { 0, 1, 2 });
-        factor.setDimensions(new int[] { 2, 2 });
-        factor.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 1.0, 0.0 }));
-        double[] prob = MathUtils.normalize(factor.sum(-1));
-        assertArrayEquals(prob, new double[] { 0.75, 0.25 }, 0.00001);
-    }
+	private static final double[] DISTRIBUTION_2x2x2 = ArrayUtils.flatten(new double[][][] { 
+			{ { 0.5, 0.5 }, { 1.0, 0.0 } }, 
+			{ { 0.4, 0.6 }, { 0.3, 0.7 } } 
+			});
+	private static final double TOLERANCE = 0.00001;
 
-    @Test
-    public void selectAndSumTest() {
-        AbstractFactor factor = new DenseFactor();
-        factor.setDimensionIDs(new int[] { 0, 1, 2 });
-        factor.setDimensions(new int[] { 2, 2, 2 });
-        factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
-                { { 0.4, 0.6 }, { 0.3, 0.7 } } })));
-        factor.select(0, 0);
-        double[] prob = MathUtils.normalize(factor.sum(-1));
-        assertArrayEquals(prob, new double[] { 0.75, 0.25 }, 0.00001);
+	@Test
+	public void testSum() {
+		AbstractFactor factor = new DenseFactor();
+		factor.setDimensionIDs(new int[] { 0, 1 });
+		factor.setDimensions(new int[] { 2, 2 });
+		factor.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 1.0, 0.0 }));
+		double[] prob = MathUtils.normalize(factor.sum(-1));
+		assertArrayEquals(prob, new double[] { 0.75, 0.25 }, TOLERANCE);
+	}
 
-        factor.select(0, -1);
-        factor.select(1, 1);
-        prob = MathUtils.normalize(factor.sum(-1));
-        assertArrayEquals(prob, new double[] { 0.65, 0.35 }, 0.00001);
-    }
+	@Test
+	public void testSelectAndSum() {
+		AbstractFactor factor = create2x2x2Factor();
+		factor.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+		factor.select(0, 0);
+		double[] prob = MathUtils.normalize(factor.sum(-1));
+		assertArrayEquals(prob, new double[] { 0.75, 0.25 }, TOLERANCE);
 
-    @Test
-    public void sumMiddleTest1() {
-        AbstractFactor factor = new DenseFactor();
-        factor.setDimensionIDs(new int[] { 0, 1, 2 });
-        factor.setDimensions(new int[] { 2, 2, 2 });
-        factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
-                { { 0.4, 0.6 }, { 0.3, 0.7 } } })));
-        factor.select(2, 0);
-        double[] prob = MathUtils.normalize(factor.sum(1));
-        assertArrayEquals(prob, new double[] { 0.9 / 2.2, 1.3 / 2.2 }, 0.00001);
-    }
+		factor.select(0, -1);
+		factor.select(1, 1);
+		prob = MathUtils.normalize(factor.sum(-1));
+		assertArrayEquals(prob, new double[] { 0.65, 0.35 }, TOLERANCE);
+	}
 
-    @Test
-    public void sumMiddleTest2() {
-        AbstractFactor factor = new DenseFactor();
-        factor.setDimensionIDs(new int[] { 0, 1, 2 });
-        factor.setDimensions(new int[] { 2, 2, 2 });
-        factor.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { { { 0.5, 0.5 }, { 1.0, 0.0 } },
-                { { 0.4, 0.6 }, { 0.3, 0.7 } } })));
-        factor.select(0, 1);
-        factor.select(2, 1);
-        double[] prob = MathUtils.normalize(factor.sum(1));
-        assertArrayEquals(prob, new double[] { 0.6 / 1.3, 0.7 / 1.3 }, 0.00001);
-    }
+	private AbstractFactor create2x2x2Factor() {
+		AbstractFactor factor = new DenseFactor();
+		factor.setDimensionIDs(new int[] { 0, 1, 2 });
+		factor.setDimensions(new int[] { 2, 2, 2 });
+		return factor;
+	}
 
-    @Test
-    public void multiplicationTest() {
-        AbstractFactor f1 = new DenseFactor();
-        f1.setDimensions(new int[] { 2, 2, 2 });
-        f1.setDimensionIDs(new int[] { 0, 1, 2 });
-        f1.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 }));
+	@Test
+	public void testSumMiddle1() {
+		AbstractFactor factor = create2x2x2Factor();
+		factor.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+		factor.select(2, 0);
+		double[] prob = MathUtils.normalize(factor.sum(1));
+		assertArrayEquals(prob, new double[] { 0.9 / 2.2, 1.3 / 2.2 }, TOLERANCE);
+	}
 
-        AbstractFactor f2 = new DenseFactor();
-        f2.setDimensions(new int[] { 2, 2 });
-        f2.setDimensionIDs(new int[] { 2, 0 });
-        f2.setValues(new DoubleArrayWrapper(new double[] { 1.0, 0.0, 0.0, 1.0 }));
+	@Test
+	public void testSumMiddle2() {
+		AbstractFactor factor = create2x2x2Factor();
+		factor.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+		factor.select(0, 1);
+		factor.select(2, 1);
+		double[] prob = MathUtils.normalize(factor.sum(1));
+		assertArrayEquals(prob, new double[] { 0.6 / 1.3, 0.7 / 1.3 }, TOLERANCE);
+	}
 
-        f1.multiplyCompatible(f2);
-        assertArrayEquals(f1.getValues().toDoubleArray(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, 0.0001);
-    }
+	@Test
+	public void testMultiplication() {
+		AbstractFactor f1 = create2x2x2Factor();
+		f1.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] { 
+				{ {0.5, 0.5}, {0.5, 0.5}}, 
+				{ {0.5, 0.5}, {0.5, 0.5}} 
+				})));
 
-    @Test
-    public void preparedSumTest() {
-        AbstractFactor f = new DenseFactor();
-        f.setDimensions(new int[] { 4, 4, 4 });
-        f.setDimensionIDs(new int[] { 0, 1, 2 });
-        f.fill(1);
+		AbstractFactor f2 = new DenseFactor();
+		f2.setDimensions(new int[] { 2, 2 });
+		f2.setDimensionIDs(new int[] { 2, 0 });
+		f2.setValues(new DoubleArrayWrapper(new double[] { 1.0, 0.0, 0.0, 1.0 }));
 
-        AbstractFactor f2 = new DenseFactor();
-        f2.setDimensions(new int[] { 4 });
-        f2.setDimensionIDs(new int[] { 2 });
+		f1.multiplyCompatible(f2);
+		assertArrayEquals(f1.getValues().toDoubleArray(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, TOLERANCE);
+	}
 
-        f.sumPrepared(f2.getValues(), f.prepareMultiplication(f2));
-        
-        assertArrayEquals(f.sum(-1),f2.getValues().toDoubleArray(),0.0000001);
-    }
+	@Test
+	public void testPreparedSum() {
+		AbstractFactor f = new DenseFactor();
+		f.setDimensions(new int[] { 4, 4, 4 });
+		f.setDimensionIDs(new int[] { 0, 1, 2 });
+		f.fill(1);
+
+		AbstractFactor f2 = new DenseFactor();
+		f2.setDimensions(new int[] { 4 });
+		f2.setDimensionIDs(new int[] { 2 });
+
+		f.sumPrepared(f2.getValues(), f.prepareMultiplication(f2));
+
+		assertArrayEquals(f.sum(-1), f2.getValues().toDoubleArray(), TOLERANCE);
+	}
+
+	@Test
+	public void testCopy() {
+		AbstractFactor f = create2x2x2Factor();
+
+		f.select(2, 1);
+		
+		// no ArrayIndexOutOfBoundsException should be thrown
+		f.copyValues(new DoubleArrayWrapper(new double[] { 1, 1, 1, 1, 1, 1, 1, 1 }));
+
+		for (int oddIndex = 1; oddIndex < f.getValues().length(); oddIndex += 2) {
+			assertThat(f.getValue(oddIndex), is(1.0));
+		}
+	}
+
+	@Test
+	public void testIsSuitable() {
+		// no NullPointerException should be thrown
+		assertFalse(SparseFactor.isSuitable(1, null));
+		assertFalse(SparseFactor.isSuitable(1, Collections.<AbstractFactor> emptyList()));
+
+		BayesNet sparseNet = NetExamples.sparseNet();
+		AbstractFactor sparse = sparseNet.getNode("c").getFactor();
+		assertTrue(SparseFactor.isSuitable(MathUtils.product(sparse.getDimensions()), Arrays.asList(sparse)));
+
+		AbstractFactor nonsparse = sparseNet.getNode("d").getFactor();
+		assertFalse(SparseFactor.isSuitable(MathUtils.product(nonsparse.getDimensions()), Arrays.asList(nonsparse)));
+	}
 
 }
