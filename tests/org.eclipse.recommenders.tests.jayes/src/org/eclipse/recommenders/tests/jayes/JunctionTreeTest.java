@@ -14,15 +14,12 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
@@ -31,17 +28,20 @@ import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorit
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.testgen.TestCase;
 import org.eclipse.recommenders.jayes.testgen.TestcaseDeserializer;
+import org.eclipse.recommenders.jayes.testgen.TestcaseGenerator;
 import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.logging.JTATestAdapter;
 import org.eclipse.recommenders.tests.jayes.logging.JunctionTreeMemoryLogger;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
 public class JunctionTreeTest {
 
-    @Test
+	private static final double TOLERANCE = 0.01;
+	private static final double SMALL_TOLERANCE = 0.00001;
+
+	@Test
     public void testInference1() {
         BayesNet net = NetExamples.testNet1();
         BayesNode a = net.getNode("a");
@@ -79,7 +79,7 @@ public class JunctionTreeTest {
         compare.addEvidence(b, "lu");
 
         for (BayesNode n : net.getNodes())
-            assertArrayEquals(compare.getBeliefs(n), inferer.getBeliefs(n), 0.01);
+            assertArrayEquals(compare.getBeliefs(n), inferer.getBeliefs(n), TOLERANCE);
     }
 
     @Test
@@ -165,7 +165,7 @@ public class JunctionTreeTest {
     }
     
     @Test
-    public void testLargerScaleCorrectness() throws IOException, ParserConfigurationException, SAXException{
+	public void testLargerScaleCorrectness() throws Exception {
     	getClass().getClassLoader();
 		BayesNet net = new XMLBIFReader().read(getClass().getClassLoader().getResourceAsStream("JPanel.xml"));
     	TestcaseDeserializer deser = new TestcaseDeserializer(net);
@@ -192,42 +192,38 @@ public class JunctionTreeTest {
     	for(TestCase tc: testcases){
     		algo.setEvidence(tc.evidence);
     		for(BayesNode node: net.getNodes()){
-    			assertArrayEquals(tc.beliefs.get(node),algo.getBeliefs(node),0.00001);
+				assertArrayEquals(tc.beliefs.get(node), algo.getBeliefs(node), SMALL_TOLERANCE);
     		}
     	}
     }
     
     @Test
-    public void testLargerScaleCorrectnessFloats() throws IOException, ParserConfigurationException, SAXException{
-    	getClass().getClassLoader();
+	public void testLargerScaleCorrectnessAB() throws Exception {
 		BayesNet net = new XMLBIFReader().read(getClass().getClassLoader().getResourceAsStream("JPanel.xml"));
-    	TestcaseDeserializer deser = new TestcaseDeserializer(net);
-    	Reader rdr = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("testcases_JPanel.json")));
-    	StringBuffer buf = new StringBuffer();
-    	CharBuffer cbuff = CharBuffer.allocate(1024);
-    	while(rdr.read(cbuff) != -1){
-    		cbuff.flip();
-    		buf.append(cbuff);
-    		cbuff.clear();
-    	}
-    	rdr.close();
+
+    	TestcaseGenerator testgen = new TestcaseGenerator();
+    	testgen.setBN(net);
+    	testgen.seed(1337);
+    	testgen.setEvidenceRate(0.5);
     	
-    	List<TestCase> testcases = deser.deserialize(buf.toString());
+		JunctionTreeAlgorithm a = new JunctionTreeAlgorithm();
+		a.setNetwork(net);
+
+		JTATestAdapter b = new JTATestAdapter();
+		b.getFactory().setArrayType(new FloatArrayWrapper());
+		b.setNetwork(net);
     	
-    	JTATestAdapter algo = new JTATestAdapter();
-    	
-    	algo.getFactory().setArrayType(new FloatArrayWrapper(new float[1]));
-    	algo.setNetwork(net);
-    	
-    	JunctionTreeMemoryLogger logger = new JunctionTreeMemoryLogger(algo);
+		JunctionTreeMemoryLogger logger = new JunctionTreeMemoryLogger(b);
     	logger.logMemorySavingsFromFlyweights();
     	logger.logSparsenessInfo();
     	logger.logCompleteMemoryInfo();
     	
-    	for(TestCase tc: testcases){
-    		algo.setEvidence(tc.evidence);
+    	for(int i = 0; i < 1000; i++){
+    		Map<BayesNode, String> testcase = testgen.testcase();
+			b.setEvidence(testcase);
+			a.setEvidence(testcase);
     		for(BayesNode node: net.getNodes()){
-    			assertArrayEquals(tc.beliefs.get(node),algo.getBeliefs(node),0.00001);
+				assertArrayEquals(a.getBeliefs(node), b.getBeliefs(node), SMALL_TOLERANCE);
     		}
     	}
     }
