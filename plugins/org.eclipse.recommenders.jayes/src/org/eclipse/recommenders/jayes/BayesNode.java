@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.util.BidirectionalMap;
 import org.eclipse.recommenders.jayes.util.MathUtils;
@@ -24,7 +25,7 @@ public class BayesNode {
 	private List<BayesNode> parents = new ArrayList<BayesNode>();
 	private int outcomes = 0;
 	private final BidirectionalMap<String, Integer> outcomeIndices = new BidirectionalMap<String, Integer>();
-	private final DenseFactor factor = new DenseFactor();
+	private final AbstractFactor factor = new DenseFactor();
 	private int id = -1;
 	private final List<String> outcomesList = new ArrayList<String>();
 
@@ -133,7 +134,7 @@ public class BayesNode {
 		return outcomes;
 	}
 
-	public DenseFactor getFactor() {
+	public AbstractFactor getFactor() {
 		return factor;
 	}
 

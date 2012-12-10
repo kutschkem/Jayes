@@ -40,9 +40,9 @@ public class FactorTest {
 	@Test
 	public void testSum() {
 		AbstractFactor factor = new DenseFactor();
-		factor.setDimensionIDs(new int[] { 0, 1 });
-		factor.setDimensions(new int[] { 2, 2 });
-		factor.setValues(new DoubleArrayWrapper(new double[] { 0.5, 0.5, 1.0, 0.0 }));
+		factor.setDimensionIDs(0, 1);
+		factor.setDimensions(2, 2);
+		factor.setValues(new DoubleArrayWrapper(0.5, 0.5, 1.0, 0.0));
 		double[] prob = MathUtils.normalize(factor.sum(-1));
 		assertArrayEquals(prob, new double[] { 0.75, 0.25 }, TOLERANCE);
 	}
@@ -63,8 +63,8 @@ public class FactorTest {
 
 	private AbstractFactor create2x2x2Factor() {
 		AbstractFactor factor = new DenseFactor();
-		factor.setDimensionIDs(new int[] { 0, 1, 2 });
-		factor.setDimensions(new int[] { 2, 2, 2 });
+		factor.setDimensionIDs(0, 1, 2);
+		factor.setDimensions(2, 2, 2);
 		return factor;
 	}
 
@@ -96,9 +96,9 @@ public class FactorTest {
 				})));
 
 		AbstractFactor f2 = new DenseFactor();
-		f2.setDimensions(new int[] { 2, 2 });
-		f2.setDimensionIDs(new int[] { 2, 0 });
-		f2.setValues(new DoubleArrayWrapper(new double[] { 1.0, 0.0, 0.0, 1.0 }));
+		f2.setDimensionIDs(2, 0);
+		f2.setDimensions(2, 2);
+		f2.setValues(new DoubleArrayWrapper(1.0, 0.0, 0.0, 1.0));
 
 		f1.multiplyCompatible(f2);
 		assertArrayEquals(f1.getValues().toDoubleArray(), new double[] { 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.5 }, TOLERANCE);
@@ -107,13 +107,13 @@ public class FactorTest {
 	@Test
 	public void testPreparedSum() {
 		AbstractFactor f = new DenseFactor();
-		f.setDimensions(new int[] { 4, 4, 4 });
-		f.setDimensionIDs(new int[] { 0, 1, 2 });
+		f.setDimensionIDs(0, 1, 2);
+		f.setDimensions(4, 4, 4);
 		f.fill(1);
 
 		AbstractFactor f2 = new DenseFactor();
-		f2.setDimensions(new int[] { 4 });
-		f2.setDimensionIDs(new int[] { 2 });
+		f2.setDimensionIDs(2);
+		f2.setDimensions(4);
 
 		f.sumPrepared(f2.getValues(), f.prepareMultiplication(f2));
 
@@ -127,7 +127,7 @@ public class FactorTest {
 		f.select(2, 1);
 		
 		// no ArrayIndexOutOfBoundsException should be thrown
-		f.copyValues(new DoubleArrayWrapper(new double[] { 1, 1, 1, 1, 1, 1, 1, 1 }));
+		f.copyValues(new DoubleArrayWrapper(1, 1, 1, 1, 1, 1, 1, 1));
 
 		for (int oddIndex = 1; oddIndex < f.getValues().length(); oddIndex += 2) {
 			assertThat(f.getValue(oddIndex), is(1.0));

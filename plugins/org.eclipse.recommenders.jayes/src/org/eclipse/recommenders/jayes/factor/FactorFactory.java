@@ -23,7 +23,7 @@ public class FactorFactory {
 	
 	protected BayesNet net;
 	private int logThreshold = Integer.MAX_VALUE;
-	private IArrayWrapper prototype = new DoubleArrayWrapper(new double[1]);
+	private IArrayWrapper prototype = new DoubleArrayWrapper(0.0); //TODO is a length of 1 here still necessary?
 	
 	public void setArrayType(IArrayWrapper prototype){
 		IArrayWrapper clone = prototype.clone();

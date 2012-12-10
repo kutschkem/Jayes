@@ -26,7 +26,7 @@ public class SparseFactor extends AbstractFactor {
 	private int[] blockPointers;
 
 	@Override
-	public void setDimensions(int[] dimensions) {
+	public void setDimensions(int... dimensions) {
 		this.dimensions = Arrays.copyOf(dimensions, dimensions.length);
 		selections = new int[dimensions.length];
 		resetSelections();

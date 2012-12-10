@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.recommenders.tests.jayes;
 
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.sharing.CanonicalArrayWrapperManager;
@@ -48,12 +51,12 @@ public class ObjectSharingTest {
 	
 	@Test
 	public void testCanonicalArrayWrapperManager(){
-		DoubleArrayWrapper a1 = new DoubleArrayWrapper(new double[]{1,2,3});
-		DoubleArrayWrapper a2 = new DoubleArrayWrapper(new double[]{1,2,3});
+		DoubleArrayWrapper a1 = new DoubleArrayWrapper(1, 2, 3);
+		DoubleArrayWrapper a2 = new DoubleArrayWrapper(1, 2, 3);
 		
 		assumeTrue(a1 != a2);
 		
-		DoubleArrayWrapper a3 = new DoubleArrayWrapper(new double[]{2,3,4});
+		DoubleArrayWrapper a3 = new DoubleArrayWrapper(2, 3, 4);
 		
 		CanonicalArrayWrapperManager sut = new CanonicalArrayWrapperManager();
 				

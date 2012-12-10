@@ -12,8 +12,8 @@ package org.eclipse.recommenders.jayes.util.arraywrapper;
 
 public interface IArrayWrapper extends Cloneable, Iterable<Number>{
 	
-	public void set(double[] array);
-	public void set(float[] array);
+	public void setArray(double... array);
+	public void setArray(float... array);
 	public double[] toDoubleArray();
 	public float[] toFloatArray();
 	public void set(int index, double d);
@@ -27,8 +27,10 @@ public interface IArrayWrapper extends Cloneable, Iterable<Number>{
 	public double getDouble(int index);
 	public float getFloat(int index);
 	public int length();
-	public void copy(double[] array);
-	public void copy(float[] array);
+
+	public void copy(double... array);
+
+	public void copy(float... array);
 	public void copy(IArrayWrapper array);
 	public void fill(double d);
 	public void fill(float d);

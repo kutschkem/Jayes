@@ -39,7 +39,7 @@ public abstract class AbstractFactor implements Cloneable{
 	public abstract void fill(double d);
 
 	protected int[] dimensionIDs = new int[0];
-	protected IArrayWrapper values = new DoubleArrayWrapper(new double[1]);
+	protected IArrayWrapper values = new DoubleArrayWrapper(0.0);
 	protected int[] selections = new int[0];
 	protected Cut cut = new Cut(this);
 	private boolean isCutValid = false;
@@ -62,7 +62,7 @@ public abstract class AbstractFactor implements Cloneable{
 		return values.getDouble(getRealPosition(i));
 	}
 
-	public void setDimensions(int[] dimensions) {
+	public void setDimensions(int... dimensions) {
 		this.dimensions = Arrays.copyOf(dimensions, dimensions.length);
 		selections = new int[dimensions.length];
 		resetSelections();
@@ -79,7 +79,7 @@ public abstract class AbstractFactor implements Cloneable{
 	 * tells the Factor which variables the dimensions correspond to. Uniqueness and consistency of
 	 * size is assumed.
 	 */
-	public void setDimensionIDs(int[] ids) {
+	public void setDimensionIDs(int... ids) {
 		dimensionIDs = ids.clone();
 	}
 

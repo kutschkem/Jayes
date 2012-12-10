@@ -19,19 +19,19 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 
 	private double[] array;
 	
-	public DoubleArrayWrapper(double[] array){
+	public DoubleArrayWrapper(double... array) {
 		this.array = array;
 	}
 	
 	@Override
-	public void set(double[] array) {
+	public void setArray(double... array) {
 		this.array = array;
 
 	}
 
 	@Override
-	public void set(float[] array) {
-		set(ArrayUtils.toDoubleArray(array));
+	public void setArray(float... array) {
+		setArray(ArrayUtils.toDoubleArray(array));
 
 	}
 
@@ -101,13 +101,13 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 	}
 
 	@Override
-	public void copy(double[] array) {
-		set(array.clone());
+	public void copy(double... array) {
+		setArray(array.clone());
 	}
 
 	@Override
-	public void copy(float[] array) {
-		set(ArrayUtils.toDoubleArray(array));
+	public void copy(float... array) {
+		setArray(ArrayUtils.toDoubleArray(array));
 
 	}
 
