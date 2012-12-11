@@ -43,22 +43,38 @@ public class NetExamples {
         b.addOutcome("lu");
         net.addNode(b);
         b.setParents(Arrays.asList(a));
-        b.setProbabilities(ArrayUtils.flatten(new double[][] { { 0.1, 0.4, 0.5 }, { 0.3, 0.4, 0.3 } }));
+		b.setProbabilities(ArrayUtils.flatten(new double[][] {
+				{ 0.1, 0.4, 0.5 }, // a = true
+				{ 0.3, 0.4, 0.3 }  // a = false
+		}));
 
         BayesNode c = new BayesNode("c");
         c.addOutcome("true");
         c.addOutcome("false");
         net.addNode(c);
         c.setParents(Arrays.asList(a, b));
-        c.setProbabilities(ArrayUtils.flatten(new double[][][] { { { 0.1, 0.9 }, { 0.0, 1.0 }, { 0.5, 0.5 } },
-                { { 0.2, 0.8 }, { 0.0, 1.0 }, { 0.7, 0.3 } } }));
+		c.setProbabilities(ArrayUtils.flatten(new double[][][] {
+				{					// a = true
+					{ 0.1, 0.9 }, 	//  b = la
+					{ 0.0, 1.0 }, 	//  b = le
+					{ 0.5, 0.5 } 	//  b = lu
+				},
+				{ 					// a = false
+					{ 0.2, 0.8 }, 	//  b = la
+					{ 0.0, 1.0 },   //  b = le
+					{ 0.7, 0.3 }    //  b = lu
+				}
+		}));
 
         BayesNode d = new BayesNode("d");
         d.addOutcome("true");
         d.addOutcome("false");
         net.addNode(d);
         d.setParents(Arrays.asList(c));
-        d.setProbabilities(ArrayUtils.flatten(new double[][] { { 0.5, 0.5 }, { 0.2, 0.8 } }));
+		d.setProbabilities(ArrayUtils.flatten(new double[][] {
+				{ 0.5, 0.5 }, // c = true
+				{ 0.2, 0.8 }  // c = false
+		}));
 
         return net;
     }
@@ -93,7 +109,10 @@ public class NetExamples {
         b.addOutcome("lu");
         net.addNode(b);
         b.setParents(Arrays.asList(a));
-        b.setProbabilities(ArrayUtils.flatten(new double[][] { { 0.1, 0.4, 0.5 }, { 0.3, 0.4, 0.3 } }));
+        b.setProbabilities(ArrayUtils.flatten(new double[][] { 
+        		{ 0.1, 0.4, 0.5 }, // a = true
+        		{ 0.3, 0.4, 0.3 }  // a = false
+        		}));
 
         BayesNode c = new BayesNode("c");
         c.addOutcome("true");
@@ -102,15 +121,30 @@ public class NetExamples {
         c.addOutcome("sthElse");
         net.addNode(c);
         c.setParents(Arrays.asList(a, b));
-        c.setProbabilities(ArrayUtils.flatten(new double[][][] { { { 0.0, 0.0, 0.1, 0.9 }, {0.0, 0.0, 0.0, 1.0 }, {0.0, 0.0, 0.0, 1.0 } },
-                { {0.0, 0.5, 0.0, 0.5 }, {0.0, 0.0, 0.0, 1.0 }, {0.0, 0.7, 0.3, 0.0 } } }));
+        c.setProbabilities(ArrayUtils.flatten(new double[][][] { 
+        		{ 							// a = true
+        			{ 0.0, 0.0, 0.1, 0.9 }, //	b = la
+        			{ 0.0, 0.0, 0.0, 1.0 }, //	b = le
+        			{ 0.0, 0.0, 0.0, 1.0 }  //	b = lu
+        		},
+                { 							// a = false
+        			{ 0.0, 0.5, 0.0, 0.5 }, //	b = la
+        			{ 0.0, 0.0, 0.0, 1.0 }, //	b = le
+        			{ 0.0, 0.7, 0.3, 0.0 }  //	b = lu
+        		}
+        		}));
 
         BayesNode d = new BayesNode("d");
         d.addOutcome("true");
         d.addOutcome("false");
         net.addNode(d);
         d.setParents(Arrays.asList(c));
-        d.setProbabilities(ArrayUtils.flatten(new double[][] { { 0.5, 0.5 }, { 0.2, 0.8 }, {0.5, 0.5}, {0.0, 1.0} }));
+        d.setProbabilities(ArrayUtils.flatten(new double[][] {
+        		{ 0.5, 0.5 }, // c = true
+        		{ 0.2, 0.8 }, // c = false
+        		{ 0.5, 0.5 }, // c = sth
+        		{ 0.0, 1.0 }  // c = sthElse
+        		}));
 
         return net;
     }
