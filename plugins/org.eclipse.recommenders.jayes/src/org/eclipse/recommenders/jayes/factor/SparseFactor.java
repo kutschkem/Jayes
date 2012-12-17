@@ -52,6 +52,11 @@ public class SparseFactor extends AbstractFactor {
 
 	@Override
 	public int[] prepareMultiplication(AbstractFactor compatible) {
+		if(dimensions.length == 0){
+			// treat 0-dimensional factors specially
+			return new int[]{0,0};
+		}
+		
 		int[] positions = new int[values.length()];
 		int[] counter = new int[dimensions.length];
 		Map<Integer, Integer> foreignIdToIndex = AddressCalc.computeIdToDimensionIndexMap(compatible);
@@ -99,6 +104,15 @@ public class SparseFactor extends AbstractFactor {
 	 * can't put this in a constructor because we already need full information about the dimensions here
 	 */
 	public void sparsify(List<AbstractFactor> compatible) {
+		if(dimensions.length == 0){ 
+			//treat 0-dimensional factors specially (many methods break for them)
+			blockSize = 1;
+			blockPointers = new int[]{1};
+			createSparseValueArray();
+			return;
+		}
+		assert dimensions.length > 0;
+		
 		optimizeDimensionOrder(compatible);
 		optimizeBlockSize(compatible);
 		System.out.println("Sparseness: " + blockSize);
@@ -123,11 +137,6 @@ public class SparseFactor extends AbstractFactor {
 	}
 
 	private void optimizeDimensionOrder(List<AbstractFactor> compatible) {
-		if(dimensions.length < 2) {
-			// countZerosByDimension breaks for 0-dimensional factors
-			// and there is not point in optimizing the order if there is only one dimension
-			return;
-		}
 		int[][] zerosByDimension = countZerosByDimension(compatible);
 		final double[] infogain = computeInfoGain(zerosByDimension);
 
@@ -270,16 +279,10 @@ public class SparseFactor extends AbstractFactor {
 	}
 
 	private void optimizeBlockSize(List<AbstractFactor> compatible) {
-		if(dimensions.length == 0){
-			// zero dimensions -> exactly one value, no need to optimize
-			// (also predictLengthOfValueArray breaks for zero dimensions)
-			this.blockSize = 1;
-		}else{
 		int blocksize = computeLocallyOptimalPowerOf2BlockSize(compatible);
 		blocksize = refineBlockSizeByBinarySearch(compatible, blocksize);
 	
 		this.blockSize = blocksize;
-		}
 	}
 
 	private int computeLocallyOptimalPowerOf2BlockSize(List<AbstractFactor> compatible) {
@@ -312,8 +315,8 @@ public class SparseFactor extends AbstractFactor {
 			int lowerArraySize = predictLengthOfValueArray(lowerBound, compatible) * values.sizeOfElement();
 			int lowerOverhead = (computeLength() / lowerBound) * SIZE_OF_INT;
 			int middle = (lowerBound + upperBound) / 2;
-			int middleArraySize = predictLengthOfValueArray(lowerBound, compatible) * values.sizeOfElement();
-			int middleOverhead = (computeLength() / lowerBound) * SIZE_OF_INT;
+			int middleArraySize = predictLengthOfValueArray(middle, compatible) * values.sizeOfElement();
+			int middleOverhead = (computeLength() / middle) * SIZE_OF_INT;
 			if(middleArraySize + middleOverhead < lowerArraySize + lowerOverhead){
 				lowerBound = middle;
 			}else{

@@ -12,21 +12,13 @@ package org.eclipse.recommenders.tests.jayes;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
-import org.eclipse.recommenders.jayes.factor.SparseFactor;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
-import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
 
 public class FactorTest {
@@ -132,20 +124,6 @@ public class FactorTest {
 		for (int oddIndex = 1; oddIndex < f.getValues().length(); oddIndex += 2) {
 			assertThat(f.getValue(oddIndex), is(1.0));
 		}
-	}
-
-	@Test
-	public void testIsSuitable() {
-		// no NullPointerException should be thrown
-		assertFalse(SparseFactor.isSuitable(1, null));
-		assertFalse(SparseFactor.isSuitable(1, Collections.<AbstractFactor> emptyList()));
-
-		BayesNet sparseNet = NetExamples.sparseNet();
-		AbstractFactor sparse = sparseNet.getNode("c").getFactor();
-		assertTrue(SparseFactor.isSuitable(MathUtils.product(sparse.getDimensions()), Arrays.asList(sparse)));
-
-		AbstractFactor nonsparse = sparseNet.getNode("d").getFactor();
-		assertFalse(SparseFactor.isSuitable(MathUtils.product(nonsparse.getDimensions()), Arrays.asList(nonsparse)));
 	}
 
 }
