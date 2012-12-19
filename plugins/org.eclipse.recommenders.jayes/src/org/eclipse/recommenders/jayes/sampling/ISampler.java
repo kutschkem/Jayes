@@ -17,10 +17,10 @@ import org.eclipse.recommenders.jayes.BayesNode;
 
 public interface ISampler {
 
-    public void setNetwork(BayesNet net);
+    void setNetwork(BayesNet net);
 
-    public void setEvidence(Map<BayesNode, String> evidence);
+    void setEvidence(Map<BayesNode, String> evidence);
 
-    public Map<BayesNode, String> sample();
+    Map<BayesNode, String> sample();
 
 }
