@@ -17,14 +17,14 @@ import org.eclipse.recommenders.jayes.BayesNode;
 
 public interface IBayesInferer {
 
-    public void setNetwork(BayesNet bayesNet);
+    void setNetwork(BayesNet bayesNet);
 
-    public void setEvidence(Map<BayesNode, String/*outcome*/> evidence);
+    void setEvidence(Map<BayesNode, String/*outcome*/> evidence);
 
-    public void addEvidence(BayesNode node, String outcome);
+    void addEvidence(BayesNode node, String outcome);
 
-    public Map<BayesNode, String> getEvidence();
+    Map<BayesNode, String> getEvidence();
 
-    public double[] getBeliefs(BayesNode node);
+    double[] getBeliefs(BayesNode node);
 
 }
