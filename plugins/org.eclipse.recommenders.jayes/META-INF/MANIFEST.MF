@@ -9,8 +9,8 @@ Export-Package:
  org.eclipse.recommenders.jayes.inference,
  org.eclipse.recommenders.jayes.inference.junctionTree,
  org.eclipse.recommenders.jayes.sampling,
- org.eclipse.recommenders.jayes.util;x-friends:="org.eclipse.recommenders.tests.jayes,org.eclipse.recommenders.jayes.io,org.eclipse.recommenders.jayes.testgen",
+ org.eclipse.recommenders.jayes.util,
  org.eclipse.recommenders.jayes.util.arraywrapper,
- org.eclipse.recommenders.jayes.util.sharing;x-friends:="org.eclipse.recommenders.tests.jayes"
+ org.eclipse.recommenders.jayes.util.sharing
 Bundle-ManifestVersion: 2
 
