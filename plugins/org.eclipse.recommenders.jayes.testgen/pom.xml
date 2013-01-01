@@ -26,6 +26,7 @@
 						<validHeaders>
 							<validHeader>license-kutschke-2011.txt</validHeader>
 							<validHeader>license-kutschke-2012.txt</validHeader>
+							<validHeader>license-kutschke-2013.txt</validHeader>
 						</validHeaders>
 					</configuration>
 				</plugin>

@@ -12,6 +12,5 @@
 
 	<groupId>org.eclipse.recommenders.jayes</groupId>
 	<artifactId>org.eclipse.recommenders.jayes.license-headers</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 </project>
