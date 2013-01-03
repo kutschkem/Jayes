@@ -11,8 +11,6 @@
 package org.eclipse.recommenders.jayes.factor;
 
 import java.util.Arrays;
-import java.util.Map;
-
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
@@ -251,38 +249,6 @@ public abstract class AbstractFactor implements Cloneable{
 			isCutValid = true;
 		}
 	
-	}
-
-	protected int computeForeignPosition(AbstractFactor compatible, int[] counter,
-			Map<Integer, Integer> foreignIdToIndex) {
-				// special case: zero-dimensional factor
-				if (compatible.dimensions.length == 0) {
-					return 0;
-				}
-				int[] foreignPos = transformLocalToForeignPosition(counter,
-						foreignIdToIndex);
-			
-				return realAddr(compatible.getDimensions(), foreignPos);
-			
-			}
-
-	private int realAddr(int[] dimensions, int[] address) {
-	    int result = address[0];
-	    for (int i = 1; i < dimensions.length; i++) {
-	        result *= dimensions[i];
-	        result += address[i];
-	    }
-	    return result;
-	}
-
-	private int[] transformLocalToForeignPosition(int[] localPosition, Map<Integer, Integer> foreignIdToIndex) {
-		int[] foreignPosition = new int[foreignIdToIndex.size()];
-		for (int i = 0; i < localPosition.length; i++) {
-			Integer foreignDim = foreignIdToIndex.get(dimensionIDs[i]);
-			if (foreignDim != null) // dimension present in the other Factor?
-				foreignPosition[foreignDim] = localPosition[i];
-		}
-		return foreignPosition;
 	}
 
 	@Override
