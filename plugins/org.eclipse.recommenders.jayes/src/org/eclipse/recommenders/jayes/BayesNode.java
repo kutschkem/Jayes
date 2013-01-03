@@ -34,6 +34,7 @@ public class BayesNode {
 	}
 
 	public void setProbabilities(final double[] probabilities) {
+		assert (probabilities.length == MathUtils.product(factor.getDimensions()));
 		factor.setValues(new DoubleArrayWrapper(probabilities));
 	}
 
@@ -105,6 +106,12 @@ public class BayesNode {
 		this.id = id;
 		adjustFactordimensions();
 
+	}
+	
+	public void addOutcomes(String... names){
+		for(String name: names){
+			addOutcome(name);
+		}
 	}
 
 	public int addOutcome(final String name) {
