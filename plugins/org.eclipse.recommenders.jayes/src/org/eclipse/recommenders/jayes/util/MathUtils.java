@@ -117,11 +117,30 @@ public class MathUtils {
     }
 
     public static int product(int[] vector) {
-        int r = 1;
-        for (int i : vector) {
-            r *= i;
+        return productOfRange(vector,0,vector.length);
+    }
+    
+    /**
+     * product of the values in the array, from index start (inclusive) to end (exclusive)
+     * @throws ArrayIndexOutOfBoundsException if end >= vector.length
+     */
+    public static int productOfRange(int[] vector, int start, int end){
+        int result = 1;
+        for(int i = start; i < end; i++){
+            result *= vector[i];
         }
-        return r;
+        return result;
+    }
+    
+    public static int scalarProduct(int[] v1, int[] v2){
+    	if(v1.length != v2.length){
+    		throw new IllegalArgumentException("vectors differ in length");
+    	}
+    	int result = 0;
+    	for(int i = 0; i < v1.length; i++){
+    		result += v1[i] * v2[i];
+    	}
+    	return result;
     }
 
 }
