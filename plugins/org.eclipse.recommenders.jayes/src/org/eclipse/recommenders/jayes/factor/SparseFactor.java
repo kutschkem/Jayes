@@ -8,9 +8,6 @@ package org.eclipse.recommenders.jayes.factor;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
@@ -103,7 +100,7 @@ public class SparseFactor extends AbstractFactor {
     /*
      * can't put this in a constructor because we already need full information about the dimensions here
      */
-    public void sparsify(List<AbstractFactor> compatible) {
+    public void sparsify(AbstractFactor... compatible) {
         if (dimensions.length == 0) {
             //treat 0-dimensional factors specially (many methods break for them)
             blockSize = 1;
@@ -112,14 +109,13 @@ public class SparseFactor extends AbstractFactor {
             return;
         }
         assert dimensions.length > 0;
-
         optimizeDimensionOrder(compatible);
         optimizeBlockSize(compatible);
         System.out.println("Sparseness: " + blockSize);
 
         int length = computeLength();
         blockPointers = new int[(int) Math.ceil((double) length / blockSize)];
-        Map<AbstractFactor, int[]> posTransformations = computePositionTransformations(compatible);
+        int[][] posTransformations = computePositionTransformations(compatible);
         int[] counter = new int[dimensions.length];
         counter[counter.length - 1] = -1;
         int numberOfNonzeroBlocks = 0;
@@ -136,7 +132,7 @@ public class SparseFactor extends AbstractFactor {
         createSparseValueArray();
     }
 
-    private void optimizeDimensionOrder(List<AbstractFactor> compatible) {
+    private void optimizeDimensionOrder(AbstractFactor[] compatible) {
         int[][] zerosByDimension = countZerosByDimension(compatible);
         final double[] infogain = computeInfoGain(zerosByDimension);
 
@@ -223,13 +219,13 @@ public class SparseFactor extends AbstractFactor {
         return entropyValues;
     }
 
-    private int[][] countZerosByDimension(List<AbstractFactor> compatible) {
+    private int[][] countZerosByDimension(AbstractFactor[] compatible) {
         int[][] zeros = new int[dimensions.length][];
         for (int i = 0; i < zeros.length; i++) {
             zeros[i] = new int[dimensions[i]];
         }
 
-        Map<AbstractFactor, int[]> foreignIdToIndex = computePositionTransformations(compatible);
+        int[][] foreignIdToIndex = computePositionTransformations(compatible);
         int[] counter = new int[dimensions.length];
         counter[counter.length - 1] = -1;
         int length = computeLength();
@@ -246,46 +242,49 @@ public class SparseFactor extends AbstractFactor {
         return zeros;
     }
 
-    private Map<AbstractFactor, int[]> computePositionTransformations(
-            List<AbstractFactor> compatible) {
-        Map<AbstractFactor, int[]> localToForeignTransformations = new HashMap<AbstractFactor, int[]>();
-        for (AbstractFactor f : compatible) {
-            localToForeignTransformations.put(f, AddressCalc.computeLinearMap(f, dimensionIDs));
+    private int[][] computePositionTransformations(AbstractFactor[] compatible) {
+        int[][] localToForeignTransformations = new int[compatible.length][];
+        for (int i = 0; i < compatible.length; i++) {
+            localToForeignTransformations[i] = AddressCalc.computeLinearMap(compatible[i], dimensionIDs);
         }
         return localToForeignTransformations;
     }
 
-    private boolean checkIfPartitionIsZero(final int partition, int[] counter,
-            List<AbstractFactor> compatible,
-            Map<AbstractFactor, int[]> localToForeignTransformations, final int blockSize) {
-        boolean isZero = true;
+    private boolean checkIfPartitionIsZero(final int partition, int[] counter, AbstractFactor[] compatible,
+            int[][] localToForeignTransformations, final int blockSize) {
+        boolean isPartitionZero = true;
         for (int j = 0; j < blockSize; j++) {
             if (partition * blockSize + j >= computeLength())
                 break;
             AddressCalc.incrementMultiDimensionalCounter(counter, dimensions);
-            boolean isNotZero = true;
-            for (AbstractFactor f : compatible) {
-                int pos = MathUtils.scalarProduct(counter,
-                        localToForeignTransformations.get(f));
-                if (f.getValue(pos) == 0) {
-                    isNotZero = false;
-                }
-            }
-            if (isNotZero) {
-                isZero = false;
+            if (isPartitionZero) {
+                isPartitionZero &= checkIfPositionIsZero(counter, compatible, localToForeignTransformations);
             }
         }
-        return isZero;
+        return isPartitionZero;
     }
 
-    private void optimizeBlockSize(List<AbstractFactor> compatible) {
+    private boolean checkIfPositionIsZero(int[] position, AbstractFactor[] compatible,
+            int[][] localToForeignTransformations) {
+        for (int i = 0; i < compatible.length; i++) {
+            AbstractFactor f = compatible[i];
+            int pos = MathUtils.scalarProduct(position,
+                    localToForeignTransformations[i]);
+            if (f.getValue(pos) == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void optimizeBlockSize(AbstractFactor[] compatible) {
         int blocksize = computeLocallyOptimalPowerOf2BlockSize(compatible);
-        blocksize = refineBlockSizeByBinarySearch(compatible, blocksize);
+        blocksize = refineBlockSizeByBinarySearch(blocksize, compatible);
 
         this.blockSize = blocksize;
     }
 
-    private int computeLocallyOptimalPowerOf2BlockSize(List<AbstractFactor> compatible) {
+    private int computeLocallyOptimalPowerOf2BlockSize(AbstractFactor[] compatible) {
         //stage 1: greedy search restricted on powers of 2 
         int blocksize = 1;
         int arraySize;
@@ -293,7 +292,7 @@ public class SparseFactor extends AbstractFactor {
         int newOverhead;
         int newArraySize;
         newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
-        newOverhead = (computeLength() / blocksize) * SIZE_OF_INT; // integer is 4 byte TODO: make this a constant dependent on Integer.SIZE
+        newOverhead = (computeLength() / blocksize) * SIZE_OF_INT;
         do {
             blocksize *= 2;
             arraySize = newArraySize;
@@ -306,7 +305,7 @@ public class SparseFactor extends AbstractFactor {
     }
 
     private int refineBlockSizeByBinarySearch(
-            List<AbstractFactor> compatible, int blocksize) {
+            int blocksize, AbstractFactor[] compatible) {
         //stage 2: greedy binary search
         int upperBound = blocksize * 2;
         int lowerBound = blocksize;
@@ -326,8 +325,8 @@ public class SparseFactor extends AbstractFactor {
         return lowerBound;
     }
 
-    private int predictLengthOfValueArray(int blockSize, List<AbstractFactor> compatible) {
-        Map<AbstractFactor, int[]> foreignIdToIndex = computePositionTransformations(compatible);
+    private int predictLengthOfValueArray(int blockSize, AbstractFactor[] compatible) {
+        int[][] foreignIdToIndex = computePositionTransformations(compatible);
         int[] counter = new int[dimensions.length];
         counter[counter.length - 1] = -1;
         int length = computeLength();
@@ -383,7 +382,7 @@ public class SparseFactor extends AbstractFactor {
      * @param multiplicationCandidates
      * @return
      */
-    public static boolean isSuitable(int futureLength, List<AbstractFactor> multiplicationCandidates) {
+    public static boolean isSuitable(int futureLength, AbstractFactor... multiplicationCandidates) {
         if (multiplicationCandidates == null) {
             return false;
         }

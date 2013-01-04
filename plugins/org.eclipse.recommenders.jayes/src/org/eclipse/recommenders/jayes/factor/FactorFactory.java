@@ -20,78 +20,80 @@ import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class FactorFactory {
-	
-	protected BayesNet net;
-	private int logThreshold = Integer.MAX_VALUE;
-	private IArrayWrapper prototype = new DoubleArrayWrapper(0.0); //TODO is a length of 1 here still necessary?
-	
-	public void setArrayType(IArrayWrapper prototype){
-		IArrayWrapper clone = prototype.clone();
-		clone.newArray(1); 
-		this.prototype = clone;
-	}
-	
-	public void setReferenceNetwork(BayesNet net){
-		this.net = net;
-	}
-	
-	/**
-	 * factors bigger (in the number of variables) than the threshold are computed on the log-scale.
-	 * Validate different values if you encounter numerical instabilities.
-	 * 
-	 * @param logThreshold
-	 */
-	public void setLogThreshold(int threshold){
-		this.logThreshold = threshold;
-	}
-	
-	/**
-	 * creates a factor, the class of which is dependent on different criteria defined in
-	 * the concrete subclasses. The default behavior is to return a DenseFactor.
-	 * @param vars
-	 * @param multiplicationPartners
-	 * @return
-	 */
-	public AbstractFactor create(List<Integer> vars, List<AbstractFactor> multiplicationPartners){
-		
-		final int[] dimensions = getDimensionSizes(vars);
 
-		if(SparseFactor.isSuitable(MathUtils.product(dimensions), multiplicationPartners)){
-			SparseFactor f = new SparseFactor();
-			initializeFactor(vars, dimensions, f);
-			f.sparsify(multiplicationPartners);
-			return f;
-		}else{
-			DenseFactor f2 = new DenseFactor();
-			initializeFactor(vars,dimensions,f2);
-			return f2;
-		}
-	}
+    protected BayesNet net;
+    private int logThreshold = Integer.MAX_VALUE;
+    private IArrayWrapper prototype = new DoubleArrayWrapper(0.0); //TODO is a length of 1 here still necessary?
 
-	private void initializeFactor(List<Integer> vars,
-			final int[] dimensions, AbstractFactor f) {
-		f.setValues(prototype.clone());
-		f.setDimensions(dimensions);
-		f.setDimensionIDs(ArrayUtils.toIntArray(vars));
-		if (vars.size() > getLogThreshold()) {
-			f.setLogScale(true);
-		}
-	}
+    public void setArrayType(IArrayWrapper prototype) {
+        IArrayWrapper clone = prototype.clone();
+        clone.newArray(1);
+        this.prototype = clone;
+    }
 
-	private int[] getDimensionSizes(List<Integer> vars) {
-		final List<Integer> dimensions = new ArrayList<Integer>();
-		for (final Integer dim : vars) {
-			dimensions.add(net.getNode(dim).getOutcomeCount());
-		}
-		return ArrayUtils.toIntArray(dimensions);
-	}
+    public void setReferenceNetwork(BayesNet net) {
+        this.net = net;
+    }
 
-	private int getLogThreshold() {
-		return logThreshold;
-	}
-	
-	public static FactorFactory defaultFactory(){
-		return new FactorFactory();
-	}
+    /**
+     * factors bigger (in the number of variables) than the threshold are computed on the log-scale. Validate different
+     * values if you encounter numerical instabilities.
+     * 
+     * @param logThreshold
+     */
+    public void setLogThreshold(int threshold) {
+        this.logThreshold = threshold;
+    }
+
+    /**
+     * creates a factor, the class of which is dependent on different criteria defined in the concrete subclasses. The
+     * default behavior is to return a DenseFactor.
+     * 
+     * @param vars
+     * @param multiplicationPartners
+     * @return
+     */
+    public AbstractFactor create(List<Integer> vars, List<AbstractFactor> multiplicationPartners) {
+
+        final int[] dimensions = getDimensionSizes(vars);
+        AbstractFactor[] partners = multiplicationPartners.toArray(new AbstractFactor[0]);
+
+        if (SparseFactor.isSuitable(MathUtils.product(dimensions), partners)) {
+            SparseFactor f = new SparseFactor();
+            initializeFactor(vars, dimensions, f);
+            f.sparsify(partners);
+            return f;
+        } else {
+            DenseFactor f2 = new DenseFactor();
+            initializeFactor(vars, dimensions, f2);
+            return f2;
+        }
+    }
+
+    private void initializeFactor(List<Integer> vars,
+            final int[] dimensions, AbstractFactor f) {
+        f.setValues(prototype.clone());
+        f.setDimensions(dimensions);
+        f.setDimensionIDs(ArrayUtils.toIntArray(vars));
+        if (vars.size() > getLogThreshold()) {
+            f.setLogScale(true);
+        }
+    }
+
+    private int[] getDimensionSizes(List<Integer> vars) {
+        final List<Integer> dimensions = new ArrayList<Integer>();
+        for (final Integer dim : vars) {
+            dimensions.add(net.getNode(dim).getOutcomeCount());
+        }
+        return ArrayUtils.toIntArray(dimensions);
+    }
+
+    private int getLogThreshold() {
+        return logThreshold;
+    }
+
+    public static FactorFactory defaultFactory() {
+        return new FactorFactory();
+    }
 
 }
