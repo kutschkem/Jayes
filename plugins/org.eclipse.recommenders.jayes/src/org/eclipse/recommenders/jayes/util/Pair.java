@@ -58,4 +58,8 @@ public class Pair<T1, T2> {
         return o1.hashCode() + 67 * o2.hashCode();
     }
 
+    public static <S1, S2> Pair<S1, S2> newPair(S1 o1, S2 o2) {
+        return new Pair<S1, S2>(o1, o2);
+    }
+
 }

@@ -10,6 +10,8 @@
  */
 package org.eclipse.recommenders.jayes.inference.junctionTree;
 
+import static org.eclipse.recommenders.jayes.util.Pair.newPair;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -255,7 +257,7 @@ public class JunctionTreeBuilder {
             while (remainingIt.hasNext()) { // generate sepSets
                 final List<Integer> clique2 = new ArrayList<Integer>(remainingIt.next());
                 clique2.retainAll(clique1);
-                sepSets.add(new Pair<Edge, List<Integer>>(new Edge(it.nextIndex() - 1, remainingIt.nextIndex() - 1),
+                sepSets.add(newPair(new Edge(it.nextIndex() - 1, remainingIt.nextIndex() - 1),
                         clique2));
             }
         }
