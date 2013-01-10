@@ -23,4 +23,6 @@ public interface ISampler {
 
     Map<BayesNode, String> sample();
 
+    void seed(long seed);
+
 }

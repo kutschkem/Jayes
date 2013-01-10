@@ -63,29 +63,30 @@ public class BasicSampler implements ISampler {
     }
 
     private List<BayesNode> topsort(List<BayesNode> list) {
-	    List<BayesNode> result = new LinkedList<BayesNode>();
-	    Set<BayesNode> visited = new HashSet<BayesNode>();
-	    for (BayesNode n : list)
-	        DFS(n, visited, result);
-	    Collections.reverse(result);
-	    return result;
-	}
+        List<BayesNode> result = new LinkedList<BayesNode>();
+        Set<BayesNode> visited = new HashSet<BayesNode>();
+        for (BayesNode n : list)
+            DFS(n, visited, result);
+        Collections.reverse(result);
+        return result;
+    }
 
-	private void DFS(BayesNode n, Set<BayesNode> visited, List<BayesNode> finished) {
-	    if (visited.contains(n))
-	        return;
-	    visited.add(n);
-	    for (BayesNode c : n.getChildren())
-	        DFS(c, visited, finished);
-	    finished.add(n);
-	}
+    private void DFS(BayesNode n, Set<BayesNode> visited, List<BayesNode> finished) {
+        if (visited.contains(n))
+            return;
+        visited.add(n);
+        for (BayesNode c : n.getChildren())
+            DFS(c, visited, finished);
+        finished.add(n);
+    }
 
-	@Override
+    @Override
     public void setEvidence(Map<BayesNode, String> evidence) {
         this.evidence = evidence;
 
     }
 
+    @Override
     public void seed(long seed) {
         random.setSeed(seed);
     }

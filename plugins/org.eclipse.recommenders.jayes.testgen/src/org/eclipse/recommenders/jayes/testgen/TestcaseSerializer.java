@@ -13,59 +13,63 @@ package org.eclipse.recommenders.jayes.testgen;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 
 import com.google.gson.stream.JsonWriter;
 
 public class TestcaseSerializer {
-	
-	private BayesNet net;
-	private JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
-	
-	public TestcaseSerializer(BayesNet net){
-		this.net = net;
-		algo.setNetwork(net);
-	}
-	
-	
-	public String writeTestcases(List<Map<BayesNode,String>> testcases){
-		StringWriter strWriter = new StringWriter();
-		try{
-		JsonWriter wrt = new JsonWriter(strWriter);
-		wrt.beginArray();
-		for(Map<BayesNode,String> testcase : testcases){
-			algo.setEvidence(testcase);
-			wrt.beginObject();
-			for(BayesNode node: net.getNodes()){
-				wrt.name(node.getName());
-				wrt.beginObject();
-				wrt.name("evidence");
-				if(testcase.containsKey(node)){
-					wrt.value(testcase.get(node));
-				}else{
-					wrt.nullValue();
-				}
-				wrt.name("belief");
-				wrt.beginArray();
-				for(double d: algo.getBeliefs(node)){
-					wrt.value(d);
-				}
-				wrt.endArray();
-				wrt.endObject();
-			}
-			wrt.endObject();
-		}
-		wrt.endArray();
-		wrt.close();
-		}catch(IOException ex){//should not happen
-			ex.printStackTrace();
-		}
-		
-		return strWriter.getBuffer().toString();
-	}
+
+    public static final String BELIEF = "belief";
+    public static final String EVIDENCE = "evidence";
+    private BayesNet net;
+
+    public TestcaseSerializer(BayesNet net) {
+        this.net = net;
+    }
+
+    public String writeTestcases(List<TestCase> testcases) {
+        StringWriter strWriter = new StringWriter();
+        try {
+            JsonWriter wrt = new JsonWriter(strWriter);
+            wrt.beginArray();
+            for (TestCase testcase : testcases) {
+                wrt.beginObject();
+                for (BayesNode node : net.getNodes()) {
+                    wrt.name(node.getName());
+                    wrt.beginObject();
+                    writeEvidence(wrt, testcase, node);
+                    writeBelief(wrt, testcase, node);
+                    wrt.endObject();
+                }
+                wrt.endObject();
+            }
+            wrt.endArray();
+            wrt.close();
+        } catch (IOException ex) {//should not happen, since we only write to a String
+            ex.printStackTrace();
+        }
+
+        return strWriter.getBuffer().toString();
+    }
+
+    private void writeBelief(JsonWriter wrt, TestCase testcase, BayesNode node) throws IOException {
+        wrt.name(BELIEF);
+        wrt.beginArray();
+        for (double d : testcase.beliefs.get(node)) {
+            wrt.value(d);
+        }
+        wrt.endArray();
+    }
+
+    private void writeEvidence(JsonWriter wrt, TestCase testcase, BayesNode node) throws IOException {
+        wrt.name(EVIDENCE);
+        if (testcase.evidence.containsKey(node)) {
+            wrt.value(testcase.evidence.get(node));
+        } else {
+            wrt.nullValue();
+        }
+    }
 
 }

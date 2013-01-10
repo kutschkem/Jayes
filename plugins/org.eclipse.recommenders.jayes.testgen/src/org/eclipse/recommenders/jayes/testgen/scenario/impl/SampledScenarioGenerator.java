@@ -8,11 +8,14 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.testgen;
+package org.eclipse.recommenders.jayes.testgen.scenario.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -20,15 +23,29 @@ import java.util.Set;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.sampling.BasicSampler;
+import org.eclipse.recommenders.jayes.sampling.ISampler;
+import org.eclipse.recommenders.jayes.testgen.scenario.ScenarioGenerator;
 
-public class TestcaseGenerator {
+/**
+ * generates scenarios by sampling the probability distribution. This scenario generator allows setting an evidence
+ * rate, which means that any variable will be observed with that probability.
+ */
+public class SampledScenarioGenerator implements ScenarioGenerator {
 
-    private BasicSampler sampler = new BasicSampler();
+    private ISampler sampler;
     private double unsetRate = 0.2;
-    private Set<Integer> hidden = new HashSet<Integer>();
-    private Set<Integer> observed = new HashSet<Integer>();
+    private Set<BayesNode> hidden = new HashSet<BayesNode>();
+    private Set<BayesNode> observed = new HashSet<BayesNode>();
     private Map<BayesNode, String> fixed = new HashMap<BayesNode, String>();
     private Random random = new Random();
+
+    public SampledScenarioGenerator(ISampler sampler) {
+        this.sampler = sampler;
+    }
+
+    public SampledScenarioGenerator() {
+        this(new BasicSampler());
+    }
 
     public void setBN(BayesNet bn) {
         sampler.setNetwork(bn);
@@ -47,7 +64,7 @@ public class TestcaseGenerator {
         Iterator<BayesNode> it = sample.keySet().iterator();
         while (it.hasNext()) {
             BayesNode n = it.next();
-            if ((!observed.contains(n.getId())) && (hidden.contains(n.getId()) || random.nextDouble() < unsetRate)) {
+            if ((!observed.contains(n)) && (hidden.contains(n) || random.nextDouble() < unsetRate)) {
                 it.remove();
             }
         }
@@ -56,17 +73,20 @@ public class TestcaseGenerator {
 
     }
 
-    public void addHidden(int node) {
+    @Override
+    public void addHidden(BayesNode node) {
         hidden.add(node);
 
     }
 
-    public void addObserved(int node) {
+    @Override
+    public void addObserved(BayesNode node) {
         observed.add(node);
 
     }
 
-    public void set(BayesNode node, String outcome) {
+    @Override
+    public void setFixed(BayesNode node, String outcome) {
         fixed.put(node, outcome);
 
     }
@@ -74,6 +94,15 @@ public class TestcaseGenerator {
     public void seed(long seed) {
         random.setSeed(seed);
         sampler.seed(seed);
+    }
+
+    @Override
+    public Collection<Map<BayesNode, String>> generate(int number) {
+        List<Map<BayesNode, String>> scenarios = new ArrayList<Map<BayesNode, String>>();
+        for (int i = 0; i < number; i++) {
+            scenarios.add(testcase());
+        }
+        return scenarios;
     }
 
 }

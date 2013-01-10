@@ -47,9 +47,9 @@ public class Cut implements Cloneable {
         index = 0;
         stepSize = 1;
         rootDimension = 0;
-        if(length > 1){ //treat zero-dimensional factors specially
+        if(length > 1){
         subtreeStepsize = length / this.factor.getDimensions()[0];
-        }else{
+        }else{ //treat zero-dimensional factors specially
         	subtreeStepsize = 0;
         }
         leafDimension = this.factor.getDimensions().length - 1;

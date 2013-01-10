@@ -28,7 +28,7 @@ import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorit
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.testgen.TestCase;
 import org.eclipse.recommenders.jayes.testgen.TestcaseDeserializer;
-import org.eclipse.recommenders.jayes.testgen.TestcaseGenerator;
+import org.eclipse.recommenders.jayes.testgen.scenario.impl.SampledScenarioGenerator;
 import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.logging.JTATestAdapter;
@@ -201,7 +201,7 @@ public class JunctionTreeTest {
 	public void testLargerScaleCorrectnessAB() throws Exception {
 		BayesNet net = new XMLBIFReader().read(getClass().getClassLoader().getResourceAsStream("JPanel.xml"));
 
-    	TestcaseGenerator testgen = new TestcaseGenerator();
+    	SampledScenarioGenerator testgen = new SampledScenarioGenerator();
     	testgen.setBN(net);
     	testgen.seed(1337);
     	testgen.setEvidenceRate(0.5);
