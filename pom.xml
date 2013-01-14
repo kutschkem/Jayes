@@ -17,6 +17,7 @@
 		<module>features/org.eclipse.recommenders.jayes.feature</module>
 		<module>repositories/org.eclipse.recommenders.jayes.repository</module>
 		<module>etc/license-headers</module>
+		<module>etc/juno-release-target</module>
 	</modules>
 	
 </project>
