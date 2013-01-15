@@ -10,16 +10,18 @@
  */
 package org.eclipse.recommenders.jayes.io;
 
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.*;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.io.util.XMLUtil;
 
 /**
- * a Writer thats writes the XMLBIF v0.3 format (<a
- * href="http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/"
+ * a Writer thats writes the XMLBIF v0.3 format (<a href="http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/"
  * >specification</a>)
  * 
  * @author Michael Kutschke
@@ -37,20 +39,29 @@ public class XMLBIFWriter {
             + "\t<!ELEMENT OUTCOME (#PCDATA)>\n" + "\t<!ELEMENT DEFINITION ( FOR | GIVEN | TABLE | PROPERTY )* >\n"
             + "\t<!ELEMENT FOR (#PCDATA)>\n" + "\t<!ELEMENT GIVEN (#PCDATA)>\n" + "\t<!ELEMENT TABLE (#PCDATA)>\n"
             + "\t<!ELEMENT PROPERTY (#PCDATA)>\n" + "]>\n";
-    private static final String templateBIF = "<BIF VERSION=\"0.3\">\n" + "<NETWORK>\n<NAME>%1$s</NAME>\n\n"
-            + "<!-- Variables -->\n%2$s\n" + "<!-- Probability Distributions -->\n%3$s\n" + "</NETWORK>\n</BIF>";
 
     public String write(BayesNet net) {
         StringBuilder bldr = new StringBuilder();
         bldr.append(xmlHeader);
         bldr.append(comment);
         bldr.append(DTD);
-        bldr.append(templateBIF);
 
-        String variables = getVariables(net);
-        String variableDefs = getVariableDefs(net);
+        int offset = bldr.length();
+        bldr.append(net.getName());
+        XMLUtil.surround(offset, bldr, NAME);
 
-        return String.format(bldr.toString(), net.getName(), variables, variableDefs);
+        bldr.append("\n<!-- Variables -->\n");
+
+        writeVariables(bldr, net);
+
+        bldr.append("\n<!-- Probability Distributions -->\n");
+
+        writeVariableDefs(bldr, net);
+
+        XMLUtil.surround(offset, bldr, "NETWORK");
+        XMLUtil.surround(offset, bldr, "BIF", "VERSION", "0.3");
+
+        return bldr.toString();
     }
 
     public void writeToFile(BayesNet net, String filename) throws IOException {
@@ -59,41 +70,48 @@ public class XMLBIFWriter {
         wrtr.close();
     }
 
-    private String getVariableDefs(BayesNet net) {
-        StringBuilder bldr = new StringBuilder();
-
+    private void writeVariableDefs(StringBuilder bldr, BayesNet net) {
         for (BayesNode node : net.getNodes()) {
-            bldr.append("<DEFINITION>\n\t");
-            bldr.append(XMLUtil.surround(node.getName(), "FOR"));
-            for (BayesNode parent : node.getParents()) {
-                bldr.append("\n\t");
-                bldr.append(XMLUtil.surround(parent.getName(), "GIVEN"));
-            }
-            bldr.append("\n\t<TABLE>");
-            for (Number d : node.getFactor().getValues()) {
-                bldr.append(d);
-                bldr.append(" ");
-            }
-            bldr.append("</TABLE>\n</DEFINITION>\n\n");
+            int offset = bldr.length();
+            bldr.append(node.getName());
+            XMLUtil.surround(offset, bldr, FOR);
+            writeParents(bldr, node);
+            writeProbabilities(bldr, node);
+            XMLUtil.surround(offset, bldr, DEFINITION);
         }
-
-        return bldr.toString();
     }
 
-    private String getVariables(BayesNet net) {
-        StringBuilder bldr = new StringBuilder();
+    private void writeParents(StringBuilder bldr, BayesNode node) {
+        for (BayesNode parent : node.getParents()) {
+            bldr.append("\n\t");
+            int offset = bldr.length();
+            bldr.append(parent.getName());
+            XMLUtil.surround(offset, bldr, GIVEN);
+        }
+    }
 
+    private void writeProbabilities(StringBuilder bldr, BayesNode node) {
+        int offset = bldr.length();
+        for (Number d : node.getFactor().getValues()) {
+            bldr.append(d);
+            bldr.append(' ');
+        }
+        XMLUtil.surround(offset, bldr, TABLE);
+    }
+
+    private void writeVariables(StringBuilder bldr, BayesNet net) {
         for (BayesNode node : net.getNodes()) {
-            bldr.append("<VARIABLE>\n");
-            bldr.append(XMLUtil.surround(node.getName(), "NAME"));
+            int offset = bldr.length();
+            bldr.append(node.getName());
+            XMLUtil.surround(offset, bldr, NAME);
             bldr.append("\n");
             for (String outcome : node.getOutcomes()) {
-                bldr.append(XMLUtil.surround(XMLUtil.clean(outcome), "OUTCOME"));
+                int offset2 = bldr.length();
+                bldr.append(StringEscapeUtils.escapeXml(outcome));
+                XMLUtil.surround(offset2, bldr, OUTCOME);
                 bldr.append("\n");
             }
-            bldr.append("</VARIABLE>\n\n");
+            XMLUtil.surround(offset, bldr, VARIABLE);
         }
-
-        return bldr.toString();
     }
 }

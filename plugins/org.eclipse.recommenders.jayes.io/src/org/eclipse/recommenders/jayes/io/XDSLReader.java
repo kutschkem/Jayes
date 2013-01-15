@@ -10,14 +10,15 @@
  ******************************************************************************/
 package org.eclipse.recommenders.jayes.io;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.*;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -25,15 +26,18 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.io.util.XPathUtil;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.xpath.XPathEvaluator;
 import org.xml.sax.SAXException;
+
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.primitives.Doubles;
 
 public class XDSLReader {
 
@@ -42,13 +46,20 @@ public class XDSLReader {
     }
 
     public BayesNet read(File biffile) throws IOException {
-    	return read(new BufferedInputStream(new FileInputStream(biffile)));
+        return read(new BufferedInputStream(new FileInputStream(biffile)));
     }
-    
-    public BayesNet read(InputStream str) throws IOException{
-    	Document doc = obtainDocument(str);
-    	
-    	return readFromDocument(doc);
+
+    public BayesNet read(InputStream str) throws IOException {
+        Document doc = obtainDocument(str);
+
+        return readFromDocument(doc);
+    }
+
+    public BayesNet readFromString(String xdslString) throws IOException {
+        Document doc = obtainDocument(new ByteArrayInputStream(xdslString.getBytes()));
+
+        return readFromDocument(doc);
+
     }
 
     private Document obtainDocument(InputStream xdslStream) throws IOException {
@@ -69,23 +80,6 @@ public class XDSLReader {
 
     }
 
-    public BayesNet readFromString(String xdslString) throws IOException {
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        docBuilderFactory.setValidating(true);
-        try {
-            DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
-
-            Document doc = docBldr.parse(new ByteArrayInputStream(xdslString.getBytes()));
-
-            return readFromDocument(doc);
-        } catch (ParserConfigurationException e) {
-            throw new IOException("Bad parser configuration, probably missing dependency", e);
-        } catch (SAXException e) {
-            throw new IOException("Parse failed", e);
-        }
-
-    }
-
     private BayesNet readFromDocument(Document doc) {
         BayesNet net = new BayesNet();
 
@@ -93,76 +87,81 @@ public class XDSLReader {
         String networkName = getId(smileNode);
         net.setName(networkName);
 
-        initializeNodes(doc, net);
+        intializeNodes(doc, net);
+        initializeNodeOutcomes(doc, net);
+        setParents(doc, net);
 
-        XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
-
-        NodeList nodelist = doc.getElementsByTagName("cpt");
-        for (int i = 0; i < nodelist.getLength(); i++) {
-            Node node = nodelist.item(i);
-            String name = getId(node);
-
-            BayesNode bNode = net.getNode(name);
-
-            setParents(bNode, net, node, xpath);
-
-            parseProbabilities(xpath, node, bNode);
-
-        }
+        parseProbabilities(doc, net);
 
         return net;
     }
 
-    private String getId(Node node) {
-        return node.getAttributes().getNamedItem("id").getTextContent();
+    private void intializeNodes(Document doc, BayesNet net) {
+        NodeList nodelist = doc.getElementsByTagName(CPT);
+
+        for (int i = 0; i < nodelist.getLength(); i++) {
+            BayesNode bNode = new BayesNode(getId(nodelist.item(i)));
+            net.addNode(bNode);
+        }
+
     }
 
-    private void initializeNodes(Document doc, BayesNet net) {
-        XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
+    private String getId(Node node) {
+        return node.getAttributes().getNamedItem(ID).getTextContent();
+    }
 
-        NodeList nodelist = doc.getElementsByTagName("cpt");
+    private void initializeNodeOutcomes(Document doc, BayesNet net) {
+
+        NodeList nodelist = doc.getElementsByTagName(STATE);
         for (int i = 0; i < nodelist.getLength(); i++) {
             Node node = nodelist.item(i);
 
-            BayesNode bNode = new BayesNode(getId(node));
+            BayesNode bNode = net.getNode(getId(node.getParentNode()));
 
-            for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "state", node); it.hasNext();) {
-                bNode.addOutcome(getId(it.next()));
-            }
-
-            net.addNode(bNode);
+            bNode.addOutcome(StringEscapeUtils.unescapeXml(getId(node)));
 
         }
     }
 
-    private void setParents(BayesNode bNode, BayesNet net, Node node, XPathEvaluator xpath) {
-        List<BayesNode> parents = new ArrayList<BayesNode>();
-        Iterator<Node> parentNode = XPathUtil.evalXPath(xpath, "parents", node);
-        List<String> parentNames = new ArrayList<String>();
-        if (parentNode.hasNext()) {
-            StringTokenizer tokenizer = new StringTokenizer(parentNode.next().getTextContent());
-            while (tokenizer.hasMoreTokens()) {
-                parentNames.add(tokenizer.nextToken());
+    private void setParents(Document doc, BayesNet net) {
+
+        NodeList nodelist = doc.getElementsByTagName(PARENTS);
+        for (int i = 0; i < nodelist.getLength(); i++) {
+            Node node = nodelist.item(i);
+
+            BayesNode bNode = net.getNode(getId(node.getParentNode()));
+
+            List<String> parentNames = newArrayList();
+            Iterables.addAll(parentNames,
+                    Splitter.on(CharMatcher.WHITESPACE).omitEmptyStrings().split(node.getTextContent()));
+
+            List<BayesNode> parents = newArrayList();
+            for (String parentname : parentNames) {
+                parents.add(net.getNode(parentname));
             }
+            bNode.setParents(parents);
         }
 
-        for (String parentname : parentNames) {
-            parents.add(net.getNode(parentname));
-        }
-
-        bNode.setParents(parents);
     }
 
-    private void parseProbabilities(XPathEvaluator xpath, Node node, BayesNode bNode) {
-        String table = XPathUtil.evalXPath(xpath, "probabilities", node).next().getTextContent();
+    private void parseProbabilities(Document doc, BayesNet net) {
+        NodeList nodelist = doc.getElementsByTagName(PROBABILITIES);
+        for (int i = 0; i < nodelist.getLength(); i++) {
+            Node node = nodelist.item(i);
 
-        List<Double> probabilities = new ArrayList<Double>();
-        StringTokenizer tok = new StringTokenizer(table);
-        while (tok.hasMoreTokens()) {
-            probabilities.add(Double.valueOf(tok.nextToken()));
+            BayesNode bNode = net.getNode(getId(node.getParentNode()));
+
+            String table = node.getTextContent();
+            List<Double> probabilities = newArrayList();
+
+            StringTokenizer tok = new StringTokenizer(table);
+            while (tok.hasMoreTokens()) {
+                probabilities.add(Double.valueOf(tok.nextToken()));
+            }
+
+            bNode.setProbabilities(Doubles.toArray(probabilities));
         }
 
-        bNode.setProbabilities((double[]) ArrayUtils.unboxArray(probabilities.toArray(new Double[] {})));
     }
 
 }

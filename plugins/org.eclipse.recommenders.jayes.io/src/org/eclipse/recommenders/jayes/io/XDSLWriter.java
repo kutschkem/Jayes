@@ -10,9 +10,12 @@
  ******************************************************************************/
 package org.eclipse.recommenders.jayes.io;
 
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.*;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.io.util.XMLUtil;
@@ -21,65 +24,60 @@ public class XDSLWriter {
 
     private static final String xmlHeader = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
     private static final String comment = "<!--\n\t Bayesian Network in XDSL format \n-->\n";
-    private static final String templateXDSL = "<smile version=\"1.0\" id=\"%1$s\" numsamples=\"1000\" discsamples=\"10000\">\n"
-            + "\t<nodes>%2$s\n\t</nodes>\n</smile>";
 
     public String write(BayesNet net) {
         StringBuilder bldr = new StringBuilder();
         bldr.append(xmlHeader);
         bldr.append(comment);
-        bldr.append(templateXDSL);
 
-        String variableDefs = getVariableDefs(net);
+        int offset = bldr.length();
+        getVariableDefs(bldr, net);
+        XMLUtil.surround(offset, bldr, "nodes");
+        XMLUtil.surround(offset, bldr, "smile", "version", "1.0", ID, net.getName(), "numsamples", "1000",
+                "discsamples", "10000");
 
-        return String.format(bldr.toString(), net.getName(), XMLUtil.addTab("\n" + variableDefs));
+        return bldr.toString();
     }
 
-    private String getVariableDefs(BayesNet net) {
-        StringBuilder bldr = new StringBuilder();
+    private void getVariableDefs(StringBuilder bldr, BayesNet net) {
+        int offset = bldr.length();
 
         for (BayesNode node : net.getNodes()) {
-            String states = encodeStates(node);
-            String parents = encodeParents(node);
-            String probs = encodeProbabilities(node);
-            bldr.append(XMLUtil.surround(states + parents + "\n" + probs, "cpt", "id", node.getName()));
-            bldr.append("\n");
+            encodeStates(bldr, node);
+            encodeParents(bldr, node);
+            bldr.append('\n');
+            encodeProbabilities(bldr, node);
+            XMLUtil.surround(offset, bldr, CPT, ID, node.getName());
+            bldr.append('\n');
         }
-
-        return bldr.toString();
     }
 
-    private String encodeStates(BayesNode node) {
-        StringBuilder bldr = new StringBuilder();
-
+    private void encodeStates(StringBuilder bldr, BayesNode node) {
         for (String outcome : node.getOutcomes()) {
-            bldr.append(XMLUtil.emptyTag("state", "id", XMLUtil.clean(outcome)));
-            bldr.append("\n");
+            XMLUtil.emptyTag(bldr, STATE, ID, StringEscapeUtils.escapeXml(outcome));
+            bldr.append('\n');
         }
-
-        return bldr.toString();
     }
 
-    private String encodeParents(BayesNode node) {
-        StringBuilder bldr = new StringBuilder();
-
+    private void encodeParents(StringBuilder bldr, BayesNode node) {
+        int offset = bldr.length();
         for (BayesNode p : node.getParents()) {
             // XDSL can't handle names containing whitespaces!
             bldr.append(p.getName().trim().replaceAll("\\s+", "_"));
-            bldr.append(" ");
+            bldr.append(' ');
         }
 
-        return XMLUtil.surround(bldr.toString(), "parents");
+        XMLUtil.surround(offset, bldr, PARENTS);
     }
 
-    private String encodeProbabilities(BayesNode node) {
-        StringBuilder bldr = new StringBuilder();
+    private void encodeProbabilities(StringBuilder bldr, BayesNode node) {
+        int offset = bldr.length();
 
         for (Number d : node.getFactor().getValues()) {
             bldr.append(d);
-            bldr.append(" ");
+            bldr.append(' ');
         }
-        return XMLUtil.surround(bldr.toString(), "probabilities");
+        XMLUtil.surround(offset, bldr, PROBABILITIES);
     }
 
     public void writeToFile(BayesNet net, String filename) throws IOException {

@@ -10,6 +10,8 @@
  */
 package org.eclipse.recommenders.jayes.io;
 
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.*;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -25,6 +27,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.io.util.XPathUtil;
@@ -36,11 +39,8 @@ import org.w3c.dom.xpath.XPathEvaluator;
 import org.xml.sax.SAXException;
 
 /**
- * a Reader thats reads the XMLBIF v0.3 format (<a
- * href="http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/"
+ * a Reader thats reads the XMLBIF v0.3 format (<a href="http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/"
  * >specification</a>)
- * 
- * @author Michael Kutschke
  * 
  */
 public class XMLBIFReader {
@@ -59,10 +59,10 @@ public class XMLBIFReader {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         docBuilderFactory.setValidating(true);
         DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
-    
+
         Document doc = docBldr.parse(biffile);
         doc.normalize();
-    
+
         return doc;
     }
 
@@ -80,16 +80,16 @@ public class XMLBIFReader {
     private BayesNet readFromDocument(Document doc) {
         BayesNet net = new BayesNet();
 
-        net.setName(doc.getElementsByTagName("NAME").item(0).getTextContent());
+        net.setName(doc.getElementsByTagName(NAME).item(0).getTextContent());
 
         initializeNodes(doc, net);
 
-        XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
+        XPathEvaluator xpath = getXPathEvaluator(doc);
 
-        NodeList nodelist = doc.getElementsByTagName("DEFINITION");
+        NodeList nodelist = doc.getElementsByTagName(DEFINITION);
         for (int i = 0; i < nodelist.getLength(); i++) {
             Node node = nodelist.item(i);
-            String name = XPathUtil.evalXPath(xpath, "FOR", node).next().getTextContent();
+            String name = XPathUtil.evalXPath(xpath, FOR, node).next().getTextContent();
 
             BayesNode bNode = net.getNode(name);
 
@@ -103,34 +103,38 @@ public class XMLBIFReader {
     }
 
     private void initializeNodes(Document doc, BayesNet net) {
-        XPathEvaluator xpath = (XPathEvaluator) doc.getFeature("+XPath", null);
-    
-        NodeList nodelist = doc.getElementsByTagName("VARIABLE");
+        XPathEvaluator xpath = getXPathEvaluator(doc);
+
+        NodeList nodelist = doc.getElementsByTagName(VARIABLE);
         for (int i = 0; i < nodelist.getLength(); i++) {
             Node node = nodelist.item(i);
-            Node name = XPathUtil.evalXPath(xpath, "NAME", node).next();
-    
+            Node name = XPathUtil.evalXPath(xpath, NAME, node).next();
+
             BayesNode bNode = new BayesNode(name.getTextContent());
-    
-            for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "OUTCOME", node); it.hasNext();) {
-                bNode.addOutcome(it.next().getTextContent());
+
+            for (Iterator<Node> it = XPathUtil.evalXPath(xpath, OUTCOME, node); it.hasNext();) {
+                bNode.addOutcome(StringEscapeUtils.unescapeXml(it.next().getTextContent()));
             }
-    
+
             net.addNode(bNode);
-    
+
         }
+    }
+
+    private XPathEvaluator getXPathEvaluator(Document doc) {
+        return (XPathEvaluator) doc.getFeature("+XPath", null);
     }
 
     private void setParents(BayesNode bNode, BayesNet net, Node node, XPathEvaluator xpath) {
         List<BayesNode> parents = new ArrayList<BayesNode>();
-        for (Iterator<Node> it = XPathUtil.evalXPath(xpath, "GIVEN", node); it.hasNext();) {
+        for (Iterator<Node> it = XPathUtil.evalXPath(xpath, GIVEN, node); it.hasNext();) {
             parents.add(net.getNode(it.next().getTextContent()));
         }
         bNode.setParents(parents);
     }
 
     private void parseProbabilities(XPathEvaluator xpath, Node node, BayesNode bNode) {
-        String table = XPathUtil.evalXPath(xpath, "TABLE", node).next().getTextContent();
+        String table = XPathUtil.evalXPath(xpath, TABLE, node).next().getTextContent();
 
         List<Double> probabilities = new ArrayList<Double>();
         StringTokenizer tok = new StringTokenizer(table);
@@ -141,9 +145,10 @@ public class XMLBIFReader {
         bNode.setProbabilities((double[]) ArrayUtils.unboxArray(probabilities.toArray(new Double[] {})));
     }
 
-	public BayesNet read(InputStream systemResourceAsStream) throws ParserConfigurationException, SAXException, IOException {
-		Document doc = obtainDocument(systemResourceAsStream);
-		return readFromDocument(doc);
-	}
+    public BayesNet read(InputStream systemResourceAsStream) throws ParserConfigurationException, SAXException,
+            IOException {
+        Document doc = obtainDocument(systemResourceAsStream);
+        return readFromDocument(doc);
+    }
 
 }
