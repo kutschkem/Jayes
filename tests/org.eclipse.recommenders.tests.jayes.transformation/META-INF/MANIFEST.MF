@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.recommenders.tests.jayes.transformation
 Bundle-SymbolicName: org.eclipse.recommenders.tests.jayes.transformation
-Bundle-Version: 1.0.2.qualifier
+Bundle-Version: 1.0.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.recommenders.jayes.transformation;bundle-version="1.0.2",
- org.eclipse.recommenders.jayes;bundle-version="1.0.2",
- org.eclipse.recommenders.jayes.serialization;bundle-version="1.0.2"
-Import-Package: org.junit;version="4.8.1",
- org.junit.runner
+Require-Bundle: org.eclipse.recommenders.jayes.transformation;bundle-version="1.0.3",
+ org.eclipse.recommenders.jayes;bundle-version="1.0.3",
+ org.eclipse.recommenders.jayes.serialization;bundle-version="1.0.3",
+ org.junit4;bundle-version="4.8.1"

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.recommenders.feature</groupId>
 		<artifactId>org.eclipse.recommenders.feature.parent</artifactId>
-		<version>1.0.2-SNAPSHOT</version>
+		<version>1.0.3-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.eclipse.recommenders.jayes.feature</artifactId>

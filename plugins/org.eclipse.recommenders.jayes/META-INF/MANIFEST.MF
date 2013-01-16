@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.eclipse.recommenders.jayes
 Bundle-Name: org.eclipse.recommenders.jayes
-Bundle-Version: 1.0.2.qualifier
+Bundle-Version: 1.0.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: 
  org.eclipse.recommenders.jayes,
