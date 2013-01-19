@@ -63,11 +63,6 @@ public class DenseFactor extends AbstractFactor {
         return virtualPosition;
     }
 
-    @Override
-    protected int computeLength() {
-        return values.length();
-    }
-
     /**
      * prepares multiplication by precomputing the corresponding array positions in the compatible Factor
      * 

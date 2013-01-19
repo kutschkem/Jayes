@@ -18,10 +18,13 @@ public class SparseFactor extends AbstractFactor {
 
     private static final int SIZE_OF_INT = 4;
     /**
-     * blockSize values in the original value array correspond to one block pointer
+     * blockSize values in the original value array correspond to one block pointer.
      */
     private int blockSize;
-    private int[] blockPointers;
+    /**
+     * blockPointer relative to the original block's address
+     */
+    private int[] relativeBlockPointers;
 
     @Override
     public void setDimensions(int... dimensions) {
@@ -59,13 +62,13 @@ public class SparseFactor extends AbstractFactor {
         int[] counter = new int[dimensions.length];
         int[] positionTransformation = AddressCalc.computeLinearMap(compatible, dimensionIDs);
         counter[counter.length - 1] = -1;
-        for (int i = 0; i < blockPointers.length; i++) {
+        for (int i = 0; i < relativeBlockPointers.length; i++) {
             for (int j = 0; j < blockSize; j++) {
-                if (i * blockSize + j >= computeLength())
+                if (i * blockSize + j >= computeDenseLength())
                     break;
                 AddressCalc.incrementMultiDimensionalCounter(counter,
                         dimensions);
-                if (blockPointers[i] != 0) {
+                if (getRealPosition(getOriginalBlockAddress(i)) != 0) {
                     int pos = MathUtils.scalarProduct(counter, positionTransformation);
                     positions[getRealPosition(i * blockSize + j)] = pos;
                 }
@@ -81,12 +84,16 @@ public class SparseFactor extends AbstractFactor {
 
     private int countNonzeroBlocks() {
         int nonSparse = 0;
-        for (int i = 0; i < blockPointers.length; i++) {
-            if (blockPointers[i] != 0) {
+        for (int i = 0; i < relativeBlockPointers.length; i++) {
+            if (getRealPosition(getOriginalBlockAddress(i)) != 0) {
                 nonSparse++;
             }
         }
         return nonSparse;
+    }
+
+    private int getOriginalBlockAddress(int blockIndex) {
+        return blockIndex * blockSize;
     }
 
     /**
@@ -104,32 +111,37 @@ public class SparseFactor extends AbstractFactor {
         if (dimensions.length == 0) {
             //treat 0-dimensional factors specially (many methods break for them)
             blockSize = 1;
-            blockPointers = new int[] { 1 };
+            relativeBlockPointers = new int[] { 1 };
+            cacheBlock(0);
             createSparseValueArray();
             return;
         }
-        assert dimensions.length > 0;
         optimizeDimensionOrder(compatible);
         optimizeBlockSize(compatible);
         System.out.println("Sparseness: " + blockSize);
 
-        int length = computeLength();
-        blockPointers = new int[(int) Math.ceil((double) length / blockSize)];
+        initializeBlockPointers(compatible);
+        cacheBlock(0);
+        createSparseValueArray();
+    }
+
+    private void initializeBlockPointers(AbstractFactor... compatible) {
+        int length = computeDenseLength();
+        relativeBlockPointers = new int[(int) Math.ceil((double) length / blockSize)];
         int[][] posTransformations = computePositionTransformations(compatible);
         int[] counter = new int[dimensions.length];
         counter[counter.length - 1] = -1;
         int numberOfNonzeroBlocks = 0;
-        for (int i = 0; i < blockPointers.length; i++) {
+        for (int i = 0; i < relativeBlockPointers.length; i++) {
             boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
                     posTransformations, blockSize);
             if (isZero) {
-                blockPointers[i] = 0;
+                relativeBlockPointers[i] = -getOriginalBlockAddress(i);
             } else {
                 numberOfNonzeroBlocks++;
-                blockPointers[i] = numberOfNonzeroBlocks * blockSize;
+                relativeBlockPointers[i] = numberOfNonzeroBlocks * blockSize - getOriginalBlockAddress(i);
             }
         }
-        createSparseValueArray();
     }
 
     private void optimizeDimensionOrder(AbstractFactor[] compatible) {
@@ -183,7 +195,7 @@ public class SparseFactor extends AbstractFactor {
             totalZeros += zerosByDimension[0][i];
         }
 
-        double entropy = entropy(totalZeros, computeLength() - totalZeros);
+        double entropy = entropy(totalZeros, computeDenseLength() - totalZeros);
         double[] conditionalEntropy = conditionalEntropy(zerosByDimension);
 
         for (int i = 0; i < conditionalEntropy.length; i++) {
@@ -206,7 +218,7 @@ public class SparseFactor extends AbstractFactor {
 
     private double[] conditionalEntropy(int[][] zerosByDimension) {
         double[] entropyValues = new double[dimensions.length];
-        int length = computeLength();
+        int length = computeDenseLength();
         for (int i = 0; i < dimensions.length; i++) {
             int l = length / dimensions[i];
             for (int j = 0; j < dimensions[i]; j++) {
@@ -228,7 +240,7 @@ public class SparseFactor extends AbstractFactor {
         int[][] foreignIdToIndex = computePositionTransformations(compatible);
         int[] counter = new int[dimensions.length];
         counter[counter.length - 1] = -1;
-        int length = computeLength();
+        int length = computeDenseLength();
         for (int i = 0; i < length; i++) {
             boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
                     foreignIdToIndex, 1);
@@ -254,7 +266,7 @@ public class SparseFactor extends AbstractFactor {
             int[][] localToForeignTransformations, final int blockSize) {
         boolean isPartitionZero = true;
         for (int j = 0; j < blockSize; j++) {
-            if (partition * blockSize + j >= computeLength())
+            if (partition * blockSize + j >= computeDenseLength())
                 break;
             AddressCalc.incrementMultiDimensionalCounter(counter, dimensions);
             if (isPartitionZero) {
@@ -292,13 +304,13 @@ public class SparseFactor extends AbstractFactor {
         int newOverhead;
         int newArraySize;
         newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
-        newOverhead = (computeLength() / blocksize) * SIZE_OF_INT;
+        newOverhead = (computeDenseLength() / blocksize) * SIZE_OF_INT;
         do {
             blocksize *= 2;
             arraySize = newArraySize;
             overhead = newOverhead;
             newArraySize = predictLengthOfValueArray(blocksize, compatible) * values.sizeOfElement();
-            newOverhead = (computeLength() / blocksize) * SIZE_OF_INT;
+            newOverhead = (computeDenseLength() / blocksize) * SIZE_OF_INT;
         } while (newArraySize + newOverhead <= arraySize + overhead);
         blocksize /= 2;
         return blocksize;
@@ -312,10 +324,10 @@ public class SparseFactor extends AbstractFactor {
         while (upperBound - lowerBound > 1) {
             //invariant: lowerBound is a better block size than upperBound
             int lowerArraySize = predictLengthOfValueArray(lowerBound, compatible) * values.sizeOfElement();
-            int lowerOverhead = (computeLength() / lowerBound) * SIZE_OF_INT;
+            int lowerOverhead = (computeDenseLength() / lowerBound) * SIZE_OF_INT;
             int middle = (lowerBound + upperBound) / 2;
             int middleArraySize = predictLengthOfValueArray(middle, compatible) * values.sizeOfElement();
-            int middleOverhead = (computeLength() / middle) * SIZE_OF_INT;
+            int middleOverhead = (computeDenseLength() / middle) * SIZE_OF_INT;
             if (middleArraySize + middleOverhead < lowerArraySize + lowerOverhead) {
                 lowerBound = middle;
             } else {
@@ -329,7 +341,7 @@ public class SparseFactor extends AbstractFactor {
         int[][] foreignIdToIndex = computePositionTransformations(compatible);
         int[] counter = new int[dimensions.length];
         counter[counter.length - 1] = -1;
-        int length = computeLength();
+        int length = computeDenseLength();
         int futureLength = length + blockSize;
         for (int i = 0; i < length / blockSize; i++) {
             boolean isZero = checkIfPartitionIsZero(i, counter, compatible,
@@ -341,13 +353,25 @@ public class SparseFactor extends AbstractFactor {
         return futureLength;
     }
 
-    @Override
-    protected int getRealPosition(int virtualPosition) {
-        return blockPointers[virtualPosition / blockSize] + (virtualPosition % blockSize);
-    }
+    private int cachedBlockPointer;
+    private int cachedBlockStart;
 
     @Override
-    protected int computeLength() {
+    protected int getRealPosition(int virtualPosition) {
+        if (virtualPosition >= cachedBlockStart && virtualPosition - cachedBlockStart < blockSize) {
+            return cachedBlockPointer + virtualPosition;
+        }
+        int block = virtualPosition / blockSize;
+        cacheBlock(block);
+        return cachedBlockPointer + virtualPosition;
+    }
+
+    private void cacheBlock(int block) {
+        cachedBlockPointer = relativeBlockPointers[block];
+        cachedBlockStart = getOriginalBlockAddress(block);
+    }
+
+    private int computeDenseLength() {
         return MathUtils.product(dimensions);
     }
 
@@ -366,7 +390,7 @@ public class SparseFactor extends AbstractFactor {
 
     @Override
     public int getOverhead() {
-        return blockPointers.length * SIZE_OF_INT;
+        return relativeBlockPointers.length * SIZE_OF_INT;
     }
 
     @Override
@@ -398,7 +422,7 @@ public class SparseFactor extends AbstractFactor {
      * The formula follows from (futureL. / f.length) * nbrOfZ > 2 * sqrt(futureL.)
      */
     private static boolean isSparseEnough(AbstractFactor f, int futureLength) {
-        return countZeros(f.getValues()) > 2 * f.computeLength() / Math.sqrt(futureLength);
+        return countZeros(f.getValues()) > 2 * MathUtils.product(f.getDimensions()) / Math.sqrt(futureLength);
     }
 
     private static double countZeros(IArrayWrapper values) {
