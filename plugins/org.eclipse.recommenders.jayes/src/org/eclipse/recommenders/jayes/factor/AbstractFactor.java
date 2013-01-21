@@ -18,18 +18,15 @@ import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public abstract class AbstractFactor implements Cloneable {
 
-    protected int[] dimensions = new int[0];
-
     public abstract void copyValues(IArrayWrapper arrayWrapper);
 
     public abstract int[] prepareMultiplication(AbstractFactor compatible);
 
     protected abstract int getRealPosition(int virtualPosition);
 
-    public abstract double[] sum(int sumDimensionID);
-
     public abstract void fill(double d);
 
+    protected int[] dimensions = new int[0];
     protected int[] dimensionIDs = new int[0];
     protected IArrayWrapper values = new DoubleArrayWrapper(0.0);
     protected int[] selections = new int[0];
@@ -105,6 +102,40 @@ public abstract class AbstractFactor implements Cloneable {
 
     public boolean isLogScale() {
         return isLogScale;
+    }
+
+    /**
+     * marginalizes out all variables except the one with id sumDimensionID
+     * 
+     * @param sumDimensionID
+     *            -1 for last dimension (default)
+     * @return
+     */
+    public double[] marginalizeAllBut(int sumDimensionID) {
+        validateCut();
+        if (sumDimensionID == -1) {
+            sumDimensionID = dimensionIDs[dimensionIDs.length - 1];
+        }
+        int sumDimension = getDimensionFromID(sumDimensionID);
+        double[] result = new double[dimensions[sumDimension]];
+        int divisor = MathUtils.productOfRange(dimensions, sumDimension + 1, dimensions.length);
+        sumToBucket(cut, 0, divisor, result);
+        return result;
+    }
+
+    private void sumToBucket(Cut cut, int offset, int divisor, double[] result) {
+        if (cut.getSubCut() == null) {
+            int last = cut.getIndex() + offset + cut.getLength();
+            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+                int j = getRealPosition(i);
+                result[(i / divisor) % result.length] += values.getDouble(j);
+            }
+        } else {
+            Cut c = cut.getSubCut();
+            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
+                sumToBucket(c, offset + i, divisor, result);
+            }
+        }
     }
 
     /**

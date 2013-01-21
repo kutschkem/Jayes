@@ -11,6 +11,8 @@
 package org.eclipse.recommenders.tests.jayes;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.*;
 
 import org.eclipse.recommenders.jayes.BayesNet;
@@ -53,18 +55,9 @@ public class SparseFactorTest {
         dense.setDimensions(12);
         dense.setValues(new DoubleArrayWrapper(0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6));
 
-        SparseFactor sparse = new SparseFactor();
-        //safe here because there is only one dimension.
-        //not safe in general due to dimension reordering
-        sparse.setDimensionIDs(dense.getDimensionIDs());
-        sparse.setDimensions(dense.getDimensions());
-
-        sparse.sparsify(dense);
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
 
         assertEquals(7, sparse.getValues().length());
-
-        sparse.fill(1);
-        sparse.multiplyCompatible(dense);
 
         assertThat(sparse.getValues().toDoubleArray(), is(new double[] { 0, 1, 2, 3, 4, 5, 6 }));
     }
@@ -76,19 +69,12 @@ public class SparseFactorTest {
         dense.setDimensions(16);
         dense.setValues(new FloatArrayWrapper(0, 0, 0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 5, 6, 7, 8));
 
-        SparseFactor sparse = new SparseFactor();
-        sparse.setDimensionIDs(dense.getDimensionIDs());
-        sparse.setDimensions(dense.getDimensions());
-
-        sparse.sparsify(dense);
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
 
         // is 12 if a blocksize of 4 is chosen (which is best here, because of lower overhead)
         //would be 13 if a blocksize of 3 was chosen
         //would be 10 in case of a blocksize of 2
         assertEquals(12, sparse.getValues().length());
-
-        sparse.fill(1);
-        sparse.multiplyCompatible(dense);
 
         assertThat(sparse.getValues().toDoubleArray(), is(new double[] { 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 7, 8 }));
     }
@@ -100,18 +86,11 @@ public class SparseFactorTest {
         dense.setDimensions(12);
         dense.setValues(new DoubleArrayWrapper(0, 0, 0, 1, 2, 3, 0, 0, 0, 4, 5, 6));
 
-        SparseFactor sparse = new SparseFactor();
-        sparse.setDimensionIDs(dense.getDimensionIDs());
-        sparse.setDimensions(dense.getDimensions());
-
-        sparse.sparsify(dense);
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
 
         //is 9 if a blocksize of 3 is chosen
         //would be 10 in case of a blocksize of 2
         assertEquals(9, sparse.getValues().length());
-
-        sparse.fill(1);
-        sparse.multiplyCompatible(dense);
 
         assertThat(sparse.getValues().toDoubleArray(), is(new double[] { 0, 0, 0, 1, 2, 3, 4, 5, 6 }));
     }
@@ -123,16 +102,9 @@ public class SparseFactorTest {
         dense.setDimensions();
         dense.setValues(new DoubleArrayWrapper(2));
 
-        SparseFactor sparse = new SparseFactor();
-        sparse.setDimensionIDs();
-        sparse.setDimensions();
-
-        sparse.sparsify(dense);
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
 
         assertEquals(2, sparse.getValues().length());
-
-        sparse.fill(1);
-        sparse.multiplyCompatible(dense);
 
         assertThat(sparse.getValues().toDoubleArray(), is(new double[] { 0, 2 }));
     }
@@ -166,20 +138,39 @@ public class SparseFactorTest {
         dense.setDimensions(2, 2);
         dense.setValues(new DoubleArrayWrapper(0, 1, 0, 2));
 
-        SparseFactor sparse = new SparseFactor();
-        sparse.setDimensionIDs(0, 1);
-        sparse.setDimensions(2, 2);
-
-        sparse.sparsify(dense);
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
 
         int[] reorderedDimensionIds = new int[] { 1, 0 };
         assertThat(sparse.getDimensionIDs(), is(reorderedDimensionIds));
         assertEquals(4, sparse.getValues().length());
 
-        sparse.fill(1);
-        sparse.multiplyCompatible(dense);
-
         assertThat(sparse.getValues().toDoubleArray(), is(new double[] { 0, 0, 1, 2 }));
+    }
+
+    @Test
+    public void testSum() {
+        AbstractFactor dense = new DenseFactor();
+        dense.setDimensionIDs(0);
+        dense.setDimensions(12);
+        dense.setValues(new DoubleArrayWrapper(0, 1, 0, 2, 0, 4, 0, 8, 0, 16, 0, 32));
+
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
+
+        assertThat(sparse.marginalizeAllBut(0), is(new double[] { 0, 1, 0, 2, 0, 4, 0, 8, 0, 16, 0, 32 }));
+    }
+
+    @Test
+    public void testFromSparseFactor() {
+        AbstractFactor dense = new DenseFactor();
+        dense.setDimensionIDs(0);
+        dense.setDimensions(12);
+        dense.setValues(new DoubleArrayWrapper(0, 1, 0, 2, 0, 4, 0, 8, 0, 16, 0, 32));
+
+        SparseFactor sparse = SparseFactor.fromFactor(dense);
+        SparseFactor sparse2 = SparseFactor.fromFactor(sparse);
+
+        assertThat(sparse2.getValues(), is(not(sameInstance(sparse.getValues()))));
+        assertThat(sparse2.getValues().toDoubleArray(), is(sparse.getValues().toDoubleArray()));
     }
 
 }

@@ -70,7 +70,7 @@ public class SparseFactor extends AbstractFactor {
                         dimensions);
                 if (getRealPosition(getOriginalBlockAddress(i)) != 0) {
                     int pos = MathUtils.scalarProduct(counter, positionTransformation);
-                    positions[getRealPosition(i * blockSize + j)] = pos;
+                    positions[getRealPosition(i * blockSize + j)] = compatible.getRealPosition(pos);
                 }
             }
         }
@@ -376,11 +376,6 @@ public class SparseFactor extends AbstractFactor {
     }
 
     @Override
-    public double[] sum(int sumDimensionID) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
-    @Override
     public void fill(double d) {
         values.fill(d);
         for (int i = 0; i < blockSize; i++) {
@@ -435,4 +430,18 @@ public class SparseFactor extends AbstractFactor {
         return result;
     }
 
+    public static SparseFactor fromFactor(AbstractFactor f) {
+        SparseFactor result = new SparseFactor();
+        result.setDimensionIDs(f.getDimensionIDs().clone());
+        result.setDimensions(f.getDimensions().clone());
+        result.sparsify(f); //TODO currently sparsify only works with non-logscale factors
+        result.setLogScale(f.isLogScale());
+        result.fill(result.isLogScale() ? 0 : 1);
+        if (result.isLogScale()) {
+            result.multiplyCompatibleToLog(f);
+        } else {
+            result.multiplyCompatible(f);
+        }
+        return result;
+    }
 }

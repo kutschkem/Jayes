@@ -89,7 +89,7 @@ public class BayesNode {
                 factor.select(p.getId(), -1);
             }
         }
-        final double[] result = MathUtils.normalize(factor.sum(-1));
+        final double[] result = MathUtils.normalize(factor.marginalizeAllBut(-1));
         factor.resetSelections();
 
         return result;

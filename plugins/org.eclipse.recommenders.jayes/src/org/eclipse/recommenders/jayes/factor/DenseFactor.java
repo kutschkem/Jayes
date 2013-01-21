@@ -17,46 +17,6 @@ public class DenseFactor extends AbstractFactor {
         values.fill(d);
     }
 
-    /**
-     * @param sumDimensionID
-     *            -1 for last dimension (default)
-     * @return
-     */
-    @Override
-    public double[] sum(int sumDimensionID) {
-        if (sumDimensionID == -1) {
-            sumDimensionID = dimensionIDs[dimensionIDs.length - 1];
-        }
-        int sumDimension = getDimensionFromID(sumDimensionID);
-        double[] result = new double[dimensions[sumDimension]];
-        sumDim(sumDimension, result);
-        return result;
-    }
-
-    private void sumDim(int sumDimension, double[] acc) {
-        validateCut();
-        int divisor = 1;
-        for (int i = dimensions.length - 1; i > sumDimension; i--) {
-            divisor *= dimensions[i];
-        }
-        sumToBucket(cut, 0, divisor, acc);
-
-    }
-
-    private void sumToBucket(Cut cut, int offset, int divisor, double[] result) {
-        if (cut.getSubCut() == null) {
-            int last = cut.getIndex() + offset + cut.getLength();
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
-                result[(i / divisor) % result.length] += values.getDouble(i);
-            }
-        } else {
-            Cut c = cut.getSubCut();
-            for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-                sumToBucket(c, offset + i, divisor, result);
-            }
-        }
-    }
-
     @Override
     protected int getRealPosition(int virtualPosition) {
         //for non-sparse factors, no address translation needs to be done
@@ -78,8 +38,8 @@ public class DenseFactor extends AbstractFactor {
         counter[counter.length - 1] = -1;
         for (int i = 0; i < values.length(); i++) {
             AddressCalc.incrementMultiDimensionalCounter(counter, dimensions);
-            positions[i] = MathUtils.scalarProduct(counter,
-                    localToForeignPosition);
+            positions[i] = compatible.getRealPosition(MathUtils.scalarProduct(counter,
+                    localToForeignPosition));
         }
         return positions;
     }
