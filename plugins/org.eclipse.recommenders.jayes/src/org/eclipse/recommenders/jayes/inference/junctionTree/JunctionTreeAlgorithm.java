@@ -386,7 +386,10 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         for (final ListIterator<List<Integer>> cliqueIt = clusters.listIterator(); cliqueIt.hasNext();) {
             final List<Integer> cluster = cliqueIt.next();
             int current = cliqueIt.nextIndex() - 1;
-            final AbstractFactor cliqueFactor = factory.create(cluster, multiplicationPartners.get(current));
+            List<AbstractFactor> multiplicationPartnerList = multiplicationPartners.get(current);
+            final AbstractFactor cliqueFactor = factory.create(cluster,
+                    multiplicationPartnerList == null ? Collections.<AbstractFactor> emptyList()
+                            : multiplicationPartnerList);
             nodePotentials[current] = cliqueFactor;
         }
     }

@@ -23,9 +23,8 @@ public class NetExamples {
     }
 
     /**
-     * a simple network with 4 nodes. The structure is as follows: a - b \ / c -
-     * d so while this is an easy network, LBP should show some expected trouble
-     * with this. JunctionTree will merge a, b and c together to form a Clique
+     * a simple network with 4 nodes. The structure is as follows: a - b \ / c - d so while this is an easy network, LBP
+     * should show some expected trouble with this. JunctionTree will merge a, b and c together to form a Clique
      * 
      * @return
      */
@@ -43,38 +42,38 @@ public class NetExamples {
         b.addOutcome("lu");
         net.addNode(b);
         b.setParents(Arrays.asList(a));
-		b.setProbabilities(ArrayUtils.flatten(new double[][] {
-				{ 0.1, 0.4, 0.5 }, // a = true
-				{ 0.3, 0.4, 0.3 }  // a = false
-		}));
+        b.setProbabilities(ArrayUtils.flatten(new double[][] {
+                { 0.1, 0.4, 0.5 }, // a = true
+                { 0.3, 0.4, 0.3 }  // a = false
+        }));
 
         BayesNode c = new BayesNode("c");
         c.addOutcome("true");
         c.addOutcome("false");
         net.addNode(c);
         c.setParents(Arrays.asList(a, b));
-		c.setProbabilities(ArrayUtils.flatten(new double[][][] {
-				{					// a = true
-					{ 0.1, 0.9 }, 	//  b = la
-					{ 0.0, 1.0 }, 	//  b = le
-					{ 0.5, 0.5 } 	//  b = lu
-				},
-				{ 					// a = false
-					{ 0.2, 0.8 }, 	//  b = la
-					{ 0.0, 1.0 },   //  b = le
-					{ 0.7, 0.3 }    //  b = lu
-				}
-		}));
+        c.setProbabilities(ArrayUtils.flatten(new double[][][] {
+                {					// a = true
+                { 0.1, 0.9 }, 	//  b = la
+                        { 0.0, 1.0 }, 	//  b = le
+                        { 0.5, 0.5 } 	//  b = lu
+        },
+                { 					// a = false
+                { 0.2, 0.8 }, 	//  b = la
+                        { 0.0, 1.0 },   //  b = le
+                        { 0.7, 0.3 }    //  b = lu
+        }
+        }));
 
         BayesNode d = new BayesNode("d");
         d.addOutcome("true");
         d.addOutcome("false");
         net.addNode(d);
         d.setParents(Arrays.asList(c));
-		d.setProbabilities(ArrayUtils.flatten(new double[][] {
-				{ 0.5, 0.5 }, // c = true
-				{ 0.2, 0.8 }  // c = false
-		}));
+        d.setProbabilities(ArrayUtils.flatten(new double[][] {
+                { 0.5, 0.5 }, // c = true
+                { 0.2, 0.8 }  // c = false
+        }));
 
         return net;
     }
@@ -109,10 +108,10 @@ public class NetExamples {
         b.addOutcome("lu");
         net.addNode(b);
         b.setParents(Arrays.asList(a));
-        b.setProbabilities(ArrayUtils.flatten(new double[][] { 
-        		{ 0.1, 0.4, 0.5 }, // a = true
-        		{ 0.3, 0.4, 0.3 }  // a = false
-        		}));
+        b.setProbabilities(ArrayUtils.flatten(new double[][] {
+                { 0.1, 0.4, 0.5 }, // a = true
+                { 0.3, 0.4, 0.3 }  // a = false
+        }));
 
         BayesNode c = new BayesNode("c");
         c.addOutcome("true");
@@ -121,18 +120,18 @@ public class NetExamples {
         c.addOutcome("sthElse");
         net.addNode(c);
         c.setParents(Arrays.asList(a, b));
-        c.setProbabilities(ArrayUtils.flatten(new double[][][] { 
-        		{ 							// a = true
-        			{ 0.0, 0.0, 0.1, 0.9 }, //	b = la
-        			{ 0.0, 0.0, 0.0, 1.0 }, //	b = le
-        			{ 0.0, 0.0, 0.0, 1.0 }  //	b = lu
-        		},
+        c.setProbabilities(ArrayUtils.flatten(new double[][][] {
+                { 							// a = true
+                { 0.0, 0.0, 0.1, 0.9 }, //	b = la
+                        { 0.0, 0.0, 0.0, 1.0 }, //	b = le
+                        { 0.0, 0.0, 0.0, 1.0 }  //	b = lu
+        },
                 { 							// a = false
-        			{ 0.0, 0.5, 0.0, 0.5 }, //	b = la
-        			{ 0.0, 0.0, 0.0, 1.0 }, //	b = le
-        			{ 0.0, 0.7, 0.3, 0.0 }  //	b = lu
-        		}
-        		}));
+                { 0.0, 0.5, 0.0, 0.5 }, //	b = la
+                        { 0.0, 0.0, 0.0, 1.0 }, //	b = le
+                        { 0.0, 0.7, 0.3, 0.0 }  //	b = lu
+        }
+        }));
 
         BayesNode d = new BayesNode("d");
         d.addOutcome("true");
@@ -140,11 +139,42 @@ public class NetExamples {
         net.addNode(d);
         d.setParents(Arrays.asList(c));
         d.setProbabilities(ArrayUtils.flatten(new double[][] {
-        		{ 0.5, 0.5 }, // c = true
-        		{ 0.2, 0.8 }, // c = false
-        		{ 0.5, 0.5 }, // c = sth
-        		{ 0.0, 1.0 }  // c = sthElse
-        		}));
+                { 0.5, 0.5 }, // c = true
+                { 0.2, 0.8 }, // c = false
+                { 0.5, 0.5 }, // c = sth
+                { 0.0, 1.0 }  // c = sthElse
+        }));
+
+        return net;
+    }
+
+    public static BayesNet treeNet() {
+        BayesNet net = new BayesNet();
+        net.addNode(new BayesNode("a"));
+        net.addNode(new BayesNode("b"));
+        net.addNode(new BayesNode("c"));
+        net.addNode(new BayesNode("d"));
+
+        BayesNode a = net.getNode("a");
+        a.addOutcome("true");
+        a.addOutcome("false");
+        BayesNode b = net.getNode("b");
+        b.addOutcome("true");
+        b.addOutcome("false");
+        b.setParents(Arrays.asList(a));
+        BayesNode c = net.getNode("c");
+        c.addOutcome("true");
+        c.addOutcome("false");
+        c.setParents(Arrays.asList(a));
+        BayesNode d = net.getNode("d");
+        d.addOutcome("true");
+        d.addOutcome("false");
+        d.setParents(Arrays.asList(a));
+
+        a.setProbabilities(new double[] { 0.4, 0.6 });
+        b.setProbabilities(new double[] { 0.55, 0.45, 0.45, 0.55 });
+        c.setProbabilities(new double[] { 0.55, 0.45, 0.45, 0.55 });
+        d.setProbabilities(new double[] { 0.55, 0.45, 0.45, 0.55 });
 
         return net;
     }

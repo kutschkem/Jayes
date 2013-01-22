@@ -52,7 +52,8 @@ public class JunctionTreeBuilder {
     private void optimizeStructure() {
         List<List<Integer>> newClusters = findMultiEdges(2);
         if (newClusters.size() > 0) {
-            junctionTree.getClusters().addAll(newClusters);
+            newClusters.addAll(junctionTree.getClusters());
+            junctionTree.setClusters(newClusters);
             junctionTree.setSepSets(computeSepsets());
         }
     }
@@ -88,7 +89,7 @@ public class JunctionTreeBuilder {
         while (it.hasNext()) {
             int n = 1;
             List<Integer> l = it.next().getSecond();
-            while (it.hasNext() && l.equals(it.next())) {
+            while (it.hasNext() && l.equals(it.next().getSecond())) {
                 n++;
             }
             if (n >= i)
