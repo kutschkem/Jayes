@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product useFeatures="false" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console</programArgs>
+      <vmArgs>-Declipse.ignoreApp=true
+-Dosgi.noShutdown=true</vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.gson"/>
+      <plugin id="com.google.guava"/>
+      <plugin id="com.google.inject"/>
+      <plugin id="com.google.inject.assistedinject" fragment="true"/>
+      <plugin id="com.google.inject.multibindings" fragment="true"/>
+      <plugin id="com.ning.async-http-client"/>
+      <plugin id="javax.inject"/>
+      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.lang3"/>
+      <plugin id="org.apache.commons.math"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.lucene"/>
+      <plugin id="org.apache.lucene.core"/>
+      <plugin id="org.apache.lucene.misc"/>
+      <plugin id="org.apache.lucene.queries"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.recommenders.aether"/>
+      <plugin id="org.eclipse.recommenders.jayes"/>
+      <plugin id="org.eclipse.recommenders.jayes.eval"/>
+      <plugin id="org.eclipse.recommenders.jayes.io"/>
+      <plugin id="org.eclipse.recommenders.jayes.serialization"/>
+      <plugin id="org.eclipse.recommenders.jayes.testgen"/>
+      <plugin id="org.eclipse.recommenders.jayes.transformation"/>
+      <plugin id="org.eclipse.recommenders.rdk"/>
+      <plugin id="org.eclipse.recommenders.utils"/>
+      <plugin id="org.eclipse.xtend.lib"/>
+      <plugin id="org.eclipse.xtext.xbase.lib"/>
+      <plugin id="org.jboss.netty"/>
+      <plugin id="org.slf4j.api"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="org.eclipse.recommenders.jayes.eval" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>
