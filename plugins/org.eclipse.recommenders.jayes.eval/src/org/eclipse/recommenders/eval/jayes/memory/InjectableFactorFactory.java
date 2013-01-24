@@ -19,8 +19,8 @@ public class InjectableFactorFactory extends FactorFactory {
 
     @Inject(optional = true)
     @Override
-    public void setFloatingPointType(Class<?> prototype) {
-        super.setFloatingPointType(prototype);
+    public void setFloatingPointType(@Named("floatingPointType") Class<?> floatingPointType) {
+        super.setFloatingPointType(floatingPointType);
     }
 
     @Inject(optional = true)
