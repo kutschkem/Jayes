@@ -17,6 +17,7 @@ import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class FactorFactory {
@@ -25,10 +26,22 @@ public class FactorFactory {
     private int logThreshold = Integer.MAX_VALUE;
     private IArrayWrapper prototype = new DoubleArrayWrapper(0.0); //TODO is a length of 1 here still necessary?
 
-    public void setArrayType(IArrayWrapper prototype) {
-        IArrayWrapper clone = prototype.clone();
-        clone.newArray(1);
-        this.prototype = clone;
+    /**
+     * sets the floating point precision to use.
+     * 
+     * @param contentType
+     *            possible values: double.class, Double.class, float.class, Float.class
+     */
+    public void setFloatingPointType(Class<?> contentType) {
+        if (contentType == double.class || contentType == Double.class) {
+            prototype = new DoubleArrayWrapper(0.0);
+        } else if (contentType == float.class || contentType == Float.class) {
+            prototype = new FloatArrayWrapper(0.0f);
+        } else {
+            throw new IllegalArgumentException("wrong type, expected double, Double, float or Float, but got: "
+                    + contentType);
+        }
+
     }
 
     public void setReferenceNetwork(BayesNet net) {

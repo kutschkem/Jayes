@@ -29,7 +29,6 @@ import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.testgen.TestCase;
 import org.eclipse.recommenders.jayes.testgen.TestcaseDeserializer;
 import org.eclipse.recommenders.jayes.testgen.scenario.impl.SampledScenarioGenerator;
-import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.lbp.LoopyBeliefPropagation;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
@@ -204,7 +203,7 @@ public class JunctionTreeTest {
         a.setNetwork(net);
 
         JunctionTreeAlgorithm b = new JunctionTreeAlgorithm();
-        b.getFactory().setArrayType(new FloatArrayWrapper());
+        b.getFactory().setFloatingPointType(float.class);
         b.setNetwork(net);
 
         for (int i = 0; i < 1000; i++) {

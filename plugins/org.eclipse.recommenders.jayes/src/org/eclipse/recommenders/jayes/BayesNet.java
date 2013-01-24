@@ -12,17 +12,22 @@ package org.eclipse.recommenders.jayes;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
-import org.eclipse.recommenders.jayes.util.BidirectionalMap;
+import java.util.Map;
 
 public class BayesNet {
 
     private List<BayesNode> nodes = new ArrayList<BayesNode>();
-    private BidirectionalMap<String, BayesNode> nodeMap = new BidirectionalMap<String, BayesNode>();
+    private Map<String, BayesNode> nodeMap = new HashMap<String, BayesNode>();
 
     private String name = "Bayesian Network";
 
+    /**
+     * 
+     * @deprecated use createNode instead
+     */
+    @Deprecated
     public int addNode(BayesNode node) {
         node.setId(nodes.size());
         nodes.add(node);
@@ -31,6 +36,13 @@ public class BayesNet {
         }
         nodeMap.put(node.getName(), node);
         return node.getId();
+    }
+
+    @SuppressWarnings("deprecation")
+    public BayesNode createNode(String name) {
+        BayesNode node = new BayesNode(name);
+        addNode(node);
+        return node;
     }
 
     public BayesNode getNode(String name) {

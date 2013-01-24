@@ -109,6 +109,8 @@ public class XMLBIFReader {
         return net;
     }
 
+    @SuppressWarnings("deprecation")
+    //the Jayes 1.0.0 API is used here intentionally
     private void initializeNodes(Document doc, BayesNet net) {
         XPathEvaluator xpath = getXPathEvaluator(doc);
 

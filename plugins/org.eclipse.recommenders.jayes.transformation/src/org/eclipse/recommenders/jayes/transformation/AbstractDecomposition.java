@@ -32,13 +32,13 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
     @Override
     public final void decompose(BayesNet net, BayesNode node) throws DecompositionFailedException {
         if (!net.getNodes().contains(node)) {
-            throw new IllegalArgumentException("node " + node + " is not part of the bayesnet " + net.getName());
+            throw new IllegalArgumentException("Node " + node + " is not part of the bayesnet " + net.getName());
         }
 
         AbstractFactor f = node.getFactor();
         if (f.getDimensions().length == 1) {
             //in a bayesian network, there are no 0-dimensional factors
-            return;   //TODO: should an exception be thrown in this special case??
+            throw new DecompositionFailedException("Node " + node + " has no parents, impossible to decompose");
         }
         f = reorderFactor(f);
         int[] dimensions = f.getDimensions();
@@ -102,17 +102,17 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
 
     protected abstract double[] toLatentSpace(double[] v, List<double[]> best) throws DecompositionFailedException;
 
-    /*
-     * Example:
-     * assume C as the least outcomes, A and B are parents of C, C is decomposed
+    /**
+     * Example: assume C as the least outcomes, A and B are parents of C, C is decomposed
      * 
+     * <pre>
      * A -> C      =>    A -> latent-C -> C
      * B /               B /
-     */
+     * </pre>
+     **/
     private void createLatentNodeInOriginalOrder(BayesNet net, BayesNode node, List<double[]> basis, double[] latentProb) {
-        BayesNode newNode = new BayesNode("latent-" + node.getName());
+        BayesNode newNode = net.createNode("latent-" + node.getName());
         addOutcomes(newNode, basis.size());
-        net.addNode(newNode);
         newNode.setParents(node.getParents());
         newNode.setProbabilities(latentProb);
 
@@ -120,18 +120,18 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
         node.setProbabilities(ArrayUtils.flatten(basis.toArray(new double[0][])));
     }
 
-    /*
-     * Example:
-     * assume B is the least outcomes, A and B are parents of C, C is decomposed
+    /**
+     * Example: assume B is the least outcomes, A and B are parents of C, C is decomposed
      * 
-     * A -> C                   =>            A    -> C
+     * <pre>
+     * A -> C                   =>   A -------------> C
      * B /                           B -> latent-C /
-     */
+     * </pre>
+     **/
     private void createLatentNodeReordered(BayesNet net, BayesNode node, AbstractFactor f, List<double[]> basis,
             double[] latentProb) {
-        BayesNode newNode = new BayesNode("latent-" + node.getName());
+        BayesNode newNode = net.createNode("latent-" + node.getName());
         addOutcomes(newNode, basis.size());
-        net.addNode(newNode);
         int[] dimensions = f.getDimensions();
         BayesNode parentNode = net.getNode(f.getDimensionIDs()[dimensions.length - 1]);
         newNode.setParents(Arrays.asList(parentNode));

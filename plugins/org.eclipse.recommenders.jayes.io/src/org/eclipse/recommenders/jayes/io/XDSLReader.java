@@ -66,10 +66,8 @@ public class XDSLReader {
 
     private Document obtainDocument(InputStream xdslStream) throws IOException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-        // docBuilderFactory.setValidating(true);
-        DocumentBuilder docBldr;
         try {
-            docBldr = docBuilderFactory.newDocumentBuilder();
+            DocumentBuilder docBldr = docBuilderFactory.newDocumentBuilder();
             Document doc = docBldr.parse(xdslStream);
 
             doc.normalize();
@@ -100,6 +98,7 @@ public class XDSLReader {
         return net;
     }
 
+    @SuppressWarnings("deprecation")
     private void intializeNodes(Document doc, BayesNet net) {
         NodeList nodelist = doc.getElementsByTagName(CPT);
 

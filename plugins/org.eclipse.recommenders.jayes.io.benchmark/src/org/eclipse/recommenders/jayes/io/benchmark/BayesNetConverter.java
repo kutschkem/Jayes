@@ -35,12 +35,11 @@ public class BayesNetConverter implements Function<BayesianNetwork, BayesNet> {
     private void initializeNodes(final BayesianNetwork network, BayesNet bayesNet) {
         final Collection<Node> nodes = network.getNodes();
         for (final Node node : nodes) {
-            final BayesNode bayesNode = new BayesNode(node.getIdentifier());
+            final BayesNode bayesNode = bayesNet.createNode(node.getIdentifier());
             final String[] states = node.getStates();
             for (int i = 0; i < states.length; i++) {
                 bayesNode.addOutcome(states[i]);
             }
-            bayesNet.addNode(bayesNode);
 
         }
     }
@@ -66,6 +65,7 @@ public class BayesNetConverter implements Function<BayesianNetwork, BayesNet> {
         }
     }
 
+    @Override
     public BayesNet apply(BayesianNetwork net) {
         return transform(net);
     }

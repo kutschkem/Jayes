@@ -91,7 +91,7 @@ public class BidirectionalMap<K, V> implements Map<K, V> {
 
     @Override
     public Collection<V> values() {
-        return keyValue.values();
+        return valueKey.keySet();
     }
 
     @Override
