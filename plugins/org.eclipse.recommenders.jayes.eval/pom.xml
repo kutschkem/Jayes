@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<parent>
+		<groupId>org.eclipse.recommenders.plugin</groupId>
+		<artifactId>org.eclipse.recommenders.plugin.parent</artifactId>
+		<version>1.0.3-SNAPSHOT</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.eclipse.recommenders.jayes</groupId>
+	<artifactId>org.eclipse.recommenders.jayes.eval</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+	<build>
+	<pluginManagement>
+		<plugins>
+					<plugin>
+					<groupId>com.mycila.maven-license-plugin</groupId>
+					<artifactId>maven-license-plugin</artifactId>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.recommenders.jayes</groupId>
+							<artifactId>org.eclipse.recommenders.jayes.license-headers</artifactId>
+							<version>${recommenders-version}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<validHeaders>
+							<validHeader>license-kutschke-2011.txt</validHeader>
+							<validHeader>license-kutschke-2012.txt</validHeader>
+							<validHeader>license-kutschke-2013.txt</validHeader>
+						</validHeaders>
+					</configuration>
+				</plugin>
+		</plugins>
+	</pluginManagement>
+	</build>
+
+</project>

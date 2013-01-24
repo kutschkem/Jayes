@@ -41,7 +41,7 @@ public class BayesNode {
         this.name = name;
     }
 
-    public void setProbabilities(final double[] probabilities) {
+    public void setProbabilities(final double... probabilities) {
         assert (probabilities.length == MathUtils.product(factor.getDimensions()));
         factor.setValues(new DoubleArrayWrapper(probabilities));
     }

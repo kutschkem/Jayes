@@ -41,7 +41,7 @@ public class NetExamples {
         BayesNet net = new BayesNet();
         BayesNode a = net.createNode("a");
         a.addOutcomes("true", "false");
-        a.setProbabilities(new double[] { 0.2, 0.8 });
+        a.setProbabilities(0.2, 0.8);
 
         BayesNode b = net.createNode("b");
         b.addOutcomes("la", "le", "lu");
@@ -87,8 +87,8 @@ public class NetExamples {
         a.addOutcomes("true", "false");
         b.addOutcomes("true", "false");
 
-        a.setProbabilities(new double[] { 0.4, 0.6 });
-        b.setProbabilities(new double[] { 0.55, 0.45 });
+        a.setProbabilities(0.4, 0.6);
+        b.setProbabilities(0.55, 0.45);
 
         return net;
     }
@@ -99,7 +99,7 @@ public class NetExamples {
         BayesNode a = net.createNode("a");
         a.addOutcome("true");
         a.addOutcome("false");
-        a.setProbabilities(new double[] { 0, 1 });
+        a.setProbabilities(0, 1);
 
         BayesNode b = net.createNode("b");
         b.addOutcomes("la", "le", "lu");
@@ -158,10 +158,10 @@ public class NetExamples {
         d.addOutcomes("true", "false");
         d.setParents(Arrays.asList(a));
 
-        a.setProbabilities(new double[] { 0.4, 0.6 });
-        b.setProbabilities(new double[] { 0.55, 0.45, 0.45, 0.55 });
-        c.setProbabilities(new double[] { 0.55, 0.45, 0.45, 0.55 });
-        d.setProbabilities(new double[] { 0.55, 0.45, 0.45, 0.55 });
+        a.setProbabilities(0.4, 0.6);
+        b.setProbabilities(0.55, 0.45, 0.45, 0.55);
+        c.setProbabilities(0.55, 0.45, 0.45, 0.55);
+        d.setProbabilities(0.55, 0.45, 0.45, 0.55);
 
         return net;
     }
