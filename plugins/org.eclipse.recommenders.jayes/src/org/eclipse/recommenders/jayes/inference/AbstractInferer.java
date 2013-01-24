@@ -19,7 +19,7 @@ import org.eclipse.recommenders.jayes.factor.FactorFactory;
 
 public abstract class AbstractInferer implements IBayesInferer {
 
-	protected Map<BayesNode, String> evidence = new HashMap<BayesNode, String>();
+    protected Map<BayesNode, String> evidence = new HashMap<BayesNode, String>();
     protected BayesNet net;
 
     protected double[][] beliefs;
@@ -27,16 +27,16 @@ public abstract class AbstractInferer implements IBayesInferer {
 
     protected FactorFactory factory = FactorFactory.defaultFactory();
 
-	public void setFactorFactory(FactorFactory factory) {
-		this.factory = factory;
-		
-	}
-	
-	public FactorFactory getFactory(){
-		return factory;
-	}
+    public void setFactorFactory(FactorFactory factory) {
+        this.factory = factory;
 
-	@Override
+    }
+
+    public FactorFactory getFactory() {
+        return factory;
+    }
+
+    @Override
     public void addEvidence(final BayesNode node, final String outcome) {
         evidence.put(node, outcome);
         beliefsValid = false;

@@ -91,4 +91,11 @@ public class BasicSampler implements ISampler {
         random.setSeed(seed);
     }
 
+    @Override
+    @Deprecated
+    public void setBN(BayesNet net) {
+        setNetwork(net);
+
+    }
+
 }

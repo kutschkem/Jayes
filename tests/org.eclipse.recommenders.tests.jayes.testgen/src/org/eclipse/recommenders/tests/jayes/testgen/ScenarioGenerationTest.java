@@ -25,7 +25,7 @@ public class ScenarioGenerationTest {
         generator.seed(SEED);
 
         BayesNet net = NetExamples.testNet1();
-        generator.setBN(net);
+        generator.setNetwork(net);
 
         Collection<Map<BayesNode, String>> scenarios = generator.generate(100);
 

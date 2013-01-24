@@ -23,7 +23,6 @@ import java.util.Set;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.sampling.BasicSampler;
-import org.eclipse.recommenders.jayes.sampling.ISampler;
 import org.eclipse.recommenders.jayes.testgen.scenario.ScenarioGenerator;
 
 /**
@@ -32,14 +31,14 @@ import org.eclipse.recommenders.jayes.testgen.scenario.ScenarioGenerator;
  */
 public class SampledScenarioGenerator implements ScenarioGenerator {
 
-    private ISampler sampler;
+    private BasicSampler sampler;
     private double unsetRate = 0.2;
     private Set<BayesNode> hidden = new HashSet<BayesNode>();
     private Set<BayesNode> observed = new HashSet<BayesNode>();
     private Map<BayesNode, String> fixed = new HashMap<BayesNode, String>();
     private Random random = new Random();
 
-    public SampledScenarioGenerator(ISampler sampler) {
+    public SampledScenarioGenerator(BasicSampler sampler) {
         this.sampler = sampler;
     }
 
@@ -47,8 +46,10 @@ public class SampledScenarioGenerator implements ScenarioGenerator {
         this(new BasicSampler());
     }
 
-    public void setBN(BayesNet bn) {
-        sampler.setNetwork(bn);
+    @SuppressWarnings("deprecation")
+    // use Jayes 1.0.0 API here
+    public void setNetwork(BayesNet bn) {
+        sampler.setBN(bn);
     }
 
     public void setEvidenceRate(double rate) {

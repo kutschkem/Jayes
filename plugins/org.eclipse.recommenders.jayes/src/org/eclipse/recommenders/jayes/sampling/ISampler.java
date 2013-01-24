@@ -19,6 +19,12 @@ public interface ISampler {
 
     void setNetwork(BayesNet net);
 
+    /**
+     * @deprecated still here for compatibility reasons, but for the sake of uniformity, setNetwork should be used
+     */
+    @Deprecated
+    void setBN(BayesNet net);
+
     void setEvidence(Map<BayesNode, String> evidence);
 
     Map<BayesNode, String> sample();

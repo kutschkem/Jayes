@@ -45,6 +45,11 @@ import org.xml.sax.SAXException;
  */
 public class XMLBIFReader {
 
+    /**
+     * when set to true, methods that were not available in version 1.0.0 will be skipped
+     */
+    private boolean legacyMode = false;
+
     public BayesNet read(String filename) throws ParserConfigurationException, SAXException, IOException {
         return read(new File(filename));
     }
@@ -80,7 +85,9 @@ public class XMLBIFReader {
     private BayesNet readFromDocument(Document doc) {
         BayesNet net = new BayesNet();
 
-        net.setName(doc.getElementsByTagName(NAME).item(0).getTextContent());
+        if (!legacyMode) {
+            net.setName(doc.getElementsByTagName(NAME).item(0).getTextContent());
+        }
 
         initializeNodes(doc, net);
 
@@ -149,6 +156,19 @@ public class XMLBIFReader {
             IOException {
         Document doc = obtainDocument(systemResourceAsStream);
         return readFromDocument(doc);
+    }
+
+    public boolean isLegacyMode() {
+        return legacyMode;
+    }
+
+    /**
+     * 
+     * @param legacyMode
+     *            when set to true, the object will only use Jayes 1.0.0 API
+     */
+    public void setLegacyMode(boolean legacyMode) {
+        this.legacyMode = legacyMode;
     }
 
 }

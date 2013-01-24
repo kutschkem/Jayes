@@ -41,6 +41,8 @@ import com.google.common.primitives.Doubles;
 
 public class XDSLReader {
 
+    private boolean legacyMode = false;
+
     public BayesNet read(String filename) throws IOException {
         return read(new File(filename));
     }
@@ -85,7 +87,9 @@ public class XDSLReader {
 
         Node smileNode = doc.getElementsByTagName("smile").item(0);
         String networkName = getId(smileNode);
-        net.setName(networkName);
+        if (!legacyMode) {
+            net.setName(networkName);
+        }
 
         intializeNodes(doc, net);
         initializeNodeOutcomes(doc, net);
@@ -162,6 +166,14 @@ public class XDSLReader {
             bNode.setProbabilities(Doubles.toArray(probabilities));
         }
 
+    }
+
+    public boolean isLegacyMode() {
+        return legacyMode;
+    }
+
+    public void setLegacyMode(boolean legacyMode) {
+        this.legacyMode = legacyMode;
     }
 
 }

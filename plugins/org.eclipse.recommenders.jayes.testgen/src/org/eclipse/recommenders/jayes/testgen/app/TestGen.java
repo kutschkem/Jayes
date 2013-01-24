@@ -10,10 +10,8 @@
  */
 package org.eclipse.recommenders.jayes.testgen.app;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -38,8 +36,6 @@ import org.xml.sax.SAXException;
 
 public class TestGen {
 
-    private static final String OUTPUT_FILE_NAME = "testCases.json";
-
     /**
      * @param args
      * @throws IOException
@@ -48,21 +44,22 @@ public class TestGen {
      */
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
         if (args.length != 1) {
-            throw new IllegalArgumentException("need 1 parameter: -conf <file>           Config file");
+            throw new IllegalArgumentException("need 1 parameter: <file>           Config file");
         }
 
         Properties properties = new Properties();
-        properties.load(new BufferedInputStream(new FileInputStream(args[0])));
+        properties.load(TestGen.class.getClassLoader().getResourceAsStream(args[0]));
 
         String modelFile = properties.getProperty("testgen.model");
         int numTests = Integer.valueOf(properties.getProperty("testgen.numTests"));
         double rate = Double.valueOf(properties.getProperty("testgen.observationRate"));
-        String outputDir = properties.getProperty("outputDir");
+        String outputDir = properties.getProperty("testgen.outputDir");
+        String outputFileName = properties.getProperty("testgen.outputFileName");
 
         BayesNet net = deserializeNet(modelFile);
 
         SampledScenarioGenerator testgen = new SampledScenarioGenerator();
-        testgen.setBN(net);
+        testgen.setNetwork(net);
         testgen.setEvidenceRate(rate);
 
         IBayesInferer inference = new JunctionTreeAlgorithm();
@@ -82,7 +79,9 @@ public class TestGen {
         TestcaseSerializer serializer = new TestcaseSerializer(net);
         String str = serializer.writeTestcases(testcases);
 
-        Writer wrt = new BufferedWriter(new FileWriter(new File(outputDir, OUTPUT_FILE_NAME)));
+        new File(outputDir).mkdirs();
+
+        Writer wrt = new BufferedWriter(new FileWriter(new File(outputDir, outputFileName)));
         wrt.append(str);
         wrt.close();
     }
@@ -98,10 +97,10 @@ public class TestGen {
     private static BayesNet deserializeNet(String modelFile) throws ParserConfigurationException, SAXException,
             IOException {
         if (modelFile.matches(".*\\.xml")) {
-            return new XMLBIFReader().read(modelFile);
+            return new XMLBIFReader().read(TestGen.class.getClassLoader().getResourceAsStream(modelFile));
         }
         if (modelFile.matches(".*\\.xdsl")) {
-            return new XDSLReader().read(modelFile);
+            return new XDSLReader().read(TestGen.class.getClassLoader().getResourceAsStream(modelFile));
         }
         throw new IllegalArgumentException("unrecognized file format");
     }
