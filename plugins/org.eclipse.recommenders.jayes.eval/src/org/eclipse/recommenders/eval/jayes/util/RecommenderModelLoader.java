@@ -56,6 +56,8 @@ public class RecommenderModelLoader {
 
     }
 
+    //uses the Jayes 1.0.0 API on purpose
+    @SuppressWarnings("deprecation")
     private void initializeNodes(final BayesianNetwork network) {
         final Collection<Node> nodes = network.getNodes();
         for (final Node node : nodes) {

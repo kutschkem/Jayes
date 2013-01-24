@@ -8,37 +8,46 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.tests.jayes.logging;
+package org.eclipse.recommenders.eval.jayes.memory;
 
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.factor.FactorFactory;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
-import org.eclipse.recommenders.jayes.util.Pair;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
+import org.eclipse.recommenders.jayes.util.Pair;
 import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
+import com.google.inject.Inject;
+
 public class JTATestAdapter extends JunctionTreeAlgorithm {
-	
-	public AbstractFactor[] getNodePotentials(){
-		return nodePotentials;
-	}
-	
-	public Map<Edge,AbstractFactor> getSepsets(){
-		return sepSets;
-	}
-	
-	public Map<Edge,int[]> getPreparedMultiplications(){
-		return preparedMultiplications;
-	}
-	
-	public int[][] getPreparedQueries(){
-		return preparedQueries;
-	}
-	
-	public List<Pair<AbstractFactor, IArrayWrapper>> getInitializations(){
-		return initializations;
-	}
+
+    @Override
+    @Inject(optional = true)
+    public void setFactorFactory(FactorFactory factory) {
+        super.setFactorFactory(factory);
+    }
+
+    public AbstractFactor[] getNodePotentials() {
+        return nodePotentials;
+    }
+
+    public Map<Edge, AbstractFactor> getSepsets() {
+        return sepSets;
+    }
+
+    public Map<Edge, int[]> getPreparedMultiplications() {
+        return preparedMultiplications;
+    }
+
+    public int[][] getPreparedQueries() {
+        return preparedQueries;
+    }
+
+    public List<Pair<AbstractFactor, IArrayWrapper>> getInitializations() {
+        return initializations;
+    }
 
 }
