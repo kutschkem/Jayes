@@ -7,7 +7,8 @@ Require-Bundle: org.eclipse.recommenders.utils;bundle-version="1.0.0",
  org.eclipse.recommenders.jayes.io;bundle-version="1.0.3",
  org.eclipse.recommenders.jayes.serialization;bundle-version="1.0.0",
  org.eclipse.recommenders.jayes;bundle-version="1.0.0",
- com.google.inject;bundle-version="3.0.0"
+ com.google.inject;bundle-version="3.0.0",
+ org.eclipse.recommenders.jayes.transformation;bundle-version="1.0.3";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: com.google.common.base;version="[10.0.0,15.0.0)",
  com.google.common.collect;version="[10.0.0,15.0.0)",
