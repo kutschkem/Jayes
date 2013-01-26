@@ -10,4 +10,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>org.eclipse.recommenders.jayes.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
+
+<build>
+	<pluginManagement>
+		<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<configLocation>../../etc/releng/checkstyle.xml</configLocation>
+					</configuration>
+				</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
+
 </project>

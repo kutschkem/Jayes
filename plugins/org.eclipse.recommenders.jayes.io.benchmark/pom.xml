@@ -39,6 +39,13 @@
 						<target>1.6</target>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<configLocation>../../etc/releng/checkstyle.xml</configLocation>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

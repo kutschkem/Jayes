@@ -9,4 +9,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>e42-release</artifactId>
 	<packaging>eclipse-target-definition</packaging>
+
+<build>
+	<pluginManagement>
+		<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<configLocation>../releng/checkstyle.xml</configLocation>
+					</configuration>
+				</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
+
 </project>

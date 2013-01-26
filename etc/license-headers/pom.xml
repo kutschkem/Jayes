@@ -13,4 +13,19 @@
 	<groupId>org.eclipse.recommenders.jayes</groupId>
 	<artifactId>org.eclipse.recommenders.jayes.license-headers</artifactId>
 	<packaging>jar</packaging>
+
+<build>
+	<pluginManagement>
+		<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<configLocation>../releng/checkstyle.xml</configLocation>
+					</configuration>
+				</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
+
 </project>

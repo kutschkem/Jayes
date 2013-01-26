@@ -11,5 +11,19 @@
 	<groupId>org.eclipse.recommenders.jayes</groupId>
 	<artifactId>org.eclipse.recommenders.jayes.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
+
+<build>
+	<pluginManagement>
+		<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<configLocation>../../etc/releng/checkstyle.xml</configLocation>
+					</configuration>
+				</plugin>
+		</plugins>
+	</pluginManagement>
+</build>
 	
 </project>
