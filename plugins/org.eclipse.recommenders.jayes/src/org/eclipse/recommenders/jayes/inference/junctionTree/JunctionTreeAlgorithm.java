@@ -37,26 +37,26 @@ import org.eclipse.recommenders.jayes.util.sharing.CanonicalIntArrayManager;
 
 public class JunctionTreeAlgorithm extends AbstractInferer {
 
-    protected final Map<Edge, AbstractFactor> sepSets = new HashMap<Edge, AbstractFactor>();
+    protected Map<Edge, AbstractFactor> sepSets;
     protected Graph junctionTree;
     protected AbstractFactor[] nodePotentials;
     protected int[] homeClusters;
     // need IdentityHashmap here because an Edge and
     // it's backward Edge are considered equal
     // (which is also needed for simplicity)
-    protected final IdentityHashMap<Edge, int[]> preparedMultiplications = new IdentityHashMap<Edge, int[]>();
+    protected IdentityHashMap<Edge, int[]> preparedMultiplications;
 
     //mapping from variables to clusters that contain them
     protected int[][] concernedClusters;
     protected AbstractFactor[] queryFactors;
     protected int[][] preparedQueries;
     protected boolean[] isBeliefValid;
-    protected final List<Pair<AbstractFactor, IArrayWrapper>> initializations = new ArrayList<Pair<AbstractFactor, IArrayWrapper>>();
+    protected List<Pair<AbstractFactor, IArrayWrapper>> initializations;
 
     protected int[][] queryFactorReverseMapping;
 
     // used for computing evidence collection skip
-    protected final Set<Integer> clustersHavingEvidence = new HashSet<Integer>();
+    protected Set<Integer> clustersHavingEvidence;
 
     protected double[] scratchpad;
 
@@ -350,6 +350,10 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         homeClusters = new int[numNodes];
         queryFactors = new AbstractFactor[numNodes];
         preparedQueries = new int[numNodes][];
+        sepSets = new HashMap<Edge, AbstractFactor>();
+        preparedMultiplications = new IdentityHashMap<Graph.Edge, int[]>();
+        initializations = new ArrayList<Pair<AbstractFactor, IArrayWrapper>>();
+        clustersHavingEvidence = new HashSet<Integer>();
     }
 
     private JunctionTree buildJunctionTree() {
