@@ -17,7 +17,7 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
  * "Static and dynamic speedup techniques for the Junction Tree Algorithm"
  * (Kutschke, 2011) (my Bachelor's thesis). Serves for exactly selecting those
  * entries in the probability matrix of a factor that are relevant. It does so
- * in linear time and space, regarding the amount of dimensions of a factor.
+ * in linear time and space, to the number of dimensions of a factor.
  * 
  * @author Michael Kutschke
  * 
@@ -25,7 +25,7 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
 public class Cut implements Cloneable {
 
     private final AbstractFactor factor;
-    private int index;
+    private int start;
     private int stepSize;
     private int length;
 
@@ -44,7 +44,7 @@ public class Cut implements Cloneable {
 
     public void initialize() {
         length = MathUtils.product(this.factor.getDimensions());
-        index = 0;
+        start = 0;
         stepSize = 1;
         rootDimension = 0;
         if(length > 1){
@@ -80,7 +80,7 @@ public class Cut implements Cloneable {
 
     private void descendSelectedDimension() {
         length /= this.factor.dimensions[rootDimension];
-        index += subtreeStepsize * this.factor.selections[rootDimension];
+        start += subtreeStepsize * this.factor.selections[rootDimension];
         descendUnselectedDimension();
     }
 
@@ -96,7 +96,7 @@ public class Cut implements Cloneable {
     }
 
     private void ascendSelectedDimension() {
-        index += this.factor.selections[leafDimension] * stepSize;
+        start += this.factor.selections[leafDimension] * stepSize;
         stepSize *= this.factor.dimensions[leafDimension];
         leafDimension--;
     }
@@ -127,8 +127,12 @@ public class Cut implements Cloneable {
         return false;
     }
 
-    public int getIndex() {
-        return index;
+    public int getStart() {
+        return start;
+    }
+    
+    public int getEnd(){
+        return start + length;
     }
 
     public int getStepSize() {

@@ -38,7 +38,7 @@ public class SparseFactor extends AbstractFactor {
     @Override
     public void copyValues(IArrayWrapper other) {
         validateCut();
-        int offset = getRealPosition(cut.getIndex());
+        int offset = getRealPosition(cut.getStart());
         // we don't know how many values need to be copied, thus copy everything until the end
         int length = other.length() - offset;
 

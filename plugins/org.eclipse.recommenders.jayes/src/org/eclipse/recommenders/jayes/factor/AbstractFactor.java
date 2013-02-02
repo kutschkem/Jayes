@@ -125,8 +125,8 @@ public abstract class AbstractFactor implements Cloneable {
 
     private void sumToBucket(Cut cut, int offset, int divisor, double[] result) {
         if (cut.getSubCut() == null) {
-            int last = cut.getIndex() + offset + cut.getLength();
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+            int last = cut.getEnd() + offset;
+            for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
                 result[(i / divisor) % result.length] += values.getDouble(j);
             }
@@ -160,8 +160,8 @@ public abstract class AbstractFactor implements Cloneable {
     private void multiplyPrepared(Cut cut, int offset, IArrayWrapper compatibleValues,
             int[] positions) {
         if (cut.getSubCut() == null) {
-            int last = cut.getLength() + cut.getIndex() + offset;
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+            int last = cut.getEnd() + offset;
+            for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
                 values.mulAssign(j, compatibleValues, positions[j]);
             }
@@ -188,8 +188,8 @@ public abstract class AbstractFactor implements Cloneable {
     private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
             int[] positions) {
         if (cut.getSubCut() == null) {
-            int last = cut.getLength() + cut.getIndex() + offset;
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+            int last = cut.getEnd() + offset;
+            for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
                 compatibleFactorValues.addAssign(positions[j], values, j);
             }
@@ -211,8 +211,8 @@ public abstract class AbstractFactor implements Cloneable {
 
     private double findMax(Cut cut, int offset, double max) {
         if (cut.getSubCut() == null) {
-            int last = cut.getLength() + cut.getIndex() + offset;
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+            int last = cut.getEnd() + offset;
+            for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
                 if (values.getDouble(j) != Double.NEGATIVE_INFINITY
                         && Math.abs(values.getDouble(j)) > Math.abs(max)) {
@@ -235,8 +235,8 @@ public abstract class AbstractFactor implements Cloneable {
     private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
             int[] positions, double max) {
         if (cut.getSubCut() == null) {
-            int last = cut.getLength() + cut.getIndex() + offset;
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+            int last = cut.getEnd() + offset;
+            for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
                 compatibleFactorValues.addAssign(positions[j], Math.exp(values.getDouble(j) - max));
             }
@@ -251,8 +251,8 @@ public abstract class AbstractFactor implements Cloneable {
     private void multiplyPreparedLog(Cut cut, int offset, IArrayWrapper compatibleValues,
             int[] positions) {
         if (cut.getSubCut() == null) {
-            int last = cut.getLength() + cut.getIndex() + offset;
-            for (int i = cut.getIndex() + offset; i < last; i += cut.getStepSize()) {
+            int last = cut.getEnd() + offset;
+            for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
                 values.addAssign(j, compatibleValues, positions[j]);
             }
