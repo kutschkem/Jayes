@@ -8,7 +8,7 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.jayes.io.benchmark;
+package org.eclipse.recommenders.jayes.benchmark.util;
 
 import java.util.Collection;
 import java.util.LinkedList;

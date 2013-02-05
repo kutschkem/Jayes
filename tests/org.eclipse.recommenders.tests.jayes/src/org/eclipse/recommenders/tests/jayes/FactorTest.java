@@ -142,4 +142,21 @@ public class FactorTest {
         }), TOLERANCE);
     }
 
+    @Test
+    public void testZeroDimensional() {
+        AbstractFactor dense = new DenseFactor();
+        dense.setDimensionIDs();
+        dense.setDimensions();
+        dense.setValues(new DoubleArrayWrapper(2));
+
+        AbstractFactor dense2 = new DenseFactor();
+        dense2.setDimensionIDs();
+        dense2.setDimensions();
+        dense2.setValues(new DoubleArrayWrapper(3));
+
+        dense2.multiplyCompatible(dense);
+
+        assertThat(dense2.getValues().toDoubleArray(), is(new double[] { 6 }));
+    }
+
 }

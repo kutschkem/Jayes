@@ -32,6 +32,9 @@ public class DenseFactor extends AbstractFactor {
      */
     @Override
     public int[] prepareMultiplication(AbstractFactor compatible) {
+        if (dimensions.length == 0) { //treat 0-dimensional factors specially
+            return new int[] { 0 };
+        }
         int[] positions = new int[values.length()];
         int[] counter = new int[dimensions.length];
         int[] localToForeignPosition = AddressCalc.computeLinearMap(compatible, dimensionIDs);

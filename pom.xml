@@ -9,7 +9,7 @@
 		<module>plugins/org.eclipse.recommenders.jayes</module>
 		<module>plugins/org.eclipse.recommenders.jayes.eval</module>
 		<module>plugins/org.eclipse.recommenders.jayes.io</module>
-		<module>plugins/org.eclipse.recommenders.jayes.io.benchmark</module>
+		<module>plugins/org.eclipse.recommenders.jayes.benchmark</module>
 		<module>plugins/org.eclipse.recommenders.jayes.testgen</module>
 		<module>plugins/org.eclipse.recommenders.jayes.transformation</module>
 		<module>tests/org.eclipse.recommenders.tests.jayes</module>

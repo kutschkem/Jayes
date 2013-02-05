@@ -258,8 +258,7 @@ public class JunctionTreeBuilder {
             while (remainingIt.hasNext()) { // generate sepSets
                 final List<Integer> clique2 = new ArrayList<Integer>(remainingIt.next());
                 clique2.retainAll(clique1);
-                sepSets.add(newPair(new Edge(it.nextIndex() - 1, remainingIt.nextIndex() - 1),
-                        clique2));
+                sepSets.add(newPair(new Edge(it.nextIndex() - 1, remainingIt.nextIndex() - 1), clique2));
             }
         }
         return sepSets;

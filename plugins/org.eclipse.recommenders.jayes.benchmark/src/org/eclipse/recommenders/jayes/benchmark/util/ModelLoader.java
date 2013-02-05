@@ -8,21 +8,16 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.jayes.io.benchmark;
+package org.eclipse.recommenders.jayes.benchmark.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -30,10 +25,6 @@ import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.eclipse.recommenders.commons.bayesnet.BayesianNetwork;
 import org.eclipse.recommenders.jayes.BayesNet;
-import org.eclipse.recommenders.jayes.io.XDSLReader;
-import org.eclipse.recommenders.jayes.io.XDSLWriter;
-import org.eclipse.recommenders.jayes.io.XMLBIFReader;
-import org.eclipse.recommenders.jayes.io.XMLBIFWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
@@ -44,40 +35,36 @@ import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.xml.sax.SAXException;
 
-import com.google.caliper.SimpleBenchmark;
 import com.google.common.collect.Lists;
 
-public class IOBenchmark extends SimpleBenchmark
-{
+public class ModelLoader {
 
-    private final String remoteModelRepo = "http://download.eclipse.org/recommenders/models/juno/";
+    private static final String REMOTE_MODEL_REPO = "http://download.eclipse.org/recommenders/models/juno/";
 
-    List<BayesianNetwork> networks;
-    List<BayesNet> jayesNets;
+    private List<BayesianNetwork> networks;
+    private List<BayesNet> jayesNets;
+    private static final Logger logger = LoggerFactory.getLogger(ModelLoader.class);
 
-    Logger logger = LoggerFactory.getLogger(IOBenchmark.class);
-
-    public IOBenchmark() throws Exception {
-        networks = loadModels();
+    public ModelLoader(String modelArtifact) throws ArtifactResolutionException, ClassNotFoundException,
+            ComponentLookupException, PlexusContainerException, IOException {
+        networks = loadModels(modelArtifact);
         logger.info("successfully loaded " + networks.size() + " models");
         jayesNets = Lists.transform(networks, new BayesNetConverter());
     }
 
-    private List<BayesianNetwork> loadModels() throws ComponentLookupException, PlexusContainerException,
-            ArtifactResolutionException,
-            IOException, ClassNotFoundException {
+    private List<BayesianNetwork> loadModels(String modelArtifact) throws ComponentLookupException,
+            PlexusContainerException, ArtifactResolutionException, IOException, ClassNotFoundException {
         RepositorySystem reposys = new DefaultPlexusContainer().lookup(RepositorySystem.class);
 
-        //setup session
+        // setup session
         DefaultRepositorySystemSession session = new MavenRepositorySystemSession();
         LocalRepository localRepo = new LocalRepository("target/local-repo");
         session.setLocalRepositoryManager(reposys.newLocalRepositoryManager(localRepo));
 
-        //resolve artifact
-        DefaultArtifact artifact = new DefaultArtifact("jre:jre:zip:call:1.0.0");
-        RemoteRepository remote = new RemoteRepository("remote-models", "default", remoteModelRepo);
+        // resolve artifact
+        DefaultArtifact artifact = new DefaultArtifact(modelArtifact);
+        RemoteRepository remote = new RemoteRepository("remote-models", "default", REMOTE_MODEL_REPO);
 
         ArtifactRequest request = new ArtifactRequest();
         request.addRepository(remote);
@@ -98,7 +85,7 @@ public class IOBenchmark extends SimpleBenchmark
                 continue;
             }
             @SuppressWarnings("resource")
-            //everything should get closed by the ZipInputStream
+            // everything should get closed by the ZipInputStream
             ObjectInputStream oin = new ObjectInputStream(stream);
             models.add((BayesianNetwork) oin.readObject());
             stream.closeEntry();
@@ -107,48 +94,12 @@ public class IOBenchmark extends SimpleBenchmark
         return models;
     }
 
-    public List<BayesianNetwork> timeJavaDeserialization(int rep) throws IOException, ClassNotFoundException {
-        List<BayesianNetwork> l = new ArrayList<BayesianNetwork>();
-        for (int i = 0; i < rep; i++) {
-            for (BayesianNetwork network : networks) {
-                ByteArrayOutputStream sstr = new ByteArrayOutputStream();
-                ObjectOutputStream ostr = new ObjectOutputStream(sstr);
-                ostr.writeObject(network);
-                ostr.close();
-                byte[] serialized = sstr.toByteArray();
-
-                ByteArrayInputStream istr = new ByteArrayInputStream(serialized);
-                ObjectInputStream oistr = new ObjectInputStream(istr);
-                l.add((BayesianNetwork) oistr.readObject());
-                oistr.close();
-            }
-        }
-        return l;
+    public List<BayesNet> getJayesNetworks() {
+        return this.jayesNets;
     }
 
-    public List<BayesNet> timeXdslDeserialization(int rep) throws ParserConfigurationException, SAXException,
-            IOException {
-        List<BayesNet> l = new ArrayList<BayesNet>();
-        for (int i = 0; i < rep; i++) {
-            for (BayesNet net : jayesNets) {
-                XDSLWriter wrt = new XDSLWriter();
-                XDSLReader rdr = new XDSLReader();
-                l.add(rdr.readFromString(wrt.write(net)));
-            }
-        }
-        return l;
+    public List<BayesianNetwork> getIntermediateNetworks() {
+        return this.networks;
     }
 
-    public List<BayesNet> timeXmlBifDeserialization(int rep) throws ParserConfigurationException, SAXException,
-            IOException {
-        List<BayesNet> l = new ArrayList<BayesNet>();
-        for (int i = 0; i < rep; i++) {
-            for (BayesNet net : jayesNets) {
-                XMLBIFWriter wrt = new XMLBIFWriter();
-                XMLBIFReader rdr = new XMLBIFReader();
-                l.add(rdr.readFromString(wrt.write(net)));
-            }
-        }
-        return l;
-    }
 }
