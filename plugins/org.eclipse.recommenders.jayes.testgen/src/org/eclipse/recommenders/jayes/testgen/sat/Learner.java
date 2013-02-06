@@ -18,17 +18,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
-import org.eclipse.recommenders.jayes.util.BidirectionalMap;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
 import org.eclipse.recommenders.jayes.util.sharing.CanonicalIntArraySet;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 public class Learner {
 
-    private BidirectionalMap<Pair<Integer, Integer>, Integer> translation = new BidirectionalMap<Pair<Integer, Integer>, Integer>();
+    private BiMap<Pair<Integer, Integer>, Integer> translation = HashBiMap.create();
     private HornSAT sat = new HornSAT();
 
-    public BidirectionalMap<Pair<Integer, Integer>, Integer> getTranslation() {
+    public BiMap<Pair<Integer, Integer>, Integer> getTranslation() {
         return translation;
     }
 
@@ -241,11 +243,11 @@ public class Learner {
         for (HornClause cl : sat.getClauses()) {
             buf.append('(');
             for (Integer neg : cl.getNegativeLiterals()) {
-                buf.append(translation.getKey(neg));
+                buf.append(translation.inverse().get(neg));
                 buf.append(',');
             }
             buf.append("->");
-            buf.append(translation.getKey(cl.getPositiveLiteral()));
+            buf.append(translation.inverse().get(cl.getPositiveLiteral()));
             buf.append(')');
         }
         buf.append(']');

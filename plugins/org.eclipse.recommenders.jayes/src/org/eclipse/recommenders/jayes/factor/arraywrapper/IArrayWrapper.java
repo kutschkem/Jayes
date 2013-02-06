@@ -8,7 +8,7 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util.arraywrapper;
+package org.eclipse.recommenders.jayes.factor.arraywrapper;
 
 public interface IArrayWrapper extends Cloneable, Iterable<Number>{
 	

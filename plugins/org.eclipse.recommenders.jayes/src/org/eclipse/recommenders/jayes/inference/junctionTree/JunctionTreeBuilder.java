@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import org.eclipse.recommenders.internal.jayes.util.UnionFindSet;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
 import org.eclipse.recommenders.jayes.util.OrderIgnoringPair;
 import org.eclipse.recommenders.jayes.util.Pair;
-import org.eclipse.recommenders.jayes.util.UnionFindSet;
 
 public class JunctionTreeBuilder {
     private final BayesNet net;

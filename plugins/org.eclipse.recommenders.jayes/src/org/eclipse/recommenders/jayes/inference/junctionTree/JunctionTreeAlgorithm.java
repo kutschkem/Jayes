@@ -20,18 +20,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.recommenders.internal.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
 import org.eclipse.recommenders.jayes.inference.AbstractInferer;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.NumericalInstabilityException;
 import org.eclipse.recommenders.jayes.util.Pair;
-import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
-import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.sharing.CanonicalArrayWrapperManager;
 import org.eclipse.recommenders.jayes.util.sharing.CanonicalIntArrayManager;
 

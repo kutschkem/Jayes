@@ -8,56 +8,56 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util.arraywrapper;
+package org.eclipse.recommenders.jayes.factor.arraywrapper;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.internal.jayes.util.ArrayUtils;
 
-public class DoubleArrayWrapper implements IArrayWrapper {
+public class FloatArrayWrapper implements IArrayWrapper {
 
-	private double[] array;
+	private float[] array;
 	
-	public DoubleArrayWrapper(double... array) {
+	public FloatArrayWrapper(float... array) {
 		this.array = array;
 	}
 	
 	@Override
 	public void setArray(double... array) {
-		this.array = array;
+		setArray(ArrayUtils.toFloatArray(array));
 
 	}
 
 	@Override
 	public void setArray(float... array) {
-		setArray(ArrayUtils.toDoubleArray(array));
+		this.array = array;
 
 	}
 
 	@Override
 	public double[] toDoubleArray() {
-		return array;
+		return ArrayUtils.toDoubleArray(array);
 	}
 
 	@Override
 	public float[] toFloatArray() {
-		return ArrayUtils.toFloatArray(array);
+		return array;
 	}
 
 	@Override
 	public void set(int index, double d) {
-		array[index] = d;
+		array[index] = (float)d;
 	}
 
 	@Override
 	public void set(int index, float d) {
-		set(index,(double)d);
+		array[index] = d;
 	}
 
 	@Override
 	public void mulAssign(int index, double d) {
-		array[index] *= d;
+		array[index] *= (float)d;
 	}
 
 	@Override
@@ -67,12 +67,12 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void mulAssign(int index, IArrayWrapper arg, int argIndex) {
-		array[index] *= arg.getDouble(argIndex);
+		array[index] *= arg.getFloat(argIndex);
 	}
 
 	@Override
 	public void addAssign(int index, double d) {
-		array[index] += d;
+		array[index] += (float) d;
 	}
 
 	@Override
@@ -82,17 +82,17 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void addAssign(int index, IArrayWrapper arg, int argIndex) {
-		array[index] += arg.getDouble(argIndex);
+		array[index] += arg.getFloat(argIndex);
 	}
 
 	@Override
 	public double getDouble(int index) {
-		return array[index];
+		return (double) array[index];
 	}
 
 	@Override
 	public float getFloat(int index) {
-		return (float) array[index];
+		return array[index];
 	}
 
 	@Override
@@ -102,58 +102,57 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void copy(double... array) {
-		setArray(array.clone());
+		setArray(array);
 	}
 
 	@Override
 	public void copy(float... array) {
-		setArray(ArrayUtils.toDoubleArray(array));
-
+		this.array = array.clone();
 	}
 
 	@Override
 	public void copy(IArrayWrapper array) {
-		copy(array.toDoubleArray());
+		copy(array.toFloatArray());
 	}
 
 	@Override
 	public void fill(double d) {
-		Arrays.fill(array, d);
+		Arrays.fill(array, (float)d);
 	}
 
 	@Override
 	public void fill(float d) {
-		Arrays.fill(array, (double)d);
+		Arrays.fill(array,d);
 	}
 
-	public DoubleArrayWrapper clone(){
+	@Override
+	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
+			int length) {
+		System.arraycopy(src.toFloatArray(), srcOffset, array, destOffset, length);
+	}
+
+	@Override
+	public void newArray(int capacity) {
+		array = new float[capacity];
+	}
+	
+	@Override
+	public FloatArrayWrapper clone(){
+		FloatArrayWrapper clone;
 		try {
-			DoubleArrayWrapper result = (DoubleArrayWrapper) super.clone();
-			result.array = array.clone();
-			return result;
+			clone = (FloatArrayWrapper) super.clone();
+			clone.array = array.clone();
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			throw new AssertionError("This should not happen");
 		}
 	}
 
 	@Override
-	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
-			int length) {
-		System.arraycopy(src.toDoubleArray(),srcOffset,array,destOffset,length);
-		
-	}
-
-	@Override
-	public void newArray(int capacity) {
-		this.array = new double[capacity];
-		
-	}
-
-	@Override
 	public int sizeOfElement() {
-		return 8;
+		return 4;
 	}
-
+	
 	@Override
 	public Iterator<Number> iterator() {
 		return new Iterator<Number>(){
@@ -178,5 +177,4 @@ public class DoubleArrayWrapper implements IArrayWrapper {
 			
 		};
 	}
-
 }

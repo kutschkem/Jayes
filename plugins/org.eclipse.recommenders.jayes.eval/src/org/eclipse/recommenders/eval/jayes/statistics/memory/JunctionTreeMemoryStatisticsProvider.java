@@ -18,9 +18,9 @@ import java.util.Map;
 import org.eclipse.recommenders.eval.jayes.statistics.IStatisticsProvider;
 import org.eclipse.recommenders.eval.jayes.util.JTATestAdapter;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
-import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 import com.google.common.primitives.Ints;
 import com.google.inject.Inject;

@@ -7,5 +7,6 @@ Require-Bundle: org.eclipse.recommenders.jayes;bundle-version="1.0.3",
  org.junit4;bundle-version="4.8.1",
  org.eclipse.recommenders.jayes.testgen;bundle-version="1.0.3",
  org.eclipse.recommenders.tests.jayes;bundle-version="1.0.3",
- com.google.guava;bundle-version="10.0.1"
+ com.google.guava;bundle-version="10.0.1",
+ org.eclipse.recommenders.jayes.transformation;bundle-version="1.0.3"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.eclipse.recommenders.jayes.transformation;
 
+import static org.eclipse.recommenders.jayes.transformation.util.ArrayFlatten.flatten;
+import static org.eclipse.recommenders.jayes.transformation.util.ArrayFlatten.unflatten;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,11 +18,10 @@ import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.transformation.util.CanonicalDoubleArrayManager;
 import org.eclipse.recommenders.jayes.transformation.util.DecompositionFailedException;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.MathUtils;
-import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
 
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
@@ -37,14 +39,16 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
 
         AbstractFactor f = node.getFactor();
         if (f.getDimensions().length == 1) {
-            //in a bayesian network, there are no 0-dimensional factors
+            // in a bayesian network, there are no 0-dimensional factors
             throw new DecompositionFailedException("Node " + node + " has no parents, impossible to decompose");
         }
         f = reorderFactor(f);
         int[] dimensions = f.getDimensions();
         List<double[]> basis;
         double[] latentProb;
-        List<double[]> vectors = ArrayUtils.unflatten(f.getValues().toDoubleArray(), dimensions[dimensions.length - 1]);
+        // TODO this line is one of those keeping this method from working with SparseFactor
+        // (and consequently BayesNode from using SparseFactor as well)
+        List<double[]> vectors = unflatten(f.getValues().toDoubleArray(), dimensions[dimensions.length - 1]);
         basis = getBasis(f, vectors);
 
         latentProb = getLatentProbabilities(vectors, basis);
@@ -64,10 +68,8 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
 
         if (minIndex == dimensions.length - 1)
             return f;
-        int[] nDim = (int[]) ArrayUtils.unboxArray(rotateRight(ArrayUtils.boxArray(dimensions),
-                dimensions.length - 1 - minIndex));
-        int[] nIDs = (int[]) ArrayUtils.unboxArray(rotateRight(ArrayUtils.boxArray(f.getDimensionIDs()),
-                dimensions.length - 1 - minIndex));
+        int[] nDim = rotateRight(dimensions, dimensions.length - 1 - minIndex);
+        int[] nIDs = rotateRight(f.getDimensionIDs(), dimensions.length - 1 - minIndex);
 
         AbstractFactor f2 = new DenseFactor();
         f2.setDimensionIDs(nIDs);
@@ -83,12 +85,12 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
 
     private double[] getLatentProbabilities(List<double[]> vectors, List<double[]> best)
             throws DecompositionFailedException {
-        CanonicalDoubleArrayManager canon = new CanonicalDoubleArrayManager(); //to make sure equals will work
+        CanonicalDoubleArrayManager canon = new CanonicalDoubleArrayManager(); // to make sure equals will work
         best = Lists.transform(best, canon);
         vectors = Lists.transform(vectors, canon);
 
         List<double[]> newVectors = toLatentSpace(vectors, best);
-        return ArrayUtils.flatten(newVectors.toArray(new double[0][]));
+        return flatten(newVectors.toArray(new double[0][]));
     }
 
     private List<double[]> toLatentSpace(List<double[]> vectors, List<double[]> best)
@@ -117,7 +119,7 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
         newNode.setProbabilities(latentProb);
 
         node.setParents(Arrays.asList(newNode));
-        node.setProbabilities(ArrayUtils.flatten(basis.toArray(new double[0][])));
+        node.setProbabilities(flatten(basis.toArray(new double[0][])));
     }
 
     /**
@@ -135,7 +137,7 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
         int[] dimensions = f.getDimensions();
         BayesNode parentNode = net.getNode(f.getDimensionIDs()[dimensions.length - 1]);
         newNode.setParents(Arrays.asList(parentNode));
-        newNode.setProbabilities(ArrayUtils.flatten(transpose(basis).toArray(new double[0][])));
+        newNode.setProbabilities(flatten(transpose(basis).toArray(new double[0][])));
 
         List<BayesNode> parents = new ArrayList<BayesNode>(node.getParents());
         int index = parents.indexOf(parentNode);
@@ -182,8 +184,8 @@ public abstract class AbstractDecomposition implements IDecompositionStrategy {
         return result;
     }
 
-    private <T> T[] rotateRight(T[] array, int amount) {
-        T[] result = Arrays.copyOf(array, array.length);
+    private int[] rotateRight(int[] array, int amount) {
+        int[] result = new int[array.length];
         System.arraycopy(array, 0, result, amount, array.length - amount);
         System.arraycopy(array, array.length - amount, result, 0, amount);
         return result;

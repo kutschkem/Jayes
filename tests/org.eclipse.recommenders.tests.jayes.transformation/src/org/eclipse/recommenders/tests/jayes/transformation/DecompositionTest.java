@@ -11,8 +11,8 @@ import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorit
 import org.eclipse.recommenders.jayes.transformation.IDecompositionStrategy;
 import org.eclipse.recommenders.jayes.transformation.LatentDeterministicDecomposition;
 import org.eclipse.recommenders.jayes.transformation.SmoothedFactorDecomposition;
+import org.eclipse.recommenders.jayes.transformation.util.ArrayFlatten;
 import org.eclipse.recommenders.jayes.transformation.util.DecompositionFailedException;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.junit.Test;
 
 public class DecompositionTest {
@@ -23,19 +23,17 @@ public class DecompositionTest {
     @Test
     public void testLDDNoReordering() throws DecompositionFailedException {
         BayesNet net = new BayesNet();
-        BayesNode a = new BayesNode("A");
-        net.addNode(a);
+        BayesNode a = net.createNode("A");
         a.addOutcomes("true", "false");
         a.setProbabilities(new double[] { 0.8, 0.2 });
-        BayesNode b = new BayesNode("B");
+        BayesNode b = net.createNode("B");
         b.setParents(Arrays.asList(a));
         b.addOutcomes("a", "b");
-        b.setProbabilities(ArrayUtils.flatten(new double[][]
+        b.setProbabilities(ArrayFlatten.flatten(new double[][]
         {
                 { 0.25, 0.75 },
                 { 0.75, 0.25 }
         }));
-        net.addNode(b);
 
         JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
         algo.setNetwork(net);
@@ -66,19 +64,17 @@ public class DecompositionTest {
     @Test
     public void testLDD3() throws DecompositionFailedException {
         BayesNet net = new BayesNet();
-        BayesNode a = new BayesNode("A");
-        net.addNode(a);
+        BayesNode a = net.createNode("A");
         a.addOutcomes("true", "false");
         a.setProbabilities(new double[] { 0.8, 0.2 });
-        BayesNode b = new BayesNode("B");
+        BayesNode b = net.createNode("B");
         b.setParents(Arrays.asList(a));
         b.addOutcomes("a", "b", "c", "d", "e");
-        b.setProbabilities(ArrayUtils.flatten(new double[][]
+        b.setProbabilities(ArrayFlatten.flatten(new double[][]
         {
                 { 0.1, 0.05, 0.05, 0.4, 0.4 },
                 { 0.1, 0.4, 0.4, 0.05, 0.05 }
         }));
-        net.addNode(b);
 
         JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
         algo.setNetwork(net);
@@ -103,19 +99,17 @@ public class DecompositionTest {
     @Test
     public void testLDD4() {
         BayesNet net = new BayesNet();
-        BayesNode a = new BayesNode("A");
-        net.addNode(a);
+        BayesNode a = net.createNode("A");
         a.addOutcomes("true", "false");
         a.setProbabilities(new double[] { 0.8, 0.2 });
-        BayesNode b = new BayesNode("B");
+        BayesNode b = net.createNode("B");
         b.setParents(Arrays.asList(a));
         b.addOutcomes("a", "b", "c", "e", "f");
-        b.setProbabilities(ArrayUtils.flatten(new double[][]
+        b.setProbabilities(ArrayFlatten.flatten(new double[][]
         {
                 { 0.25, 0.75, 0.25, 0.75, 0 },
                 { 0.75, 0.25, 0.75, 0.25, 1 }
         }));
-        net.addNode(b);
 
         JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
         algo.setNetwork(net);
@@ -152,19 +146,17 @@ public class DecompositionTest {
     //Tests the case where the lowest dimension is the biggest, and the factor needs to be reordered
     private void exerciseAndVerifyReordering(IDecompositionStrategy decomposition) throws DecompositionFailedException {
         BayesNet net = new BayesNet();
-        BayesNode a = new BayesNode("A");
-        net.addNode(a);
+        BayesNode a = net.createNode("A");
         a.addOutcomes("true", "false");
         a.setProbabilities(new double[] { 0.8, 0.2 });
-        BayesNode b = new BayesNode("B");
+        BayesNode b = net.createNode("B");
         b.setParents(Arrays.asList(a));
         b.addOutcomes("a", "b", "c", "d");
-        b.setProbabilities(ArrayUtils.flatten(new double[][]
+        b.setProbabilities(ArrayFlatten.flatten(new double[][]
         {
                 { 0.1, 0.3, 0.3, 0.1 },
                 { 0.1, 0.3, 0.3, 0.1 }
         }));
-        net.addNode(b);
 
         JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
         algo.setNetwork(net);

@@ -19,9 +19,9 @@ import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.factor.SparseFactor;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
-import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
-import org.eclipse.recommenders.jayes.util.arraywrapper.FloatArrayWrapper;
 import org.eclipse.recommenders.tests.jayes.util.NetExamples;
 import org.junit.Test;
 

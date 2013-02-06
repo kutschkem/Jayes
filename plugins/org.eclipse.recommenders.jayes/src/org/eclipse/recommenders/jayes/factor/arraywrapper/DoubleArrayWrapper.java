@@ -8,56 +8,56 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util.arraywrapper;
+package org.eclipse.recommenders.jayes.factor.arraywrapper;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.internal.jayes.util.ArrayUtils;
 
-public class FloatArrayWrapper implements IArrayWrapper {
+public class DoubleArrayWrapper implements IArrayWrapper {
 
-	private float[] array;
+	private double[] array;
 	
-	public FloatArrayWrapper(float... array) {
+	public DoubleArrayWrapper(double... array) {
 		this.array = array;
 	}
 	
 	@Override
 	public void setArray(double... array) {
-		setArray(ArrayUtils.toFloatArray(array));
-
-	}
-
-	@Override
-	public void setArray(float... array) {
 		this.array = array;
 
 	}
 
 	@Override
-	public double[] toDoubleArray() {
-		return ArrayUtils.toDoubleArray(array);
+	public void setArray(float... array) {
+		setArray(ArrayUtils.toDoubleArray(array));
+
 	}
 
 	@Override
-	public float[] toFloatArray() {
+	public double[] toDoubleArray() {
 		return array;
 	}
 
 	@Override
-	public void set(int index, double d) {
-		array[index] = (float)d;
+	public float[] toFloatArray() {
+		return ArrayUtils.toFloatArray(array);
 	}
 
 	@Override
-	public void set(int index, float d) {
+	public void set(int index, double d) {
 		array[index] = d;
 	}
 
 	@Override
+	public void set(int index, float d) {
+		set(index,(double)d);
+	}
+
+	@Override
 	public void mulAssign(int index, double d) {
-		array[index] *= (float)d;
+		array[index] *= d;
 	}
 
 	@Override
@@ -67,12 +67,12 @@ public class FloatArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void mulAssign(int index, IArrayWrapper arg, int argIndex) {
-		array[index] *= arg.getFloat(argIndex);
+		array[index] *= arg.getDouble(argIndex);
 	}
 
 	@Override
 	public void addAssign(int index, double d) {
-		array[index] += (float) d;
+		array[index] += d;
 	}
 
 	@Override
@@ -82,17 +82,17 @@ public class FloatArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void addAssign(int index, IArrayWrapper arg, int argIndex) {
-		array[index] += arg.getFloat(argIndex);
+		array[index] += arg.getDouble(argIndex);
 	}
 
 	@Override
 	public double getDouble(int index) {
-		return (double) array[index];
+		return array[index];
 	}
 
 	@Override
 	public float getFloat(int index) {
-		return array[index];
+		return (float) array[index];
 	}
 
 	@Override
@@ -102,57 +102,58 @@ public class FloatArrayWrapper implements IArrayWrapper {
 
 	@Override
 	public void copy(double... array) {
-		setArray(array);
+		setArray(array.clone());
 	}
 
 	@Override
 	public void copy(float... array) {
-		this.array = array.clone();
+		setArray(ArrayUtils.toDoubleArray(array));
+
 	}
 
 	@Override
 	public void copy(IArrayWrapper array) {
-		copy(array.toFloatArray());
+		copy(array.toDoubleArray());
 	}
 
 	@Override
 	public void fill(double d) {
-		Arrays.fill(array, (float)d);
+		Arrays.fill(array, d);
 	}
 
 	@Override
 	public void fill(float d) {
-		Arrays.fill(array,d);
+		Arrays.fill(array, (double)d);
 	}
 
-	@Override
-	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
-			int length) {
-		System.arraycopy(src.toFloatArray(), srcOffset, array, destOffset, length);
-	}
-
-	@Override
-	public void newArray(int capacity) {
-		array = new float[capacity];
-	}
-	
-	@Override
-	public FloatArrayWrapper clone(){
-		FloatArrayWrapper clone;
+	public DoubleArrayWrapper clone(){
 		try {
-			clone = (FloatArrayWrapper) super.clone();
-			clone.array = array.clone();
-			return clone;
+			DoubleArrayWrapper result = (DoubleArrayWrapper) super.clone();
+			result.array = array.clone();
+			return result;
 		} catch (CloneNotSupportedException e) {
 			throw new AssertionError("This should not happen");
 		}
 	}
 
 	@Override
-	public int sizeOfElement() {
-		return 4;
+	public void arrayCopy(IArrayWrapper src, int srcOffset, int destOffset,
+			int length) {
+		System.arraycopy(src.toDoubleArray(),srcOffset,array,destOffset,length);
+		
 	}
-	
+
+	@Override
+	public void newArray(int capacity) {
+		this.array = new double[capacity];
+		
+	}
+
+	@Override
+	public int sizeOfElement() {
+		return 8;
+	}
+
 	@Override
 	public Iterator<Number> iterator() {
 		return new Iterator<Number>(){
@@ -177,4 +178,5 @@ public class FloatArrayWrapper implements IArrayWrapper {
 			
 		};
 	}
+
 }

@@ -17,17 +17,19 @@ import static org.junit.Assert.assertThat;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
 import org.eclipse.recommenders.jayes.factor.SparseFactor;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
-import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.tests.jayes.util.ArrayUtils;
 import org.junit.Test;
 
 public class FactorTest {
 
+    //@formatter:off
     private static final double[] DISTRIBUTION_2x2x2 = ArrayUtils.flatten(new double[][][] {
             { { 0.5, 0.5 }, { 1.0, 0.0 } },
             { { 0.4, 0.6 }, { 0.3, 0.7 } }
     });
+    //@formatter:on
     private static final double TOLERANCE = 0.00001;
 
     @Test
@@ -83,10 +85,12 @@ public class FactorTest {
     @Test
     public void testMultiplication() {
         AbstractFactor f1 = create2x2x2Factor();
+        //@formatter:off
         f1.setValues(new DoubleArrayWrapper(ArrayUtils.flatten(new double[][][] {
                 { { 0.5, 0.5 }, { 0.5, 0.5 } },
                 { { 0.5, 0.5 }, { 0.5, 0.5 } }
         })));
+        //@formatter:on
 
         AbstractFactor f2 = new DenseFactor();
         f2.setDimensionIDs(2, 0);
@@ -136,10 +140,12 @@ public class FactorTest {
         AbstractFactor f2 = SparseFactor.fromFactor(f);
         f.multiplyCompatible(f2);
 
+        //@formatter:off
         assertArrayEquals(f.getValues().toDoubleArray(), ArrayUtils.flatten(new double[][][] {
                 { { 0.5 * 0.5, 0.5 * 0.5 }, { 1.0, 0.0 } },
                 { { 0.4 * 0.4, 0.6 * 0.6 }, { 0.3 * 0.3, 0.7 * 0.7 } }
         }), TOLERANCE);
+        //@formatter:on
     }
 
     @Test

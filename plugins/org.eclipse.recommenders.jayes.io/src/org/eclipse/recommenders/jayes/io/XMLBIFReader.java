@@ -31,12 +31,13 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.io.util.XPathUtil;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.xpath.XPathEvaluator;
 import org.xml.sax.SAXException;
+
+import com.google.common.primitives.Doubles;
 
 /**
  * a Reader thats reads the XMLBIF v0.3 format (<a href="http://www.cs.cmu.edu/~fgcozman/Research/InterchangeFormat/"
@@ -151,7 +152,7 @@ public class XMLBIFReader {
             probabilities.add(Double.valueOf(tok.nextToken()));
         }
 
-        bNode.setProbabilities((double[]) ArrayUtils.unboxArray(probabilities.toArray(new Double[] {})));
+        bNode.setProbabilities(Doubles.toArray(probabilities));
     }
 
     public BayesNet read(InputStream systemResourceAsStream) throws ParserConfigurationException, SAXException,

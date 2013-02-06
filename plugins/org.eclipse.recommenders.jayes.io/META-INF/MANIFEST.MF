@@ -5,6 +5,8 @@ Bundle-SymbolicName: org.eclipse.recommenders.jayes.io
 Bundle-Version: 1.0.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.recommenders.jayes.io;uses:="org.eclipse.recommenders.jayes"
-Require-Bundle: org.eclipse.recommenders.jayes;bundle-version="1.0.0",
- com.google.guava;bundle-version="10.0.1",
- org.apache.commons.lang3;bundle-version="3.1.0"
+Require-Bundle: org.eclipse.recommenders.jayes;bundle-version="1.0.0"
+Import-Package: com.google.common.base;version="[10.0.0,11.0.0)",
+ com.google.common.collect;version="[10.0.0,11.0.0)",
+ com.google.common.primitives;version="[10.0.0,11.0.0)",
+ org.apache.commons.lang3;version="[3.0.0,4.0.0)"

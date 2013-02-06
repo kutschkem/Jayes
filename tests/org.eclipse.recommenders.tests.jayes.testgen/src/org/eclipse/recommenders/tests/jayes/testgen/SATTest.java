@@ -11,23 +11,26 @@
 package org.eclipse.recommenders.tests.jayes.testgen;
 
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Collection;
 
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.factor.DenseFactor;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.testgen.sat.HornClause;
 import org.eclipse.recommenders.jayes.testgen.sat.HornSAT;
 import org.eclipse.recommenders.jayes.testgen.sat.Learner;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
-import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.tests.jayes.util.ArrayUtils;
 import org.junit.Test;
 
 public class SATTest {
 
+    //@formatter:off
     private static final DoubleArrayWrapper DETERMINISTIC_DISTRIBUTRION = new DoubleArrayWrapper(
             ArrayUtils.flatten(new double[][][] {
                     {
@@ -39,6 +42,7 @@ public class SATTest {
                     { 1.0, 0.0 }
             }
             }));
+    //@formatter:on
 
     @Test
     public void testSatSimple() {

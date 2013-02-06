@@ -12,9 +12,9 @@ package org.eclipse.recommenders.jayes.factor;
 
 import java.util.Arrays;
 
+import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.MathUtils;
-import org.eclipse.recommenders.jayes.util.arraywrapper.DoubleArrayWrapper;
-import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public abstract class AbstractFactor implements Cloneable {
 

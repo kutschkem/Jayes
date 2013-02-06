@@ -10,6 +10,7 @@
  */
 package org.eclipse.recommenders.jayes.testgen;
 
+import static com.google.common.primitives.Doubles.toArray;
 import static org.eclipse.recommenders.jayes.testgen.TestcaseSerializer.BELIEF;
 import static org.eclipse.recommenders.jayes.testgen.TestcaseSerializer.EVIDENCE;
 
@@ -21,7 +22,6 @@ import java.util.List;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -81,11 +81,7 @@ public class TestcaseDeserializer {
             doubles.add(jsonRdr.nextDouble());
         }
         jsonRdr.endArray();
-        tc.beliefs.put(node, toDoubleArray(doubles));
-    }
-
-    private double[] toDoubleArray(List<Double> doubles) {
-        return (double[]) ArrayUtils.unboxArray(doubles.toArray(new Double[0]));
+        tc.beliefs.put(node, toArray(doubles));
     }
 
 }

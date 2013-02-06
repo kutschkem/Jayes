@@ -24,7 +24,6 @@ import org.eclipse.recommenders.jayes.testgen.sat.HornClause;
 import org.eclipse.recommenders.jayes.testgen.sat.HornSAT;
 import org.eclipse.recommenders.jayes.testgen.sat.Learner;
 import org.eclipse.recommenders.jayes.testgen.scenario.ScenarioGenerator;
-import org.eclipse.recommenders.jayes.util.BidirectionalMap;
 import org.eclipse.recommenders.jayes.util.Pair;
 
 /**
@@ -73,7 +72,7 @@ public class AllCombinationsScenarioGenerator implements ScenarioGenerator {
 
     private boolean check(Map<BayesNode, String> evidence) {
         HornSAT sat = learner.getSat();
-        BidirectionalMap<Pair<Integer, Integer>, Integer> vars = learner.getTranslation();
+        Map<Pair<Integer, Integer>, Integer> vars = learner.getTranslation();
         sat.resetTempClauses();
         boolean applicable = false;
         for (Entry<BayesNode, String> entry : evidence.entrySet()) {

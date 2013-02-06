@@ -8,7 +8,7 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util;
+package org.eclipse.recommenders.internal.jayes.util;
 
 /**
  * Disjoint Set Datastructure, uses Union by Rank and Path Compression

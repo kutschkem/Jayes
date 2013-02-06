@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.jayes.transformation.util.ArrayFlatten;
 
 public class NetExamples {
 
@@ -46,10 +46,12 @@ public class NetExamples {
         BayesNode b = net.createNode("b");
         b.addOutcomes("la", "le", "lu");
         b.setParents(Arrays.asList(a));
-        b.setProbabilities(ArrayUtils.flatten(new double[][] {
+        //@formatter:off
+        b.setProbabilities(ArrayFlatten.flatten(new double[][] {
                 { 0.1, 0.4, 0.5 }, // a = true
                 { 0.3, 0.4, 0.3 }  // a = false
         }));
+        //@formatter:on
 
         BayesNode c = net.createNode("c");
         c.addOutcomes("true", "false");
@@ -72,10 +74,12 @@ public class NetExamples {
         BayesNode d = net.createNode("d");
         d.addOutcomes("true", "false");
         d.setParents(Arrays.asList(c));
-        d.setProbabilities(ArrayUtils.flatten(new double[][] {
+        //@formatter:off
+        d.setProbabilities(ArrayFlatten.flatten(new double[][] {
                 { 0.5, 0.5 }, // c = true
                 { 0.2, 0.8 }  // c = false
         }));
+        //@formatter:on
 
         return net;
     }
@@ -104,10 +108,12 @@ public class NetExamples {
         BayesNode b = net.createNode("b");
         b.addOutcomes("la", "le", "lu");
         b.setParents(Arrays.asList(a));
-        b.setProbabilities(ArrayUtils.flatten(new double[][] {
+        //@formatter:off
+        b.setProbabilities(ArrayFlatten.flatten(new double[][] {
                 { 0.1, 0.4, 0.5 }, // a = true
                 { 0.3, 0.4, 0.3 }  // a = false
         }));
+        //@formatter:on
 
         BayesNode c = net.createNode("c");
         c.addOutcomes("true", "false", "sth", "sthElse");
@@ -130,12 +136,14 @@ public class NetExamples {
         BayesNode d = net.createNode("d");
         d.addOutcomes("true", "false");
         d.setParents(Arrays.asList(c));
-        d.setProbabilities(ArrayUtils.flatten(new double[][] {
+        //@formatter:off
+        d.setProbabilities(ArrayFlatten.flatten(new double[][] {
                 { 0.5, 0.5 }, // c = true
                 { 0.2, 0.8 }, // c = false
                 { 0.5, 0.5 }, // c = sth
                 { 0.0, 1.0 }  // c = sthElse
         }));
+        //@formatter:on
 
         return net;
     }

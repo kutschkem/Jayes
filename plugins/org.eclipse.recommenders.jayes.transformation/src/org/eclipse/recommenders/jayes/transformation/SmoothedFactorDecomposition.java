@@ -69,7 +69,7 @@ public class SmoothedFactorDecomposition extends AbstractDecomposition {
     @Override
     protected List<double[]> getBasis(AbstractFactor f, List<double[]> vectors) {
         List<double[]> basis = new ArrayList<double[]>();
-        int d = f.getValues().length() / vectors.size();
+        int d = MathUtils.product(f.getDimensions()) / vectors.size();
         double[] ones = new double[d];
         Arrays.fill(ones, 1);
         basis.add(ones);

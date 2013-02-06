@@ -9,10 +9,10 @@ package org.eclipse.recommenders.jayes.factor;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.eclipse.recommenders.internal.jayes.util.ArrayUtils;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
 import org.eclipse.recommenders.jayes.util.AddressCalc;
-import org.eclipse.recommenders.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.util.MathUtils;
-import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
 
 public class SparseFactor extends AbstractFactor {
 

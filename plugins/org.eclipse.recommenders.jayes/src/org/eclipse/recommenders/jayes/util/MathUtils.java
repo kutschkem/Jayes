@@ -10,7 +10,7 @@
  */
 package org.eclipse.recommenders.jayes.util;
 
-import org.eclipse.recommenders.jayes.util.arraywrapper.IArrayWrapper;
+import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
 
 public class MathUtils {
 
