@@ -8,13 +8,15 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.eval.jayes.memory;
+package org.eclipse.recommenders.eval.jayes.statistics.memory;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+import org.eclipse.recommenders.eval.jayes.statistics.IStatisticsProvider;
+import org.eclipse.recommenders.eval.jayes.util.JTATestAdapter;
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;

@@ -8,16 +8,17 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.eval.jayes.memory;
+package org.eclipse.recommenders.eval.jayes.statistics;
 
-import java.util.Collections;
 import java.util.Map;
 
-public class NOPStatisticsProvider implements IStatisticsProvider {
+import org.eclipse.recommenders.eval.jayes.statistics.memory.JunctionTreeMemoryStatisticsProvider;
 
-    @Override
-    public Map<String, Number> computeStatistics() {
-        return Collections.emptyMap();
-    }
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(JunctionTreeMemoryStatisticsProvider.class)
+public interface IStatisticsProvider {
+
+    Map<String, Number> computeStatistics();
 
 }

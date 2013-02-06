@@ -8,7 +8,7 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.eval.jayes.memory;
+package org.eclipse.recommenders.eval.jayes.util;
 
 import java.util.List;
 import java.util.Map;

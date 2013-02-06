@@ -13,6 +13,7 @@ package org.eclipse.recommenders.eval.jayes.util;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -41,7 +42,12 @@ public class RecommenderModelLoader {
 
     public static BayesNet load(String model) throws Exception,
             FileNotFoundException {
-        BayesianNetwork net = BayesianNetwork.read(new BufferedInputStream(new FileInputStream(model)));
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(model));
+        return load(in);
+    }
+
+    public static BayesNet load(InputStream in) throws Exception {
+        BayesianNetwork net = BayesianNetwork.read(in);
 
         RecommenderModelLoader modelTrans = new RecommenderModelLoader();
         modelTrans.initializeNetwork(net);
