@@ -8,7 +8,7 @@
  * Contributors:
  *     Michael Kutschke - initial API and implementation
  ******************************************************************************/
-package org.eclipse.recommenders.eval.jayes.memory;
+package org.eclipse.recommenders.eval.jayes.statistics.memory;
 
 import org.eclipse.recommenders.jayes.factor.FactorFactory;
 

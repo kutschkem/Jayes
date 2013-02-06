@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.recommenders.internal.jayes.eval.wiring;
 
-import static org.eclipse.recommenders.eval.jayes.memory.JunctionTreeMemoryStatisticsProvider.SPECIFIER;
+import static org.eclipse.recommenders.eval.jayes.statistics.memory.JunctionTreeMemoryStatisticsProvider.SPECIFIER;
 import static org.eclipse.recommenders.eval.jayes.util.TransformationDecorator.DELEGATE;
 
-import org.eclipse.recommenders.eval.jayes.memory.JTATestAdapter;
+import org.eclipse.recommenders.eval.jayes.util.JTATestAdapter;
 import org.eclipse.recommenders.eval.jayes.util.TransformationDecorator;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
 import org.eclipse.recommenders.jayes.transformation.IDecompositionStrategy;

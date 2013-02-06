@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.recommenders.eval.jayes;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,12 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.recommenders.eval.jayes.util.RecommenderModelLoader;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
-import org.eclipse.recommenders.jayes.io.XDSLReader;
-import org.eclipse.recommenders.jayes.io.XMLBIFReader;
 import org.eclipse.recommenders.jayes.util.NumericalInstabilityException;
 
 public class DataPointGenerator {
@@ -34,21 +29,6 @@ public class DataPointGenerator {
     private Map<IBayesInferer, Long> setupTimes = new HashMap<IBayesInferer, Long>();
 
     private BayesNet net;
-
-    public void load(String file) throws FileNotFoundException, Exception {
-        InputStream str = getClass().getClassLoader().getResourceAsStream(file);
-        if (file.endsWith(".data")) {
-            setNetwork(RecommenderModelLoader.load(file));
-        } else if (file.endsWith(".xdsl")) {
-            XDSLReader xdslReader = new XDSLReader();
-            xdslReader.setLegacyMode(true);
-            setNetwork(xdslReader.read(str));
-        } else if (file.endsWith(".xml")) {
-            setNetwork(new XMLBIFReader().read(str));
-        } else {
-            throw new IllegalArgumentException("File name does not correspond to a supported data format");
-        }
-    }
 
     public DataPoint generate(Map<BayesNode, String> evidence, int number) {
         return generate(evidence, number, null);
