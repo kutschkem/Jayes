@@ -35,6 +35,7 @@ import org.eclipse.recommenders.eval.jayes.DataPointGenerator;
 import org.eclipse.recommenders.eval.jayes.statistics.DataPointStatistics;
 import org.eclipse.recommenders.eval.jayes.statistics.IStatisticsProvider;
 import org.eclipse.recommenders.eval.jayes.util.CLIUtil;
+import org.eclipse.recommenders.eval.jayes.util.GuiceUtil;
 import org.eclipse.recommenders.eval.jayes.util.RecommenderModelLoader;
 import org.eclipse.recommenders.internal.rcp.repo.ManualWagonProvider;
 import org.eclipse.recommenders.jayes.BayesNet;
@@ -83,7 +84,7 @@ public class Evaluation implements IApplication {
     private String modelRepo;
 
     private final int repetitions = 1;
-    private List<Module> guiceModules = newArrayList();
+    private List<Module> guiceModules;
     private String modelRepoId;
     private String modelArtifact;
 
@@ -111,7 +112,7 @@ public class Evaluation implements IApplication {
             long time = System.currentTimeMillis();
             logger.info("Iteration " + iteration + " observProb= " + observationProb + " , " + model);
             try {
-                List<DataPoint> points = evaluate(dataGen, observationProb, numTestcases, repetitions);
+                List<DataPoint> points = evaluate(dataGen);
                 printData(iteration, points);
                 printStat(iteration, computeStatistics(points));
             } catch (NumericalInstabilityException exNumInst) {
@@ -172,7 +173,7 @@ public class Evaluation implements IApplication {
 
     private void printData(int iteration, List<DataPoint> points)
             throws IOException {
-        File evalFile = new File(outputDirectory, getEvaluationFolder(iteration) + "/evalData.txt");
+        File evalFile = new File(outputDirectory, getEvaluationFolder(iteration) + "/" + EVALUATION_DATA_FILE);
         if (!evalFile.exists()) {
             evalFile.getParentFile().mkdirs();
             evalFile.createNewFile();
@@ -195,16 +196,16 @@ public class Evaluation implements IApplication {
         GsonUtil.serialize(stat, statFile);
     }
 
-    private List<DataPoint> evaluate(DataPointGenerator dataGen, double observationProb, int cases, int repeat) {
+    private List<DataPoint> evaluate(DataPointGenerator dataGen) {
         SampledScenarioGenerator testGen = new SampledScenarioGenerator();
         testGen.setNetwork(dataGen.getNetwork());
         testGen.setEvidenceRate(observationProb);
         testGen.seed(seed);
 
         List<DataPoint> points = new ArrayList<DataPoint>();
-        for (int i = 0; i < cases; i++) {
+        for (int i = 0; i < numTestcases; i++) {
             Map<BayesNode, String> evidence = testGen.testcase();
-            DataPoint point = dataGen.generate(evidence, repeat);
+            DataPoint point = dataGen.generate(evidence, repetitions);
             points.add(point);
         }
 
@@ -251,20 +252,10 @@ public class Evaluation implements IApplication {
         numTestcases = Integer.valueOf(properties.getProperty("evaluation.numTestcases"));
         outputDirectory = new File(properties.getProperty(OUTPUTDIR));
 
-        loadModules(Splitter.on(',').trimResults().split(properties.getProperty("evaluation.modules")));
+        guiceModules = GuiceUtil.loadModules(Splitter.on(',').trimResults()
+                .split(properties.getProperty(MODULES)));
 
         injectEvaluationSubjects();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void loadModules(Iterable<String> split) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException {
-        for (String moduleName : split) {
-            String fullname = "org.eclipse.recommenders.internal.jayes.eval.wiring." + moduleName + "Module";
-            Class<? extends Module> clazz = (Class<? extends Module>) Class.forName(fullname);
-            this.guiceModules.add(clazz.newInstance());
-        }
-
     }
 
     @Override
