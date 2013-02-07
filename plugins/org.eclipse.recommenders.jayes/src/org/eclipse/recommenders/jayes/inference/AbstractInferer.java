@@ -20,7 +20,6 @@ import org.eclipse.recommenders.jayes.factor.FactorFactory;
 public abstract class AbstractInferer implements IBayesInferer {
 
     protected Map<BayesNode, String> evidence = new HashMap<BayesNode, String>();
-    protected BayesNet net;
 
     protected double[][] beliefs;
     protected boolean beliefsValid;
@@ -53,12 +52,11 @@ public abstract class AbstractInferer implements IBayesInferer {
 
     @Override
     public void setNetwork(final BayesNet bayesNet) {
-        this.net = bayesNet;
-        beliefs = new double[net.getNodes().size()][];
-        for (final BayesNode n : net.getNodes()) {
+        beliefs = new double[bayesNet.getNodes().size()][];
+        for (final BayesNode n : bayesNet.getNodes()) {
             beliefs[n.getId()] = new double[n.getOutcomeCount()];
         }
-        this.factory.setReferenceNetwork(net);
+        this.factory.setReferenceNetwork(bayesNet);
     }
 
     @Override

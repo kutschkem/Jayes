@@ -11,6 +11,7 @@
 package org.eclipse.recommenders.jayes.inference;
 
 import java.util.Map;
+
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.sampling.BasicSampler;
@@ -36,7 +37,7 @@ public class LikelihoodWeightedSampling extends AbstractInferer {
             double weight = computeEvidenceProbability(sample);
 
             for (BayesNode e : sample.keySet()) {
-                beliefs[e.getId()][e.getOutcomeIndex(sample.get(e))]+= weight;
+                beliefs[e.getId()][e.getOutcomeIndex(sample.get(e))] += weight;
             }
         }
 
@@ -51,10 +52,8 @@ public class LikelihoodWeightedSampling extends AbstractInferer {
 
     private double computeEvidenceProbability(Map<BayesNode, String> sample) {
         double factor = 1.0;
-        for (BayesNode n : net.getNodes()) {
-            if (evidence.containsKey(n.getId())) {
-                factor *= n.marginalize(sample)[n.getOutcomeIndex(evidence.get(n))];
-            }
+        for (BayesNode n : evidence.keySet()) {
+            factor *= n.marginalize(sample)[n.getOutcomeIndex(evidence.get(n))];
         }
         return factor;
     }
@@ -62,9 +61,9 @@ public class LikelihoodWeightedSampling extends AbstractInferer {
     public void setSampleCount(int sampleCount) {
         this.sampleCount = sampleCount;
     }
-    
-    public void seed(long seed){
-    	sampler.seed(seed);
+
+    public void seed(long seed) {
+        sampler.seed(seed);
     }
 
 }

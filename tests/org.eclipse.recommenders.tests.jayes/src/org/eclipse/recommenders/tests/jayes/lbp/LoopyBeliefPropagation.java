@@ -30,9 +30,8 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.eclipse.recommenders.jayes.util.Pair;
 
 /**
- * an implementation of Loopy Belief Propagation. Not ready for production use,
- * only serves to check the correctness of the other algorithms on simple
- * networks.
+ * an implementation of Loopy Belief Propagation. Not ready for production use, only serves to check the correctness of
+ * the other algorithms on simple networks.
  * 
  * @author Michael Kutschke
  * 
@@ -40,13 +39,14 @@ import org.eclipse.recommenders.jayes.util.Pair;
 public class LoopyBeliefPropagation extends AbstractInferer {
 
     /**
-     * the Factor/Node Graph is represented as bipartite Graph, with nodes being
-     * edge sources and factors being the edge targets
+     * the Factor/Node Graph is represented as bipartite Graph, with nodes being edge sources and factors being the edge
+     * targets
      */
     private final List<List<Edge>> graph = new ArrayList<List<Edge>>();
     private final List<List<Edge>> transponedGraph = new ArrayList<List<Edge>>();
     private final List<Integer> dirty = new LinkedList<Integer>();
     private final Map<Edge, int[]> preparedOps = new HashMap<Edge, int[]>();
+    private BayesNet net;
 
     private static class Edge {
         /**
@@ -107,6 +107,7 @@ public class LoopyBeliefPropagation extends AbstractInferer {
     @Override
     public void setNetwork(final BayesNet bn) {
         super.setNetwork(bn);
+        this.net = bn;
         for (final BayesNode n : bn.getNodes()) {
             transponedGraph.add(new ArrayList<Edge>());
             dirty.add(n.getId());
