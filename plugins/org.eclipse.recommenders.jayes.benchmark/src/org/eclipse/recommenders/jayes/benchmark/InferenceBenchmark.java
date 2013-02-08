@@ -18,6 +18,8 @@ import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.benchmark.util.ModelLoader;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.testgen.scenario.impl.SampledScenarioGenerator;
+import org.eclipse.recommenders.jayes.transformation.IDecompositionStrategy;
+import org.eclipse.recommenders.jayes.transformation.SmoothedFactorDecomposition;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 import com.google.caliper.SimpleBenchmark;
@@ -30,15 +32,27 @@ public class InferenceBenchmark extends SimpleBenchmark {
     private BayesNet net;
     private SampledScenarioGenerator scenarioGen = new SampledScenarioGenerator();
     private JunctionTreeAlgorithm algo = new JunctionTreeAlgorithm();
+    private JunctionTreeAlgorithm algoTransformed = new JunctionTreeAlgorithm();
     private int mergeNr = 100;
 
     public InferenceBenchmark() throws Exception {
         ModelLoader modelLoader = new ModelLoader("jre:jre:zip:call:1.0.0");
-        this.net = mergeNetworks(modelLoader.getJayesNetworks().subList(0, mergeNr));
+        List<BayesNet> networksToMerge = modelLoader.getJayesNetworks().subList(0, mergeNr);
+        this.net = mergeNetworks(networksToMerge);
         scenarioGen.seed(SEED);
         scenarioGen.setEvidenceRate(EVIDENCE_RATE);
         scenarioGen.setNetwork(net);
         algo.setNetwork(net);
+        BayesNet transformedNet = mergeNetworks(networksToMerge);
+        IDecompositionStrategy decomp = new SmoothedFactorDecomposition();
+        for (BayesNet network : networksToMerge) {
+            BayesNode node = transformedNet.getNode(network.hashCode() + "contexts");
+            if (node != null) {
+                decomp.decompose(transformedNet, node);
+            }
+        }
+        algoTransformed.setNetwork(transformedNet);
+
     }
 
     private BayesNet mergeNetworks(List<BayesNet> jayesNetworks) {
@@ -64,6 +78,17 @@ public class InferenceBenchmark extends SimpleBenchmark {
             algo.setEvidence(evidence);
             for (BayesNode node : net.getNodes()) {
                 result += MathUtils.sum(algo.getBeliefs(node));
+            }
+        }
+        return result;
+    }
+
+    public int timeInferenceTransformed(int repetitions) {
+        int result = 0;
+        for (Map<BayesNode, String> evidence : scenarioGen.generate(repetitions)) {
+            algoTransformed.setEvidence(evidence);
+            for (BayesNode node : net.getNodes()) {
+                result += MathUtils.sum(algoTransformed.getBeliefs(node));
             }
         }
         return result;
