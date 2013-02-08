@@ -24,5 +24,17 @@
          </run>
       </application>
    </extension>
+   <extension
+         id="StabilityBenchmark"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.recommenders.eval.jayes.apps.StabilityBenchmark">
+         </run>
+      </application>
+   </extension>
 
 </plugin>

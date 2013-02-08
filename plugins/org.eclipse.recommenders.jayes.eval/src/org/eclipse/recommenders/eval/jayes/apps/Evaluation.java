@@ -77,7 +77,7 @@ public class Evaluation implements IApplication {
     private static final long seed = 1337 + 42;
     private static Logger logger = LoggerFactory.getLogger(Evaluation.class);
 
-    private Map<String, IBayesInferer> inferer = new HashMap<String, IBayesInferer>();
+    private Map<String, IBayesInferer> inferrer = new HashMap<String, IBayesInferer>();
     private List<IStatisticsProvider> statisticsProvider = newArrayList();
     private double observationProb;
     private String model;
@@ -91,7 +91,7 @@ public class Evaluation implements IApplication {
     public void injectEvaluationSubjects() {
         for (Module module : guiceModules) {
             Injector jayes = Guice.createInjector(module);
-            inferer.put(jayes.getInstance(Key.get(String.class, Names.named("specifier"))),
+            inferrer.put(jayes.getInstance(Key.get(String.class, Names.named("specifier"))),
                     jayes.getInstance(IBayesInferer.class));
             statisticsProvider.add(jayes.getInstance(IStatisticsProvider.class));
         }
@@ -101,7 +101,7 @@ public class Evaluation implements IApplication {
     public void runEvaluation() throws Exception {
         DataPointGenerator dataGen = new DataPointGenerator();
 
-        for (Entry<String, IBayesInferer> inferenceEntry : inferer.entrySet()) {
+        for (Entry<String, IBayesInferer> inferenceEntry : inferrer.entrySet()) {
             dataGen.addInferrer(inferenceEntry.getKey(), inferenceEntry.getValue());
         }
 
@@ -213,7 +213,7 @@ public class Evaluation implements IApplication {
     }
 
     public Map<String, Number> computeStatistics(List<DataPoint> points) {
-        DataPointStatistics statistics = new DataPointStatistics(inferer.keySet());
+        DataPointStatistics statistics = new DataPointStatistics(inferrer.keySet());
         Map<String, Number> stat = statistics.computeStatistics(points);
         applyStatisticsProviders(stat);
         return stat;
