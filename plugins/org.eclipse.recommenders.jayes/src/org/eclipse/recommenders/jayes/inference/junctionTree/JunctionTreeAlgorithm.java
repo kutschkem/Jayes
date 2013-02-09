@@ -94,7 +94,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
                             + evidence
                             + " and node : "
                             + nodeId
-                            + ", consider setting the LogTreshold lower in the OptimizationHints",
+                            + ", consider using logarithmic scale computation (configurable in FactorFactory)",
                     exception);
         }
     }

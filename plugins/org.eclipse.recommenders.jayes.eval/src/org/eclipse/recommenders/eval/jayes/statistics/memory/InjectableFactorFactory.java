@@ -25,8 +25,8 @@ public class InjectableFactorFactory extends FactorFactory {
 
     @Inject(optional = true)
     @Override
-    public void setLogThreshold(@Named("logthreshold") int threshold) {
-        super.setLogThreshold(threshold);
+    public void setUseLogScale(@Named("logscale") boolean useLogScale) {
+        super.setUseLogScale(useLogScale);
     }
 
 }

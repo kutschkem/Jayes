@@ -23,7 +23,7 @@ import org.eclipse.recommenders.jayes.util.MathUtils;
 public class FactorFactory {
 
     protected BayesNet net;
-    private int logThreshold = Integer.MAX_VALUE;
+    private boolean useLogScale = false;
     private IArrayWrapper prototype = new DoubleArrayWrapper(0.0); //TODO is a length of 1 here still necessary?
 
     /**
@@ -49,13 +49,10 @@ public class FactorFactory {
     }
 
     /**
-     * factors bigger (in the number of variables) than the threshold are computed on the log-scale. Validate different
-     * values if you encounter numerical instabilities.
-     * 
-     * @param logThreshold
+     * using logarithmic values for computation is a lot slower, but also a lot more numerically stable
      */
-    public void setLogThreshold(int threshold) {
-        this.logThreshold = threshold;
+    public void setUseLogScale(boolean useLogScale) {
+        this.useLogScale = useLogScale;
     }
 
     /**
@@ -88,7 +85,7 @@ public class FactorFactory {
         f.setValues(prototype.clone());
         f.setDimensions(dimensions);
         f.setDimensionIDs(ArrayUtils.toIntArray(vars));
-        if (vars.size() > getLogThreshold()) {
+        if (useLogScale) {
             f.setLogScale(true);
         }
     }
@@ -101,8 +98,10 @@ public class FactorFactory {
         return ArrayUtils.toIntArray(dimensions);
     }
 
-    private int getLogThreshold() {
-        return logThreshold;
+    // weird signature to allow overriding for testing mixed log scale computation
+    // (just because we can't configure it right now, we still want to support it)
+    protected boolean getUseLogScale(AbstractFactor f) {
+        return useLogScale;
     }
 
     public static FactorFactory defaultFactory() {

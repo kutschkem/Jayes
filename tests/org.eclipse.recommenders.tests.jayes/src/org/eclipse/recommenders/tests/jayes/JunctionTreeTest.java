@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
+import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.factor.FactorFactory;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
 import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
 import org.eclipse.recommenders.jayes.io.XMLBIFReader;
@@ -65,7 +67,7 @@ public class JunctionTreeTest {
         BayesNode b = net.getNode("b");
 
         JunctionTreeAlgorithm inferer = new JunctionTreeAlgorithm();
-        inferer.getFactory().setLogThreshold(0);
+        inferer.getFactory().setUseLogScale(true);
         inferer.addEvidence(a, "false");
         inferer.addEvidence(b, "lu");
         inferer.setNetwork(net);
@@ -86,9 +88,14 @@ public class JunctionTreeTest {
         BayesNode b = net.getNode("b");
 
         JunctionTreeAlgorithm inferer = new JunctionTreeAlgorithm();
-        // a treshold of two will make the a,b,c clique log scale but the
+        // this will make the a,b,c clique log scale but the
         // c,d clique normal
-        inferer.getFactory().setLogThreshold(2);
+        inferer.setFactorFactory(new FactorFactory() {
+            @Override
+            protected boolean getUseLogScale(AbstractFactor f) {
+                return f.getDimensions().length > 2;
+            }
+        });
         inferer.addEvidence(a, "false");
         inferer.addEvidence(b, "lu");
         inferer.setNetwork(net);
