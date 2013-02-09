@@ -4,3 +4,5 @@ target/
 .classpath
 java.hprof*.txt
 .log
+.checkstyle
+*.orig
