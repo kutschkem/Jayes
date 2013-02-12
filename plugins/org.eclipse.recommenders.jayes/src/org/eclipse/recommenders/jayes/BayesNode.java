@@ -112,8 +112,11 @@ public class BayesNode {
      */
     @Deprecated
     public void setId(final int id) {
-        if (this.id != -1 && this.id != id) {
+        if (this.id != -1) {
             throw new IllegalStateException("Impossible to reset Id!");
+        }
+        if (id < 0) {
+            throw new IllegalArgumentException("id has to be greater or equal to 0");
         }
         this.id = id;
         adjustFactordimensions();

@@ -118,7 +118,6 @@ public class SparseFactor extends AbstractFactor {
         }
         optimizeDimensionOrder(compatible);
         optimizeBlockSize(compatible);
-        System.out.println("Sparseness: " + blockSize);
 
         initializeBlockPointers(compatible);
         cacheBlock(0);
