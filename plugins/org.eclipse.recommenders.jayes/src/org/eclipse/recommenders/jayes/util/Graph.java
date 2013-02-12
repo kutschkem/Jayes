@@ -67,4 +67,20 @@ public class Graph implements Cloneable {
 
     }
 
+    @Override
+    public Graph clone() {
+        try {
+            Graph clone = (Graph) super.clone();
+            clone.adjacency = new ArrayList<List<Edge>>();
+            for (List<Edge> edges : adjacency) {
+                clone.adjacency.add(new ArrayList<Edge>(edges));
+            }
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            //should not happen
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

@@ -29,6 +29,7 @@ import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
 import org.eclipse.recommenders.jayes.util.OrderIgnoringPair;
 import org.eclipse.recommenders.jayes.util.Pair;
+import org.eclipse.recommenders.jayes.util.triangulation.MinFillIn;
 
 public class JunctionTreeBuilder {
     private final BayesNet net;
@@ -78,46 +79,25 @@ public class JunctionTreeBuilder {
     }
 
     private List<List<Integer>> triangulateGraphAndFindCliques() {
-        final List<Integer> moralNodes = getNodeList();
+        MinFillIn triangulate = new MinFillIn(moral, weightNodesByOutcomes());
 
         final List<List<Integer>> cliques = new ArrayList<List<Integer>>();
-        for (int i = 0; i < moral.getAdjacency().size(); i++) {
-            final int nextNode = nextTriangulationNode(moralNodes);
-            final List<Integer> clique = createClique(nextNode);
-            if (!containsSuperset(cliques, clique)) {
-                cliques.add(clique);
+        for (List<Integer> nextClique : triangulate) {
+            if (!containsSuperset(cliques, nextClique)) {
+                cliques.add(nextClique);
             }
-            moralNodes.remove(Integer.valueOf(nextNode));
-            virtualRemoveNode(nextNode);
         }
         return cliques;
     }
 
-    private List<Integer> getNodeList() {
-        final List<Integer> moralNodes = new ArrayList<Integer>();
-        for (int i = 0; i < moral.getAdjacency().size(); i++) {
-            moralNodes.add(i);
+    private double[] weightNodesByOutcomes() {
+        double[] weights = new double[net.getNodes().size()];
+        for (BayesNode node : net.getNodes()) {
+            weights[node.getId()] = Math.log(node.getOutcomeCount());
+            // using these weights is the same as minimizing the resulting cluster factor size
+            // which is given by the product of the variable outcome counts.
         }
-        return moralNodes;
-    }
-
-    private List<Integer> createClique(final int centerNode) {
-        final List<Integer> clique = new ArrayList<Integer>();
-        clique.add(centerNode);
-        for (final Edge e : moral.getIncidentEdges(centerNode)) {
-            connectToAll(e.getSecond(), clique);
-            clique.add(e.getSecond());
-        }
-        return clique;
-    }
-
-    private void connectToAll(final Integer node, final List<Integer> others) {
-        for (final int other : others) {
-            final Edge newEdge = new Edge(node, other);
-            if (!moral.getIncidentEdges(node).contains(newEdge)) {
-                moral.addEdge(node, other);
-            }
-        }
+        return weights;
     }
 
     private boolean containsSuperset(final Collection<? extends Collection<Integer>> sets, final Collection<Integer> set) {
@@ -129,66 +109,6 @@ public class JunctionTreeBuilder {
             }
         }
         return isSubsetOfOther;
-    }
-
-    // isolating node = virtually removing it
-    private void virtualRemoveNode(final int node) {
-        while (!moral.getIncidentEdges(node).isEmpty()) {
-            moral.removeEdge(moral.getIncidentEdges(node).get(0));
-        }
-    }
-
-    private int nextTriangulationNode(final List<Integer> moralNodes) {
-        int minFillIn = Integer.MAX_VALUE;
-        int nextClusterSize = Integer.MAX_VALUE;
-        int returnNode = 0;
-
-        for (final int node : moralNodes) {
-            final Set<Integer> neighbors = getNeighbors(node);
-            final int predictedFillIn = predictFillIn(node, neighbors);
-            if (predictedFillIn <= minFillIn) {
-                final int clusterSize = computeClusterSize(node, neighbors);
-                if ((predictedFillIn < minFillIn) || (clusterSize < nextClusterSize)) {
-                    returnNode = node;
-                    minFillIn = predictedFillIn;
-                    nextClusterSize = clusterSize;
-                }
-            }
-        }
-
-        return returnNode;
-    }
-
-    private int computeClusterSize(final int node, final Set<Integer> neighborsOfNode) {
-        int clSize = net.getNode(node).getOutcomeCount();
-        for (final int neighbor : neighborsOfNode) {
-            clSize *= net.getNode(neighbor).getOutcomeCount();
-        }
-        return clSize;
-    }
-
-    private int predictFillIn(final int node, final Set<Integer> neighborsOfNode) {
-        int fillIn = 0;
-        for (final Edge e : moral.getIncidentEdges(node)) {
-            final Set<Integer> neighbors2 = getNeighbors(e.getSecond());
-
-            neighborsOfNode.remove(e.getSecond());
-            neighbors2.retainAll(neighborsOfNode);
-            fillIn += neighborsOfNode.size() - neighbors2.size();
-            // Edges are counted double, but this is okay, since the
-            // ordering is maintained
-
-            neighborsOfNode.add(e.getSecond());
-        }
-        return fillIn;
-    }
-
-    private Set<Integer> getNeighbors(final int node) {
-        final Set<Integer> neighbors = new HashSet<Integer>();
-        for (final Edge e : moral.getIncidentEdges(node)) {
-            neighbors.add(e.getSecond());
-        }
-        return neighbors;
     }
 
     private List<Pair<Edge, List<Integer>>> computeSepsets() {

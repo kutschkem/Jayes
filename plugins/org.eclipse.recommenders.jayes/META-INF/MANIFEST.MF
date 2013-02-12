@@ -11,6 +11,7 @@ Export-Package:
  org.eclipse.recommenders.jayes.inference.junctionTree,
  org.eclipse.recommenders.jayes.sampling,
  org.eclipse.recommenders.jayes.util,
- org.eclipse.recommenders.jayes.util.sharing
+ org.eclipse.recommenders.jayes.util.sharing,
+ org.eclipse.recommenders.jayes.util.triangulation
 Bundle-ManifestVersion: 2
 
