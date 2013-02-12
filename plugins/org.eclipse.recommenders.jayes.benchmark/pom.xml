@@ -128,5 +128,18 @@
 			<version>1.0.3-SNAPSHOT</version>
 			<type>eclipse-plugin</type>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.recommenders.jayes.</groupId>
+			<artifactId>
+				org.eclipse.recommenders.jayes.transformation
+			</artifactId>
+			<version>1.0.3-SNAPSHOT</version>
+			<type>eclipse-plugin</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math</artifactId>
+			<version>2.2</version>
+		</dependency>
 	</dependencies>
 </project>
