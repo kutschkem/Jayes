@@ -29,8 +29,11 @@ import org.eclipse.recommenders.eval.jayes.util.GuiceUtil;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.inference.IBayesInferer;
+import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeAlgorithm;
+import org.eclipse.recommenders.jayes.inference.junctionTree.JunctionTreeBuilder;
 import org.eclipse.recommenders.jayes.testgen.scenario.impl.SampledScenarioGenerator;
 import org.eclipse.recommenders.jayes.util.NumericalInstabilityException;
+import org.eclipse.recommenders.jayes.util.triangulation.MinDegree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +93,7 @@ public class StabilityBenchmark implements IApplication {
 
     private void evaluate() {
         for (String inferrer : inferrers.keySet()) {
-            double minProb = 0.1;
+            double minProb = 0.5;
             logger.info(inferrer);
             while (!results.containsKey(inferrers.get(inferrer))) {
                 provokeNumericalInstability(inferrers.get(inferrer), minProb, 5000);
@@ -103,8 +106,12 @@ public class StabilityBenchmark implements IApplication {
     }
 
     private void provokeNumericalInstability(IBayesInferer inferrer, double minProb, int maxLeaves) {
-        for (int i = 1; i < maxLeaves; i *= 5) {
+        for (int i = 2; i < maxLeaves; i *= 1.5) {
             BayesNet testNet = buildSimpleTreeNetwork(i, minProb);
+            if (inferrer instanceof JunctionTreeAlgorithm) {
+                ((JunctionTreeAlgorithm) inferrer).setJunctionTreeBuilder(JunctionTreeBuilder
+                        .forHeuristic(new MinDegree()));
+            }
             inferrer.setNetwork(testNet);
 
             BayesNet sampleNetwork = buildSimpleTreeNetwork(i, 1 - minProb);
@@ -118,7 +125,7 @@ public class StabilityBenchmark implements IApplication {
                     try {
                         inferrer.getBeliefs(node);
                     } catch (NumericalInstabilityException e) {
-                        results.put(inferrer, (i / (10 * minProb)));
+                        results.put(inferrer, (double) i);
                         return;
                     }
                 }

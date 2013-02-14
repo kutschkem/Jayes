@@ -20,7 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.recommenders.jayes.util.Graph;
+import org.eclipse.recommenders.jayes.util.triangulation.GraphElimination;
 import org.eclipse.recommenders.jayes.util.triangulation.MinFillIn;
+import org.eclipse.recommenders.jayes.util.triangulation.QuotientGraph;
 import org.junit.Test;
 
 public class MinFillInTest {
@@ -36,18 +38,13 @@ public class MinFillInTest {
      */
     @Test
     public void testMinFillIn() {
-        Graph graph = new Graph();
-        graph.initialize(4);
-        graph.addEdge(0, 1);
-        graph.addEdge(1, 3);
-        graph.addEdge(3, 0);
-        graph.addEdge(0, 2);
+        Graph graph = createTestGraph();
 
         double[] weights = new double[] {
                 0d, 0d, 1d, 0d
         };
 
-        MinFillIn minFillIn = new MinFillIn(graph, weights);
+        GraphElimination minFillIn = new GraphElimination(graph, weights, new MinFillIn());
         Iterator<List<Integer>> it = minFillIn.iterator();
         List<Integer> first = it.next();
         //eliminate 1
@@ -66,6 +63,51 @@ public class MinFillInTest {
         assertThat(fourth, is(Arrays.asList(2)));
 
         assertFalse(it.hasNext()); //sanity check
+    }
+
+    public Graph createTestGraph() {
+        Graph graph = new Graph();
+        graph.initialize(4);
+        graph.addEdge(0, 1);
+        graph.addEdge(1, 3);
+        graph.addEdge(3, 0);
+        graph.addEdge(0, 2);
+        return graph;
+    }
+
+    @Test
+    public void testQuotientGraph() {
+        Graph graph = createTestGraph();
+        QuotientGraph q = new QuotientGraph(graph);
+
+        //check that initially everything is as we expect
+        assertThat(q.getNeighbors(0), hasItems(1, 2, 3));
+        assertThat(q.getNeighbors(0).size(), is(3));
+        assertThat(q.getNeighbors(1), hasItems(0, 3));
+        assertThat(q.getNeighbors(1).size(), is(2));
+        assertThat(q.getNeighbors(2), hasItems(0));
+        assertThat(q.getNeighbors(2).size(), is(1));
+        assertThat(q.getNeighbors(3), hasItems(0, 1));
+        assertThat(q.getNeighbors(3).size(), is(2));
+
+        q.eliminate(1); //this only removes node 1
+
+        assertThat(q.getNeighbors(0), hasItems(2, 3));
+        assertThat(q.getNeighbors(0).size(), is(2));
+        assertThat(q.getNeighbors(1).size(), is(0));
+        assertThat(q.getNeighbors(2), hasItems(0));
+        assertThat(q.getNeighbors(2).size(), is(1));
+        assertThat(q.getNeighbors(3), hasItems(0));
+        assertThat(q.getNeighbors(3).size(), is(1));
+
+        q.eliminate(0); // node 2 and 3 get connected
+
+        assertThat(q.getNeighbors(0).size(), is(0));
+        assertThat(q.getNeighbors(1).size(), is(0));
+        assertThat(q.getNeighbors(2), hasItems(3));
+        assertThat(q.getNeighbors(2).size(), is(1));
+        assertThat(q.getNeighbors(3), hasItems(2));
+        assertThat(q.getNeighbors(3).size(), is(1));
     }
 
 }

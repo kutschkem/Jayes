@@ -107,8 +107,13 @@ public class Evaluation implements IApplication {
 
         BayesNet net = loadModel();
 
-        dataGen.setNetwork(net);
+        //warmup vm
+        for (int i = 0; i < 40; i++) {
+            dataGen.setNetwork(net);
+        }
+
         for (int iteration = 0; iteration < iterations; iteration++) {
+            dataGen.setNetwork(net);
             long time = System.currentTimeMillis();
             logger.info("Iteration " + iteration + " observProb= " + observationProb + " , " + model);
             try {

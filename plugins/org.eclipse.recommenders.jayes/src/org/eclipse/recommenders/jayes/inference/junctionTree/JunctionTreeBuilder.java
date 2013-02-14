@@ -17,69 +17,62 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Set;
 
 import org.eclipse.recommenders.internal.jayes.util.UnionFindSet;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.util.Graph;
 import org.eclipse.recommenders.jayes.util.Graph.Edge;
-import org.eclipse.recommenders.jayes.util.OrderIgnoringPair;
 import org.eclipse.recommenders.jayes.util.Pair;
-import org.eclipse.recommenders.jayes.util.triangulation.MinFillIn;
+import org.eclipse.recommenders.jayes.util.triangulation.GraphElimination;
+import org.eclipse.recommenders.jayes.util.triangulation.IEliminationHeuristic;
 
 public class JunctionTreeBuilder {
-    private final BayesNet net;
-    private final Graph moral;
-    private JunctionTree junctionTree = new JunctionTree(new Graph());
+    private IEliminationHeuristic heuristic;
 
-    public static JunctionTree fromNet(final BayesNet net) {
-        return new JunctionTreeBuilder(net).getJunctionTree();
+    public static JunctionTreeBuilder forHeuristic(IEliminationHeuristic heuristic) {
+        return new JunctionTreeBuilder(heuristic);
     }
 
-    protected JunctionTreeBuilder(final BayesNet net) {
-        this.net = net;
-        moral = new Graph();
-        buildMoralGraph();
-        junctionTree.setClusters(triangulateGraphAndFindCliques());
-        junctionTree.setSepSets(computeSepsets());
+    protected JunctionTreeBuilder(IEliminationHeuristic heuristic) {
+        this.heuristic = heuristic;
     }
 
-    private Graph buildMoralGraph() {
+    public JunctionTree buildJunctionTree(BayesNet net) {
+        JunctionTree junctionTree = new JunctionTree(new Graph());
+        junctionTree.setClusters(triangulateGraphAndFindCliques(buildMoralGraph(net), weightNodesByOutcomes(net),
+                heuristic));
+        junctionTree.setSepSets(computeSepsets(junctionTree, net));
+        return junctionTree;
+    }
+
+    private Graph buildMoralGraph(BayesNet net) {
+        Graph moral = new Graph();
         moral.initialize(net.getNodes().size());
-        final Set<OrderIgnoringPair<BayesNode>> connected = new HashSet<OrderIgnoringPair<BayesNode>>();
         for (final BayesNode node : net.getNodes()) {
-            addMoralEdges(connected, node);
+            addMoralEdges(moral, node);
         }
         return moral;
     }
 
-    private void addMoralEdges(final Set<OrderIgnoringPair<BayesNode>> connected, final BayesNode node) {
+    private void addMoralEdges(Graph moral, final BayesNode node) {
         final ListIterator<BayesNode> it = node.getParents().listIterator();
         while (it.hasNext()) {
             final BayesNode parent = it.next();
             final ListIterator<BayesNode> remainingParentsIt = node.getParents().listIterator(it.nextIndex());
             while (remainingParentsIt.hasNext()) { // connect parents
                 final BayesNode otherParent = remainingParentsIt.next();
-                connect(connected, parent, otherParent);
+                moral.addEdge(parent.getId(), otherParent.getId());
             }
-            connect(connected, node, parent);
+            moral.addEdge(node.getId(), parent.getId());
         }
     }
 
-    private void connect(final Set<OrderIgnoringPair<BayesNode>> connected, final BayesNode node1, final BayesNode node2) {
-        final OrderIgnoringPair<BayesNode> pair = new OrderIgnoringPair<BayesNode>(node1, node2);
-        if (!connected.contains(pair)) {
-            connected.add(pair);
-            moral.addEdge(node1.getId(), node2.getId());
-        }
-    }
-
-    private List<List<Integer>> triangulateGraphAndFindCliques() {
-        MinFillIn triangulate = new MinFillIn(moral, weightNodesByOutcomes());
+    private List<List<Integer>> triangulateGraphAndFindCliques(Graph graph, double[] weights,
+            IEliminationHeuristic eliminationHeuristic) {
+        GraphElimination triangulate = new GraphElimination(graph, weights, eliminationHeuristic);
 
         final List<List<Integer>> cliques = new ArrayList<List<Integer>>();
         for (List<Integer> nextClique : triangulate) {
@@ -90,7 +83,7 @@ public class JunctionTreeBuilder {
         return cliques;
     }
 
-    private double[] weightNodesByOutcomes() {
+    private double[] weightNodesByOutcomes(BayesNet net) {
         double[] weights = new double[net.getNodes().size()];
         for (BayesNode node : net.getNodes()) {
             weights[node.getId()] = Math.log(node.getOutcomeCount());
@@ -111,18 +104,19 @@ public class JunctionTreeBuilder {
         return isSubsetOfOther;
     }
 
-    private List<Pair<Edge, List<Integer>>> computeSepsets() {
-        final List<Pair<Edge, List<Integer>>> candidates = enumerateCandidateSepSets();
-        return computeMaxSpanningTree(candidates);
+    private List<Pair<Edge, List<Integer>>> computeSepsets(JunctionTree junctionTree, BayesNet net) {
+        final List<Pair<Edge, List<Integer>>> candidates = enumerateCandidateSepSets(junctionTree.getClusters());
+        Collections.sort(candidates, new SepsetComparator(net));
+        return computeMaxSpanningTree(junctionTree.getGraph(), candidates);
 
     }
 
-    private List<Pair<Edge, List<Integer>>> enumerateCandidateSepSets() {
+    private List<Pair<Edge, List<Integer>>> enumerateCandidateSepSets(List<List<Integer>> clusters) {
         final List<Pair<Edge, List<Integer>>> sepSets = new ArrayList<Pair<Edge, List<Integer>>>();
-        final ListIterator<List<Integer>> it = junctionTree.getClusters().listIterator();
+        final ListIterator<List<Integer>> it = clusters.listIterator();
         while (it.hasNext()) {
             final List<Integer> clique1 = it.next();
-            final ListIterator<List<Integer>> remainingIt = junctionTree.getClusters().listIterator(it.nextIndex());
+            final ListIterator<List<Integer>> remainingIt = clusters.listIterator(it.nextIndex());
             while (remainingIt.hasNext()) { // generate sepSets
                 final List<Integer> clique2 = new ArrayList<Integer>(remainingIt.next());
                 clique2.retainAll(clique1);
@@ -132,13 +126,13 @@ public class JunctionTreeBuilder {
         return sepSets;
     }
 
-    private List<Pair<Edge, List<Integer>>> computeMaxSpanningTree(
-            final List<Pair<Edge, List<Integer>>> candidateSepSets) {
-        Collections.sort(candidateSepSets, new SepsetComparator());
+    private List<Pair<Edge, List<Integer>>> computeMaxSpanningTree(Graph graph,
+            final List<Pair<Edge, List<Integer>>> sortedCandidateSepSets) {
 
-        final ArrayDeque<Pair<Edge, List<Integer>>> pq = new ArrayDeque<Pair<Edge, List<Integer>>>(candidateSepSets);
+        final ArrayDeque<Pair<Edge, List<Integer>>> pq = new ArrayDeque<Pair<Edge, List<Integer>>>(
+                sortedCandidateSepSets);
 
-        final int vertexCount = junctionTree.getGraph().getAdjacency().size();
+        final int vertexCount = graph.getAdjacency().size();
         final UnionFindSet[] sets = UnionFindSet.createArray(vertexCount);
 
         final List<Pair<Edge, List<Integer>>> leftSepSets = new ArrayList<Pair<Edge, List<Integer>>>();
@@ -149,13 +143,19 @@ public class JunctionTreeBuilder {
             if (!bothEndsInSameTree) {
                 sets[sep.getFirst().getFirst()].merge(sets[sep.getFirst().getSecond()]);
                 leftSepSets.add(sep);
-                junctionTree.getGraph().addEdge(sep.getFirst().getFirst(), sep.getFirst().getSecond());
+                graph.addEdge(sep.getFirst().getFirst(), sep.getFirst().getSecond());
             }
         }
         return leftSepSets;
     }
 
     private final class SepsetComparator implements Comparator<Pair<Edge, List<Integer>>> {
+
+        private final BayesNet net;
+
+        public SepsetComparator(BayesNet net) {
+            this.net = net;
+        }
 
         // heuristic: choose sepSet with most variables first,
         // if equal, choose the on with least table size
@@ -182,10 +182,6 @@ public class JunctionTreeBuilder {
         private int compare(final int i1, final int i2) {
             return i1 - i2;
         }
-    }
-
-    public JunctionTree getJunctionTree() {
-        return junctionTree;
     }
 
 }
