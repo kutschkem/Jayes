@@ -9,6 +9,7 @@ Export-Package:
  org.eclipse.recommenders.jayes.factor;uses:="org.eclipse.recommenders.jayes.factor.arraywrapper,org.eclipse.recommenders.jayes",
  org.eclipse.recommenders.jayes.factor.arraywrapper,
  org.eclipse.recommenders.jayes.inference;uses:="org.eclipse.recommenders.jayes.factor,org.eclipse.recommenders.jayes",
+ org.eclipse.recommenders.jayes.factor.opcache,
  org.eclipse.recommenders.jayes.inference.junctionTree;
   uses:="org.eclipse.recommenders.jayes.inference,
    org.eclipse.recommenders.jayes,

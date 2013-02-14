@@ -14,6 +14,9 @@ import java.util.Arrays;
 
 import org.eclipse.recommenders.jayes.factor.arraywrapper.DoubleArrayWrapper;
 import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
+import org.eclipse.recommenders.jayes.factor.opcache.DivisionCache;
+import org.eclipse.recommenders.jayes.factor.opcache.IOperationCache;
+import org.eclipse.recommenders.jayes.factor.opcache.ModuloCache;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public abstract class AbstractFactor implements Cloneable {
@@ -119,28 +122,30 @@ public abstract class AbstractFactor implements Cloneable {
         int sumDimension = getDimensionFromID(sumDimensionID);
         double[] result = new double[dimensions[sumDimension]];
         int divisor = MathUtils.productOfRange(dimensions, sumDimension + 1, dimensions.length);
-        sumToBucket(cut, 0, divisor, result);
+        IOperationCache division = new DivisionCache(divisor);
+        sumToBucket(cut, 0, division, new ModuloCache(result.length), result);
         return result;
     }
 
-    private void sumToBucket(Cut cut, int offset, int divisor, double[] result) {
+    private void sumToBucket(Cut cut, int offset, IOperationCache division, ModuloCache modulo, double[] result) {
         if (cut.getSubCut() == null) {
             int last = cut.getEnd() + offset;
             for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
-                result[(i / divisor) % result.length] += values.getDouble(j);
+                int targetPos = modulo.apply(division.apply(i));
+                result[targetPos] += values.getDouble(j);
             }
         } else {
             Cut c = cut.getSubCut();
             for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
-                sumToBucket(c, offset + i, divisor, result);
+                sumToBucket(c, offset + i, division, modulo, result);
             }
         }
     }
 
     /**
      * multiply the factors. Only compatible factors are allowed, meaning ones that have a subset of the variables of
-     * this factor (assume consistent Dimension ID / size pairs
+     * this factor (assume consistent Dimension ID / size pairs)
      * 
      * @param compatible
      */
@@ -157,8 +162,7 @@ public abstract class AbstractFactor implements Cloneable {
             multiplyPreparedLog(cut, 0, compatibleValues, positions);
     }
 
-    private void multiplyPrepared(Cut cut, int offset, IArrayWrapper compatibleValues,
-            int[] positions) {
+    private void multiplyPrepared(Cut cut, int offset, IArrayWrapper compatibleValues, int[] positions) {
         if (cut.getSubCut() == null) {
             int last = cut.getEnd() + offset;
             for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
@@ -185,8 +189,7 @@ public abstract class AbstractFactor implements Cloneable {
 
     }
 
-    private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
-            int[] positions) {
+    private void sumPrepared(Cut cut, int offset, IArrayWrapper compatibleFactorValues, int[] positions) {
         if (cut.getSubCut() == null) {
             int last = cut.getEnd() + offset;
             for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
@@ -214,8 +217,7 @@ public abstract class AbstractFactor implements Cloneable {
             int last = cut.getEnd() + offset;
             for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
                 int j = getRealPosition(i);
-                if (values.getDouble(j) != Double.NEGATIVE_INFINITY
-                        && Math.abs(values.getDouble(j)) > Math.abs(max)) {
+                if (values.getDouble(j) != Double.NEGATIVE_INFINITY && Math.abs(values.getDouble(j)) > Math.abs(max)) {
                     max = values.getDouble(j);
                 }
             }
@@ -223,8 +225,7 @@ public abstract class AbstractFactor implements Cloneable {
             Cut c = cut.getSubCut();
             for (int i = 0; i < cut.getLength(); i += cut.getSubtreeStepsize()) {
                 double pot = findMax(c, offset + i, max);
-                if (pot != Double.NEGATIVE_INFINITY
-                        && Math.abs(pot) > Math.abs(max)) {
+                if (pot != Double.NEGATIVE_INFINITY && Math.abs(pot) > Math.abs(max)) {
                     max = pot;
                 }
             }
@@ -232,8 +233,7 @@ public abstract class AbstractFactor implements Cloneable {
         return max;
     }
 
-    private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleFactorValues,
-            int[] positions, double max) {
+    private void sumPreparedLog(Cut cut, int offset, IArrayWrapper compatibleFactorValues, int[] positions, double max) {
         if (cut.getSubCut() == null) {
             int last = cut.getEnd() + offset;
             for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {
@@ -248,8 +248,7 @@ public abstract class AbstractFactor implements Cloneable {
         }
     }
 
-    private void multiplyPreparedLog(Cut cut, int offset, IArrayWrapper compatibleValues,
-            int[] positions) {
+    private void multiplyPreparedLog(Cut cut, int offset, IArrayWrapper compatibleValues, int[] positions) {
         if (cut.getSubCut() == null) {
             int last = cut.getEnd() + offset;
             for (int i = cut.getStart() + offset; i < last; i += cut.getStepSize()) {

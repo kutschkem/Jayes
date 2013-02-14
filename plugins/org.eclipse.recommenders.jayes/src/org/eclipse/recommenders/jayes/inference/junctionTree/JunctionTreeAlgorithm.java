@@ -46,7 +46,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     // (which is also needed for simplicity)
     protected IdentityHashMap<Edge, int[]> preparedMultiplications;
 
-    //mapping from variables to clusters that contain them
+    // mapping from variables to clusters that contain them
     protected int[][] concernedClusters;
     protected AbstractFactor[] queryFactors;
     protected int[][] preparedQueries;
@@ -88,20 +88,17 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
 
     private void validateBelief(final int nodeId) {
         final AbstractFactor f = queryFactors[nodeId];
-        f.sumPrepared(new DoubleArrayWrapper(beliefs[nodeId]), preparedQueries[nodeId]);//TODO change beliefs to ArrayWrappers
+        // TODO change beliefs to ArrayWrappers
+        f.sumPrepared(new DoubleArrayWrapper(beliefs[nodeId]), preparedQueries[nodeId]);
         if (f.isLogScale()) {
             MathUtils.exp(beliefs[nodeId]);
         }
         try {
             beliefs[nodeId] = MathUtils.normalize(beliefs[nodeId]);
         } catch (final IllegalArgumentException exception) {
-            throw new NumericalInstabilityException(
-                    "Numerical instability detected for evidence: "
-                            + evidence
-                            + " and node : "
-                            + nodeId
-                            + ", consider using logarithmic scale computation (configurable in FactorFactory)",
-                    exception);
+            throw new NumericalInstabilityException("Numerical instability detected for evidence: " + evidence
+                    + " and node : " + nodeId
+                    + ", consider using logarithmic scale computation (configurable in FactorFactory)", exception);
         }
     }
 
@@ -145,8 +142,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         isObserved[n] = true;
         // get evidence to all concerned factors (includes home cluster)
         for (final Integer concernedCluster : concernedClusters[n]) {
-            nodePotentials[concernedCluster].select(n,
-                    node.getOutcomeIndex(evidence.get(node)));
+            nodePotentials[concernedCluster].select(n, node.getOutcomeIndex(evidence.get(node)));
             clustersHavingEvidence.add(concernedCluster);
         }
     }
@@ -169,13 +165,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
      */
     private Set<Integer> skipCollection(final int root) {
         final Set<Integer> skipped = new HashSet<Integer>(nodePotentials.length);
-        recursiveSkipCollection(root, new HashSet<Integer>(
-                nodePotentials.length), skipped);
+        recursiveSkipCollection(root, new HashSet<Integer>(nodePotentials.length), skipped);
         return skipped;
     }
 
-    private void recursiveSkipCollection(final int node,
-            final Set<Integer> visited, final Set<Integer> skipped) {
+    private void recursiveSkipCollection(final int node, final Set<Integer> visited, final Set<Integer> skipped) {
         visited.add(node);
         boolean areAllDescendantsSkipped = true;
         for (final Edge e : junctionTree.getIncidentEdges(node)) {
@@ -205,13 +199,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
      */
     private Set<Integer> skipDistribution(final int distNode) {
         final Set<Integer> skipped = new HashSet<Integer>(nodePotentials.length);
-        recursiveSkipDistribution(distNode, new HashSet<Integer>(
-                nodePotentials.length), skipped);
+        recursiveSkipDistribution(distNode, new HashSet<Integer>(nodePotentials.length), skipped);
         return skipped;
     }
 
-    private void recursiveSkipDistribution(final int node,
-            final Set<Integer> visited, final Set<Integer> skipped) {
+    private void recursiveSkipDistribution(final int node, final Set<Integer> visited, final Set<Integer> skipped) {
         visited.add(node);
         boolean areAllDescendantsSkipped = true;
         for (final Edge e : junctionTree.getIncidentEdges(node)) {
@@ -222,8 +214,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
                 }
             }
         }
-        if (areAllDescendantsSkipped
-                && !isQueryFactorOfUnobservedVariable(node)) {
+        if (areAllDescendantsSkipped && !isQueryFactorOfUnobservedVariable(node)) {
             skipped.add(node);
         }
     }
@@ -268,8 +259,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         System.arraycopy(newSepValues.toDoubleArray(), 0, scratchpad, 0, newSepValues.length());
 
         final int[] preparedOp = preparedMultiplications.get(sepSetEdge.getBackEdge());
-        nodePotentials[sepSetEdge.getFirst()].sumPrepared(newSepValues,
-                preparedOp);
+        nodePotentials[sepSetEdge.getFirst()].sumPrepared(newSepValues, preparedOp);
 
         if (isOnlyFirstLogScale(sepSetEdge)) {
             MathUtils.exp(newSepValues);
@@ -283,7 +273,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         if (isOnlySecondLogScale(sepSetEdge)) {
             MathUtils.log(scratchpad);
         }
-        //TODO scratchpad -> ArrayWrapper
+        // TODO scratchpad -> ArrayWrapper
         nodePotentials[sepSetEdge.getSecond()].multiplyPrepared(new DoubleArrayWrapper(scratchpad),
                 preparedMultiplications.get(sepSetEdge));
 
@@ -303,13 +293,11 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     private boolean isOnlyFirstLogScale(final Edge edge) {
-        return nodePotentials[edge.getFirst()].isLogScale()
-                && !nodePotentials[edge.getSecond()].isLogScale();
+        return nodePotentials[edge.getFirst()].isLogScale() && !nodePotentials[edge.getSecond()].isLogScale();
     }
 
     private boolean isOnlySecondLogScale(final Edge edge) {
-        return !nodePotentials[edge.getFirst()].isLogScale()
-                && nodePotentials[edge.getSecond()].isLogScale();
+        return !nodePotentials[edge.getFirst()].isLogScale() && nodePotentials[edge.getSecond()].isLogScale();
     }
 
     @Override
@@ -402,7 +390,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
             int current = cliqueIt.nextIndex() - 1;
             List<AbstractFactor> multiplicationPartnerList = multiplicationPartners.get(current);
             final AbstractFactor cliqueFactor = factory.create(cluster,
-                    multiplicationPartnerList == null ? Collections.<AbstractFactor> emptyList()
+                    multiplicationPartnerList == null ? Collections.<AbstractFactor>emptyList()
                             : multiplicationPartnerList);
             nodePotentials[current] = cliqueFactor;
         }
@@ -420,10 +408,9 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
         return potentialMap;
     }
 
-    private void initializeSepsetFactors(
-            final List<Pair<Edge, List<Integer>>> sepSets) {
+    private void initializeSepsetFactors(final List<Pair<Edge, List<Integer>>> sepSets) {
         for (final Pair<Edge, List<Integer>> sep : sepSets) {
-            this.sepSets.put(sep.getFirst(), factory.create(sep.getSecond(), Collections.<AbstractFactor> emptyList()));
+            this.sepSets.put(sep.getFirst(), factory.create(sep.getSecond(), Collections.<AbstractFactor>emptyList()));
         }
     }
 
@@ -462,8 +449,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
             for (final Edge e : junctionTree.getIncidentEdges(node)) {
                 final int[] preparedMultiplication = nodePotentials[e.getSecond()]
                         .prepareMultiplication(sepSets.get(e));
-                preparedMultiplications.put(e,
-                        flyWeight.getInstance(preparedMultiplication));
+                preparedMultiplications.put(e, flyWeight.getInstance(preparedMultiplication));
             }
         }
     }
@@ -471,7 +457,7 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     private void prepareQueries(final CanonicalIntArrayManager flyWeight) {
         for (int i = 0; i < queryFactors.length; i++) {
             final AbstractFactor beliefFactor = factory.create(Arrays.asList(i),
-                    Collections.<AbstractFactor> emptyList());
+                    Collections.<AbstractFactor>emptyList());
             final int[] preparedQuery = queryFactors[i].prepareMultiplication(beliefFactor);
             preparedQueries[i] = flyWeight.getInstance(preparedQuery);
         }
@@ -522,20 +508,17 @@ public class JunctionTreeAlgorithm extends AbstractInferer {
     }
 
     private boolean areBothEndsLogScale(final Edge edge) {
-        return nodePotentials[edge.getFirst()].isLogScale()
-                && nodePotentials[edge.getSecond()].isLogScale();
+        return nodePotentials[edge.getFirst()].isLogScale() && nodePotentials[edge.getSecond()].isLogScale();
     }
 
     private void storePotentialValues() {
         CanonicalArrayWrapperManager flyweight = new CanonicalArrayWrapperManager();
         for (final AbstractFactor pot : nodePotentials) {
-            initializations.add(newPair(pot,
-                    flyweight.getInstance(pot.getValues().clone())));
+            initializations.add(newPair(pot, flyweight.getInstance(pot.getValues().clone())));
         }
 
         for (final AbstractFactor sep : sepSets.values()) {
-            initializations.add(newPair(sep,
-                    flyweight.getInstance(sep.getValues().clone())));
+            initializations.add(newPair(sep, flyweight.getInstance(sep.getValues().clone())));
         }
     }
 

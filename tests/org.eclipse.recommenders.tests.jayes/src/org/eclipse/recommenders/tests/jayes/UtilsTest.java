@@ -14,6 +14,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.recommenders.internal.jayes.util.AddressCalc;
+import org.eclipse.recommenders.jayes.factor.opcache.DivisionCache;
+import org.eclipse.recommenders.jayes.factor.opcache.ModuloCache;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -87,6 +89,26 @@ public class UtilsTest {
         thrown.expect(ArrayIndexOutOfBoundsException.class);
 
         AddressCalc.incrementMultiDimensionalCounter(counter, dimensions);
+    }
+
+    @Test
+    public void testDivisionCache() {
+        for (int i = 1; i < 100; i++) {
+            DivisionCache cache = new DivisionCache(i);
+            for (int j = 0; j < 100; j++) {
+                assertEquals(j / i, cache.apply(j));
+            }
+        }
+    }
+
+    @Test
+    public void testModuloCache() {
+        for (int i = 1; i < 100; i++) {
+            ModuloCache cache = new ModuloCache(i);
+            for (int j = 0; j < 100; j++) {
+                assertEquals(j % i, cache.apply(j));
+            }
+        }
     }
 
 }

@@ -12,6 +12,7 @@ import java.util.Comparator;
 import org.eclipse.recommenders.internal.jayes.util.AddressCalc;
 import org.eclipse.recommenders.internal.jayes.util.ArrayUtils;
 import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
+import org.eclipse.recommenders.jayes.factor.opcache.DivisionCache;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class SparseFactor extends AbstractFactor {
@@ -112,7 +113,7 @@ public class SparseFactor extends AbstractFactor {
             //treat 0-dimensional factors specially (many methods break for them)
             blockSize = 1;
             relativeBlockPointers = new int[] { 1 };
-            cacheBlock(0);
+            divCache = new DivisionCache(blockSize);
             createSparseValueArray();
             return;
         }
@@ -120,7 +121,7 @@ public class SparseFactor extends AbstractFactor {
         optimizeBlockSize(compatible);
 
         initializeBlockPointers(compatible);
-        cacheBlock(0);
+        divCache = new DivisionCache(blockSize);
         createSparseValueArray();
     }
 
@@ -352,22 +353,11 @@ public class SparseFactor extends AbstractFactor {
         return futureLength;
     }
 
-    private int cachedBlockPointer;
-    private int cachedBlockStart;
+    private DivisionCache divCache;
 
     @Override
     protected int getRealPosition(int virtualPosition) {
-        if (virtualPosition >= cachedBlockStart && virtualPosition - cachedBlockStart < blockSize) {
-            return cachedBlockPointer + virtualPosition;
-        }
-        int block = virtualPosition / blockSize;
-        cacheBlock(block);
-        return cachedBlockPointer + virtualPosition;
-    }
-
-    private void cacheBlock(int block) {
-        cachedBlockPointer = relativeBlockPointers[block];
-        cachedBlockStart = getOriginalBlockAddress(block);
+        return relativeBlockPointers[divCache.apply(virtualPosition)] + virtualPosition;
     }
 
     private int computeDenseLength() {
