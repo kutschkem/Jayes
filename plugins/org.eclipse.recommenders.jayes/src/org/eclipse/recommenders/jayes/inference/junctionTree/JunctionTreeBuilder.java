@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.eclipse.recommenders.internal.jayes.util.UnionFindSet;
+import org.eclipse.recommenders.internal.jayes.util.UnionFind;
 import org.eclipse.recommenders.jayes.BayesNet;
 import org.eclipse.recommenders.jayes.BayesNode;
 import org.eclipse.recommenders.jayes.util.Graph;
@@ -133,7 +133,7 @@ public class JunctionTreeBuilder {
                 sortedCandidateSepSets);
 
         final int vertexCount = graph.getAdjacency().size();
-        final UnionFindSet[] sets = UnionFindSet.createArray(vertexCount);
+        final UnionFind[] sets = UnionFind.createArray(vertexCount);
 
         final List<Pair<Edge, List<Integer>>> leftSepSets = new ArrayList<Pair<Edge, List<Integer>>>();
         while (leftSepSets.size() < (vertexCount - 1)) {

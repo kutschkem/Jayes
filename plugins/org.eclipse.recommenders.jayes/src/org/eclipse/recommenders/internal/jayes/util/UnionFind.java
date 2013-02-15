@@ -11,23 +11,20 @@
 package org.eclipse.recommenders.internal.jayes.util;
 
 /**
- * Disjoint Set Datastructure, uses Union by Rank and Path Compression
- * heuristics
- * 
- * @author Michael
+ * Disjoint Set Datastructure, uses Union by Rank and Path Compression heuristics <br/>
+ * <br/>
+ * See "Efficiency of a Good But Not Linear Set Union Algorithm" (Tarjan, 1975)
  * 
  */
-public class UnionFindSet {
+public class UnionFind {
 
-    private UnionFindSet parent = this;
+    private UnionFind parent = this;
     private int rank = 0;
 
     /**
-     * returns the set that contains this element
-     * 
-     * @return
+     * @return the set that contains this element
      */
-    public UnionFindSet find() {
+    public UnionFind find() {
         if (parent == this) {
             return this;
         }
@@ -36,14 +33,11 @@ public class UnionFindSet {
     }
 
     /**
-     * Unites the sets. In equal rank case, the other set is chosen as the new
-     * root.
-     * 
-     * @param other
+     * Unites the sets. In equal rank case, the other set is chosen as the new root.
      */
-    public void merge(final UnionFindSet other) {
-        final UnionFindSet root = find();
-        final UnionFindSet root2 = other.find();
+    public void merge(final UnionFind other) {
+        final UnionFind root = find();
+        final UnionFind root2 = other.find();
         if (root == root2) {
             return;
         }
@@ -58,18 +52,16 @@ public class UnionFindSet {
     }
 
     /**
-     * upper bound for the height of the tree rooted at this element
-     * 
-     * @return
+     * @return upper bound for the height of the tree rooted at this element
      */
     public int rank() {
         return rank;
     }
 
-    public static UnionFindSet[] createArray(int size) {
-        final UnionFindSet[] sets = new UnionFindSet[size];
+    public static UnionFind[] createArray(int size) {
+        final UnionFind[] sets = new UnionFind[size];
         for (int i = 0; i < sets.length; i++) {
-            sets[i] = new UnionFindSet();
+            sets[i] = new UnionFind();
         }
         return sets;
     }

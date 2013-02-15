@@ -66,17 +66,17 @@ public class BasicSampler implements ISampler {
         List<BayesNode> result = new LinkedList<BayesNode>();
         Set<BayesNode> visited = new HashSet<BayesNode>();
         for (BayesNode n : list)
-            DFS(n, visited, result);
+            depthFirstSearch(n, visited, result);
         Collections.reverse(result);
         return result;
     }
 
-    private void DFS(BayesNode n, Set<BayesNode> visited, List<BayesNode> finished) {
+    private void depthFirstSearch(BayesNode n, Set<BayesNode> visited, List<BayesNode> finished) {
         if (visited.contains(n))
             return;
         visited.add(n);
         for (BayesNode c : n.getChildren())
-            DFS(c, visited, finished);
+            depthFirstSearch(c, visited, finished);
         finished.add(n);
     }
 

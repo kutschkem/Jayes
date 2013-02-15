@@ -13,7 +13,7 @@ package org.eclipse.recommenders.tests.jayes;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.recommenders.jayes.util.AddressCalc;
+import org.eclipse.recommenders.internal.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 import org.junit.Rule;
 import org.junit.Test;

@@ -8,12 +8,13 @@
  * Contributors:
  *    Michael Kutschke - initial API and implementation.
  */
-package org.eclipse.recommenders.jayes.util;
+package org.eclipse.recommenders.internal.jayes.util;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.recommenders.jayes.factor.AbstractFactor;
+import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public final class AddressCalc {
 
@@ -34,8 +35,13 @@ public final class AddressCalc {
         }
     }
 
-    public static int[] computeLinearMap(AbstractFactor foreignFactor, int... dimensionIDs) {
-        return computeLinearMap(computeIdToDimensionIndexMap(foreignFactor), foreignFactor.getDimensions(),
+    /**
+     * computes a mapping from the factors' addresses to the corresponding index of the flat value array of a factor
+     * consisting of the dimensions with the given dimensionIDs. dimensionIDs is expected to be a superset of the
+     * dimension ids of the factor
+     */
+    public static int[] computeLinearMap(AbstractFactor factor, int... dimensionIDs) {
+        return computeLinearMap(computeIdToDimensionIndexMap(factor), factor.getDimensions(),
                 dimensionIDs);
     }
 

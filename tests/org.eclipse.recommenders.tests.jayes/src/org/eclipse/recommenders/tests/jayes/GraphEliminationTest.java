@@ -25,7 +25,7 @@ import org.eclipse.recommenders.jayes.util.triangulation.MinFillIn;
 import org.eclipse.recommenders.jayes.util.triangulation.QuotientGraph;
 import org.junit.Test;
 
-public class MinFillInTest {
+public class GraphEliminationTest {
 
     /**
      * <pre>

@@ -6,8 +6,8 @@
  */
 package org.eclipse.recommenders.jayes.factor;
 
+import org.eclipse.recommenders.internal.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.factor.arraywrapper.IArrayWrapper;
-import org.eclipse.recommenders.jayes.util.AddressCalc;
 import org.eclipse.recommenders.jayes.util.MathUtils;
 
 public class DenseFactor extends AbstractFactor {

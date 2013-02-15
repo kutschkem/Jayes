@@ -10,9 +10,7 @@
  ******************************************************************************/
 package org.eclipse.recommenders.eval.jayes.apps;
 
-import static org.eclipse.recommenders.eval.jayes.util.CLIUtil.CONFIG_PARAM;
-import static org.eclipse.recommenders.eval.jayes.util.CLIUtil.MODULES;
-import static org.eclipse.recommenders.eval.jayes.util.CLIUtil.OSGi_CMD_ARGS;
+import static org.eclipse.recommenders.eval.jayes.util.CLIUtil.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
