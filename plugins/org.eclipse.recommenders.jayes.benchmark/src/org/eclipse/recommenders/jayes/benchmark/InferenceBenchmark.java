@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.recommenders.jayes.benchmark;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,11 +46,12 @@ public class InferenceBenchmark extends SimpleBenchmark {
         algo.setNetwork(net);
         BayesNet transformedNet = mergeNetworks(networksToMerge);
         IDecompositionStrategy decomp = new SmoothedFactorDecomposition();
-        for (BayesNet network : networksToMerge) {
-            BayesNode node = transformedNet.getNode(network.hashCode() + "contexts");
-            if (node != null) {
+        for (BayesNode node : new ArrayList<BayesNode>(transformedNet.getNodes())) {
+            if (!node.getParents().isEmpty()) {
+                // this is NOT the best way to go about this, but will result in a maximum of SparseFactor instances
                 decomp.decompose(transformedNet, node);
             }
+
         }
         algoTransformed.setNetwork(transformedNet);
 
