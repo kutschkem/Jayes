@@ -25,11 +25,10 @@ public class XMLUtil {
      * @return
      */
     public static void surround(int offset, StringBuilder bldr, String surroundingTag, String... attributes) {
-        //TODO addTab
-        bldr.insert(offset, '\n');
+        // TODO addTab
         bldr.insert(offset, '>');
 
-        for (int i = 0; i < attributes.length; i += 2) { //insert in reverted order
+        for (int i = 0; i < attributes.length; i += 2) { // insert in reverted order
             bldr.insert(offset, "\" ");
             bldr.insert(offset, attributes[i + 1]);
             bldr.insert(offset, "=\"");

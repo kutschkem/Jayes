@@ -5,5 +5,6 @@ Bundle-SymbolicName: org.eclipse.recommenders.tests.jayes.io
 Bundle-Version: 1.0.3.qualifier
 Require-Bundle: org.eclipse.recommenders.jayes;bundle-version="1.0.3",
  org.eclipse.recommenders.jayes.io;bundle-version="1.0.3",
- org.junit;bundle-version="4.8.2"
+ org.junit;bundle-version="4.8.2",
+ org.hamcrest.library;bundle-version="1.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

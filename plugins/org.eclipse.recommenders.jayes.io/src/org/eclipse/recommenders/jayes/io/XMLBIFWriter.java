@@ -10,7 +10,13 @@
  */
 package org.eclipse.recommenders.jayes.io;
 
-import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.*;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.DEFINITION;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.FOR;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.GIVEN;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.NAME;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.OUTCOME;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.TABLE;
+import static org.eclipse.recommenders.jayes.io.util.XMLBIFConstants.VARIABLE;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -91,11 +97,16 @@ public class XMLBIFWriter {
     }
 
     private void writeProbabilities(StringBuilder bldr, BayesNode node) {
+        if (node.getProbabilities().length == 0) {
+            throw new IllegalArgumentException("Bayesian Network is broken: " + node.getName()
+                    + " has an empty conditional probability table");
+        }
         int offset = bldr.length();
-        for (Number d : node.getFactor().getValues()) {
+        for (double d : node.getProbabilities()) {
             bldr.append(d);
             bldr.append(' ');
         }
+        bldr.deleteCharAt(bldr.length() - 1); // delete last whitespace
         XMLUtil.surround(offset, bldr, TABLE);
     }
 

@@ -11,6 +11,7 @@
 package org.eclipse.recommenders.jayes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -41,9 +42,20 @@ public class BayesNode {
         this.name = name;
     }
 
+    /**
+     * Must be called after the parents and outcomes, and the outcome of the parents are set.
+     */
     public void setProbabilities(final double... probabilities) {
-        assert (probabilities.length == MathUtils.product(factor.getDimensions()));
+        adjustFactordimensions();
+        if (probabilities.length != MathUtils.product(factor.getDimensions())) {
+            throw new IllegalArgumentException("Probability table does not have expected size. Expected: "
+                    + MathUtils.product(factor.getDimensions()) + "but got: " + probabilities.length);
+        }
         factor.setValues(new DoubleArrayWrapper(probabilities));
+    }
+
+    public double[] getProbabilities() {
+        return factor.getValues().toDoubleArray();
     }
 
     public List<BayesNode> getChildren() {
@@ -80,8 +92,7 @@ public class BayesNode {
         dimensionIds[dimensionIds.length - 1] = getId();
     }
 
-    private void fillWithParentDimensions(final int[] dimensions,
-            final int[] dimensionIds) {
+    private void fillWithParentDimensions(final int[] dimensions, final int[] dimensionIds) {
         for (ListIterator<BayesNode> it = parents.listIterator(); it.hasNext();) {
             final BayesNode p = it.next();
             dimensions[it.nextIndex() - 1] = p.getOutcomeCount();
@@ -119,25 +130,24 @@ public class BayesNode {
             throw new IllegalArgumentException("id has to be greater or equal to 0");
         }
         this.id = id;
-        adjustFactordimensions();
 
     }
 
     public void addOutcomes(String... names) {
-        for (String name : names) {
-            addOutcome(name);
+        if (!Collections.disjoint(outcomesList, Arrays.asList(names))) {
+            throw new IllegalArgumentException("Outcome already exists");
         }
+        for (String name : names) {
+            outcomeIndices.put(name, outcomes);
+            outcomes++;
+            outcomesList.add(name);
+        }
+        adjustFactordimensions();
     }
 
     public int addOutcome(final String name) {
-        if (!outcomeIndices.containsKey(name)) {
-            outcomeIndices.put(name, outcomes);
-            outcomes++;
-            adjustFactordimensions();
-            outcomesList.add(name);
-            return outcomes - 1;
-        }
-        throw new IllegalArgumentException("Outcome already exists");
+        addOutcomes(name);
+        return outcomes - 1;
     }
 
     public int getOutcomeIndex(final String name) {

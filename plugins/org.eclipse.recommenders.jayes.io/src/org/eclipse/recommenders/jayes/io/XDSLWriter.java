@@ -10,7 +10,11 @@
  ******************************************************************************/
 package org.eclipse.recommenders.jayes.io;
 
-import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.*;
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.CPT;
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.ID;
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.PARENTS;
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.PROBABILITIES;
+import static org.eclipse.recommenders.jayes.io.util.XDSLConstants.STATE;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,9 +44,8 @@ public class XDSLWriter {
     }
 
     private void getVariableDefs(StringBuilder bldr, BayesNet net) {
-        int offset = bldr.length();
-
         for (BayesNode node : net.getNodes()) {
+            int offset = bldr.length();
             encodeStates(bldr, node);
             encodeParents(bldr, node);
             bldr.append('\n');
@@ -66,17 +69,24 @@ public class XDSLWriter {
             bldr.append(p.getName().trim().replaceAll("\\s+", "_"));
             bldr.append(' ');
         }
+        if (!node.getParents().isEmpty()) {
+            bldr.deleteCharAt(bldr.length() - 1); // delete last whitespace
+        }
 
         XMLUtil.surround(offset, bldr, PARENTS);
     }
 
     private void encodeProbabilities(StringBuilder bldr, BayesNode node) {
+        if (node.getProbabilities().length == 0) {
+            throw new IllegalArgumentException("Bayesian Network is broken: " + node.getName()
+                    + " has an empty conditional probability table");
+        }
         int offset = bldr.length();
-
         for (Number d : node.getFactor().getValues()) {
             bldr.append(d);
             bldr.append(' ');
         }
+        bldr.deleteCharAt(bldr.length() - 1); // delete last whitespace
         XMLUtil.surround(offset, bldr, PROBABILITIES);
     }
 
