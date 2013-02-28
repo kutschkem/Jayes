@@ -24,12 +24,16 @@ import org.junit.Test;
 
 public class FactorTest {
 
-    //@formatter:off
-    private static final double[] DISTRIBUTION_2x2x2 = ArrayUtils.flatten(new double[][][] {
+    private static final double[] distribution2x2x2() {
+        //@formatter:off
+        return ArrayUtils.flatten(new double[][][] {
             { { 0.5, 0.5 }, { 1.0, 0.0 } },
             { { 0.4, 0.6 }, { 0.3, 0.7 } }
     });
-    //@formatter:on
+        //@formatter:on
+
+    }
+
     private static final double TOLERANCE = 0.00001;
 
     @Test
@@ -45,7 +49,7 @@ public class FactorTest {
     @Test
     public void testSelectAndSum() {
         AbstractFactor factor = create2x2x2Factor();
-        factor.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+        factor.setValues(new DoubleArrayWrapper(distribution2x2x2()));
         factor.select(0, 0);
         double[] prob = MathUtils.normalize(factor.marginalizeAllBut(-1));
         assertArrayEquals(prob, new double[] { 0.75, 0.25 }, TOLERANCE);
@@ -66,7 +70,7 @@ public class FactorTest {
     @Test
     public void testSumMiddle1() {
         AbstractFactor factor = create2x2x2Factor();
-        factor.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+        factor.setValues(new DoubleArrayWrapper(distribution2x2x2()));
         factor.select(2, 0);
         double[] prob = MathUtils.normalize(factor.marginalizeAllBut(1));
         assertArrayEquals(prob, new double[] { 0.9 / 2.2, 1.3 / 2.2 }, TOLERANCE);
@@ -75,7 +79,7 @@ public class FactorTest {
     @Test
     public void testSumMiddle2() {
         AbstractFactor factor = create2x2x2Factor();
-        factor.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+        factor.setValues(new DoubleArrayWrapper(distribution2x2x2()));
         factor.select(0, 1);
         factor.select(2, 1);
         double[] prob = MathUtils.normalize(factor.marginalizeAllBut(1));
@@ -135,7 +139,7 @@ public class FactorTest {
     @Test
     public void testMultiplySparseFactor() {
         AbstractFactor f = create2x2x2Factor();
-        f.setValues(new DoubleArrayWrapper(DISTRIBUTION_2x2x2));
+        f.setValues(new DoubleArrayWrapper(distribution2x2x2()));
 
         AbstractFactor f2 = SparseFactor.fromFactor(f);
         f.multiplyCompatible(f2);
