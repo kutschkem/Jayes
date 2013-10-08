@@ -1,20 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eclipse.recommenders.jayes</groupId>
-  <artifactId>org.eclipse.recommenders.jayes.parent</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <artifactId>org.eclipse.recommenders.jayes</artifactId>
+  <version>1.100.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   
 	<modules>
 		<module>plugins/org.eclipse.recommenders.jayes</module>
-		<module>plugins/org.eclipse.recommenders.jayes.eval</module>
 		<module>plugins/org.eclipse.recommenders.jayes.io</module>
-		<module>plugins/org.eclipse.recommenders.jayes.benchmark</module>
-		<module>plugins/org.eclipse.recommenders.jayes.testgen</module>
 		<module>plugins/org.eclipse.recommenders.jayes.transformation</module>
 		<module>tests/org.eclipse.recommenders.tests.jayes</module>
 		<module>tests/org.eclipse.recommenders.tests.jayes.io</module>
-		<module>tests/org.eclipse.recommenders.tests.jayes.testgen</module>
 		<module>tests/org.eclipse.recommenders.tests.jayes.transformation</module>
 		<module>features/org.eclipse.recommenders.jayes.feature</module>
 		<module>repositories/org.eclipse.recommenders.jayes.repository</module>
