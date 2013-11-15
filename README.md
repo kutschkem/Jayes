@@ -1,3 +1,6 @@
+**Development of Jayes currently happens at Eclipse as part of the Code Recommenders Project.**
+The git repository can be found [here](http://git.eclipse.org/c/recommenders/).
+
 # What is Jayes?
 
 Jayes is a Bayesian Network Library for Java. It has initially been created as my bachelor's thesis
